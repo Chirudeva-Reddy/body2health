@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+.env
+.env.*
+*.egg-info/
+dist/
+build/
+.coverage
+.pytest_cache/
+.ipynb_checkpoints/
+.mypy_cache/
+
+# Editors
+.vscode/
+.idea/
+checkpoints/
+out/
+outputs/
+archives/
+models/*.pt
+models/*.pth
+data /sam/

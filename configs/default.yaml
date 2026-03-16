@@ -1,0 +1,46 @@
+silhouette:
+  size: [640, 480]  # BodyM-compatible resolution (height, width)
+  bin_thresh: 0.5
+  height_cm: 175   # override per sample if known
+
+# iPhone preprocessing pipeline settings
+iphone_pipeline:
+  target_size: [640, 480]  # (height, width) for BodyM compatibility
+  use_sam: true
+  sam_model_path: "models/sam2.1_hiera_large.pt"
+  sam_config_path: "configs/sam2.1/sam2.1_hiera_l.yaml"
+  geometry_preserving: true
+  nearest_neighbor_only: true
+  clothing_check_enabled: true
+
+smpl_fit:
+  iters: 400
+  lr: 0.01
+  use_pointcloud: false
+  weights:
+    L_sil: 1.0
+    L_kp: 0.25
+    L_prior: 0.05
+    L_temp: 0.0
+
+render:
+  fx: 900
+  fy: 900
+  cx: 128
+  cy: 128
+
+training:
+  batch_size: 16
+  lr: 3e-4
+  stages: ["front_pretrain","side_pretrain","fusion_finetune"]
+
+reject:
+  sil_iou_min_front: 0.85
+  sil_iou_min_side: 0.80
+
+# Validation thresholds for iPhone pipeline
+validation:
+  min_foreground_ratio: 0.05
+  max_foreground_ratio: 0.70
+  min_compactness: 0.1
+  max_leg_gap_ratio: 0.8
