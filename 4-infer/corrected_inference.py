@@ -1,6 +1,12 @@
 import cv2, torch, numpy as np
 from dataclasses import dataclass
+from pathlib import Path
+import sys
 from typing import Dict, Tuple
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.append(str(ROOT))
+
 from src.model.contrastive_dualview import DualViewContrastive
 
 # Precomputed BodyM envelope (compute once from your training silhouettes)

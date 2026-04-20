@@ -3,10 +3,10 @@ Predict BMI and Body Fat % from a precomputed 640x480 silhouette mask.
 
 Usage:
   # front-only (duplicates front as side)
-  PYTHONPATH=. python scripts/predict_from_silhouette.py --mask "out/front_final.png"
+  PYTHONPATH=. python 4-infer/predict_from_silhouette.py --mask "out/front_final.png"
 
   # two-view (front + side)
-  PYTHONPATH=. python scripts/predict_from_silhouette.py --front "out/front_final.png" --side "out/IMG_4577_final_silhouette.png"
+  PYTHONPATH=. python 4-infer/predict_from_silhouette.py --front "out/front_final.png" --side "out/IMG_4577_final_silhouette.png"
 
 Optional:
   --ckpt checkpoints/best_640x480.pt
@@ -14,9 +14,13 @@ Optional:
 
 import argparse
 from pathlib import Path
+import sys
 
 import cv2
 import torch
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.append(str(ROOT))
 
 from src.model.contrastive_dualview import DualViewContrastive
 

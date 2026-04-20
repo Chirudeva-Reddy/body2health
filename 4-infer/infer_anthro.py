@@ -20,11 +20,15 @@ Physiological priors:
 import argparse
 from dataclasses import dataclass
 from pathlib import Path
+import sys
 from typing import Dict, List, Tuple, Optional
 
 import cv2
 import numpy as np
 import torch
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.append(str(ROOT))
 
 from src.model.contrastive_dualview import DualViewContrastive
 
