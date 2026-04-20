@@ -6,7 +6,7 @@ This script parses training logs and dataset statistics to generate structured
 data files ready for visualization and analysis.
 
 Usage:
-    python scripts/extract_training_metrics.py
+    python 1-data/extract_training_metrics.py
 
 Output files:
     - data/training_metrics.csv: Epoch-by-epoch training metrics
@@ -354,7 +354,7 @@ class DatasetStatisticsAnalyzer:
         try:
             # Run the existing dataset_stats.py script
             result = subprocess.run([
-                sys.executable, "scripts/dataset_stats.py",
+                sys.executable, "1-data/dataset_stats.py",
                 "--labels", self.labels_csv,
                 "--pairs", self.pairs_csv,
                 "--out", "data/dataset_stats_temp.md"
