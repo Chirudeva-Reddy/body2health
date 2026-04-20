@@ -13,7 +13,7 @@ Silhouette-based system to predict BMI and body-fat % from front + side views, a
 
 ## Pipeline (high level)
 1) Input RGB front/side  
-2) Segment person (`src/preprocess/segmentation.py`, default Mediapipe)  
+2) Segment person (`2-pipeline/pipeline/segmentation.py`, compatibility shim)  
 3) Guided filter refinement + pose carving to separate arms; multi-resolution smoothing + hole fill  
 4) Standardize silhouette (`standardize_silhouette`): crop, resize to 256×128, center  
 5) Optional SMPL fit (`src/smpl/fitter.py`) → canonical renders (`src/render/canonical.py`)  
@@ -24,19 +24,19 @@ Silhouette-based system to predict BMI and body-fat % from front + side views, a
 ## Repository map
 ```
 bodyfit/
+|-- 1-data/                      # dataset building, resizing, stats, training-log extraction
+|-- 2-pipeline/                  # iPhone RGB -> silhouette preprocessing app
+|-- 3-train/                     # training entrypoints
+|-- 4-infer/                     # inference entrypoints
+|-- 5-eval/                      # evaluation and plotting scripts
 |-- configs/                     # defaults (silhouette size, SMPL fit, render, training stages)
 |-- src/
-|   |-- preprocess/              # segmentation + keypoint heuristics
-|   |-- smpl/                    # SMPL fitting to front/side masks
-|   |-- render/                  # canonical silhouette rendering
 |   |-- model/                   # dual-view CNN + baselines (baseline.py)
 |   |-- train/                   # training loops, contrastive losses, data loading
 |   |-- eval/                    # metrics (IoU now; extend with MAE/MSE/R²/MAPE/Pearson)
 |   `-- utils/                   # I/O helpers
-|-- scripts/                     # CLIs: fit+render, refine, training, dataset stats, build pairs
 |-- data /                       # CSVs (labels/pairs_full/...), raw masks under data /raw/mask[_left]/
 |-- out/                         # checkpoints, renders
-|-- results/                     # prelim qualitative, baselines
 `-- docs/                        # pipeline, literature, experiments, eval, dataset stats
 ```
 
@@ -46,8 +46,8 @@ bodyfit/
 - Toy training (fake data): `python scripts/train_minimal.py`
 - Contrastive+regression training on CSV (BMI+BF%, with target normalization and stronger regression weight):  
   `python scripts/train_contrastive_reg.py --csv "data /pairs.csv" --measurement_cols bmi --batch_size 32 --epochs 20 --lr 3e-4 --lambda_reg 1.0 --tau 0.1 --augment`
-- Refine noisy silhouettes via SMPL re-render: `python scripts/refine_silhouettes_with_smpl.py --front_mask <path> --side_mask <path> --height_cm <cm>`
-- Dataset stats: `python scripts/dataset_stats.py --labels "data /labels.csv" --pairs "data /pairs.csv"`
+- Refine noisy silhouettes via SMPL re-render: `python 3-train/refine_silhouettes_with_smpl.py --front_mask <path> --side_mask <path> --height_cm <cm>`
+- Dataset stats: `python 1-data/dataset_stats.py --labels "data /labels.csv" --pairs "data /pairs.csv"`
 
 ## Experimental defaults (target)
 - Optimizer Adam, lr=1e-4, batch=32, embed dim 128.

@@ -18,7 +18,7 @@ iPhone RGB Image → SAM Segmentation → Binary Silhouette → Geometry-Preserv
 ## 📋 **Required Changes - All Implemented**
 
 ### ✅ 1. Dedicated iPhone Input Entry Point
-- **Created**: `src/preprocess/iphone_pipeline.py`
+- **Created**: `2-pipeline/pipeline/iphone_pipeline.py`
 - **Function**: `process_iphone_image(img_rgb: np.ndarray) -> np.ndarray`
 - **Features**:
   - Accepts arbitrary high-resolution RGB images
@@ -105,7 +105,7 @@ iPhone RGB Image → SAM Segmentation → Binary Silhouette → Geometry-Preserv
 5. **Clothing feasibility** analysis with quality gates
 
 ### Files Created/Modified
-- ✅ `src/preprocess/iphone_pipeline.py` - Main pipeline (400+ lines)
+- ✅ `2-pipeline/pipeline/iphone_pipeline.py` - Main pipeline (400+ lines)
 - ✅ `configs/default.yaml` - Updated for 640×480 resolution
 - ✅ `scripts/test_iphone_pipeline.py` - Comprehensive test suite
 - ✅ `scripts/integration_example.py` - BodyM model integration demo
