@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Plot training curves from `scripts/train_contrastive_640x480.py` logs.
+Plot training curves from `3-train/train_contrastive_640x480.py` logs.
 
-Parses the log text directly (same patterns as `scripts/extract_training_metrics.py`)
+Parses the log text directly (same patterns as `1-data/extract_training_metrics.py`)
 and writes PNGs to an output directory.
 
 Usage:
-  PYTHONPATH=. python scripts/plot_training_curves.py --log out/train_640x480.log --out_dir out/plots
+  PYTHONPATH=. python 5-eval/plot_training_curves.py --log out/train_640x480.log --out_dir out/plots
 """
 
 from __future__ import annotations

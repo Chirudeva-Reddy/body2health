@@ -75,7 +75,7 @@ def _predict_dataset(
     if ckpt_out_meas != len(measurement_cols):
         raise SystemExit(
             f"Checkpoint expects out_meas={ckpt_out_meas} but --measurement_cols has {len(measurement_cols)}.\n"
-            f"Retrain with: PYTHONPATH=. python scripts/train_contrastive_640x480.py --csv \"{csv_path}\" "
+            f"Retrain with: PYTHONPATH=. python 3-train/train_contrastive_640x480.py --csv \"{csv_path}\" "
             f"--measurement_cols \"{','.join(measurement_cols)}\" ..."
         )
     model = DualViewContrastive(
