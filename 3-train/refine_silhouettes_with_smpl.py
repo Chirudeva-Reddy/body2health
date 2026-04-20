@@ -2,7 +2,7 @@
 Refine noisy binary silhouettes by fitting SMPL and re-rendering canonical masks.
 
 Usage:
-python scripts/refine_silhouettes_with_smpl.py --front_mask <path> --side_mask <path> --height_cm 175 --out_dir out/refined
+python 3-train/refine_silhouettes_with_smpl.py --front_mask <path> --side_mask <path> --height_cm 175 --out_dir out/refined
 """
 import argparse
 import os
