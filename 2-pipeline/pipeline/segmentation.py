@@ -5,7 +5,7 @@ The historical segmentation + standardization implementation was archived to:
 `archives/src/preprocess/segmentation.py`.
 
 The maintained iPhone preprocessing entry point is:
-`src/preprocess/iphone_pipeline.py:process_iphone_image`.
+`2-pipeline/pipeline/iphone_pipeline.py:process_iphone_image`.
 
 This stub intentionally avoids importing heavy/optional dependencies (MediaPipe,
 scipy, rembg, etc.) and only provides a compatibility shim.
@@ -30,9 +30,9 @@ def process_iphone_image(
     """
     Compatibility shim for older imports.
 
-    For the actual implementation, see `src/preprocess/iphone_pipeline.py`.
+    For the actual implementation, see `2-pipeline/pipeline/iphone_pipeline.py`.
     """
-    from src.preprocess.iphone_pipeline import process_iphone_image as _process
+    from .iphone_pipeline import process_iphone_image as _process
 
     # Canonical pipeline currently enforces BodyM-compatible output at (640, 480).
     _ = target_hw
@@ -43,4 +43,3 @@ def process_iphone_image(
         debug_dir=debug_dir,
         debug_prefix=debug_prefix,
     )
-

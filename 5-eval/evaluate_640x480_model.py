@@ -12,9 +12,10 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.append(str(ROOT))
+sys.path.append(str(ROOT / "2-pipeline"))
 
 from src.model.contrastive_dualview import DualViewContrastive
-from src.preprocess.iphone_pipeline import process_iphone_image, validate_bodym_compatibility
+from pipeline.iphone_pipeline import process_iphone_image, validate_bodym_compatibility
 
 
 def load_model(model_path: str, device: str = "cuda"):
