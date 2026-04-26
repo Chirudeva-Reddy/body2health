@@ -27,12 +27,16 @@ except ImportError:
     _HAS_SAM2 = False
     print("Warning: SAM2 not installed. Install with: pip install sam2")
 
-MIN_ROW_WIDTH = 10  # Minimum horizontal width (in pixels) to consider a row occupied
+from src.infer.silhouette_checks import MIN_ROW_WIDTH_PX as MIN_ROW_WIDTH  # noqa: E402,F401  # back-compat re-export
+from src.infer.silhouette_checks import envelope_check  # noqa: E402
 
 
 def is_valid_silhouette(mask: np.ndarray) -> bool:
     """
     Validate that a binary silhouette represents a single, anatomically plausible person.
+
+    Thin wrapper around src.infer.silhouette_checks.envelope_check, kept so
+    that callers using the public pipeline surface keep working unchanged.
 
     Args:
         mask: Binary mask (0/255) of arbitrary resolution.
@@ -40,73 +44,7 @@ def is_valid_silhouette(mask: np.ndarray) -> bool:
     Returns:
         True if the mask passes all anatomical and sanity checks, False otherwise.
     """
-    if mask is None or mask.size == 0:
-        return False
-    if mask.ndim != 2:
-        return False
-
-    m = (mask > 0).astype(np.uint8)
-    h, w = m.shape
-    total_pixels = h * w
-    if total_pixels == 0:
-        return False
-
-    # Foreground presence and global density bounds (slightly lenient)
-    foreground_pixels = int(m.sum())
-    if foreground_pixels == 0:
-        return False
-    foreground_ratio = foreground_pixels / float(total_pixels)
-    if foreground_ratio < 0.08 or foreground_ratio > 0.70:
-        return False
-
-    # Connected components: enforce single dominant component
-    num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(m, connectivity=8)
-    if num_labels <= 1:
-        return False
-    largest_idx = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
-    largest_area = int(stats[largest_idx, cv2.CC_STAT_AREA])
-    if largest_area / float(foreground_pixels) < 0.25:
-        return False
-    if largest_area / float(total_pixels) < 0.08:
-        return False
-    largest_mask = (labels == largest_idx).astype(np.uint8)
-
-    # Anatomical aspect ratio bounds
-    ys, xs = np.where(largest_mask > 0)
-    if len(ys) == 0 or len(xs) == 0:
-        return False
-    bbox_h = int(ys.max() - ys.min() + 1)
-    bbox_w = int(xs.max() - xs.min() + 1)
-    if bbox_w == 0:
-        return False
-    aspect_ratio = bbox_h / float(bbox_w)
-    if aspect_ratio < 1.2 or aspect_ratio > 4.0:
-        return False
-
-    # Torso presence: require mass in the central band (20–70% of height)
-    torso_start = int(0.2 * h)
-    torso_end = min(h, torso_start + int(0.5 * h))
-    if torso_end <= torso_start:
-        return False
-    torso_region = largest_mask[torso_start:torso_end, :]
-    torso_ratio = torso_region.sum() / float(torso_region.size)
-    # Require some torso mass, but allow slightly sparser silhouettes
-    if torso_ratio < 0.10:
-        return False
-
-    # Width continuity: most rows must have non-zero width above a minimum
-    widths_ok = 0
-    for row in range(h):
-        cols = np.where(largest_mask[row] > 0)[0]
-        if cols.size > 0:
-            row_width = int(cols.max() - cols.min() + 1)
-            if row_width > MIN_ROW_WIDTH:
-                widths_ok += 1
-    # Allow a bit more flexibility in pose/segmentation
-    if widths_ok / float(h) < 0.55:
-        return False
-
-    return True
+    return envelope_check(mask).ok
 
 
 class BodyMPipeline:
