@@ -13,63 +13,48 @@ from __future__ import annotations
 
 import argparse
 import os
-import re
+import sys
 from pathlib import Path
 from typing import Dict, List, Tuple
 
 import numpy as np
 
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.append(str(ROOT))
+
+from src.eval.training_logs import parse_batch_log, parse_training_log
+
 
 def _parse_log(log_path: str) -> Tuple[List[Dict], List[Dict]]:
-    batch_pattern = re.compile(
-        r"Epoch (\d+)/(\d+) \| Batch (\d+)/(\d+) \| Loss ([\d.]+) \| "
-        r"Contrastive ([\d.]+) \| Regression ([\d.]+)"
-    )
-    epoch_pattern = re.compile(
-        r"Epoch (\d+)/(\d+) \| Train Loss ([\d.]+) \| Val Loss ([\d.]+) \| "
-        r"Val MAE BMI ([\d.]+) \| Val MAE BF ([\d.]+)%"
-    )
+    """Parse a training log into (epoch_dicts, batch_dicts) for plotting.
 
-    batches: List[Dict] = []
-    epochs: List[Dict] = []
-
-    with open(log_path, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            m = batch_pattern.search(line)
-            if m:
-                epoch, total_epochs, batch, total_batches = map(int, m.groups()[:4])
-                total_loss, contrastive_loss, regression_loss = map(float, m.groups()[4:])
-                # Convert to a continuous step axis for plotting
-                step = (epoch - 1) * total_batches + batch
-                batches.append(
-                    {
-                        "epoch": epoch,
-                        "batch": batch,
-                        "total_batches": total_batches,
-                        "step": step,
-                        "total_loss": total_loss,
-                        "contrastive_loss": contrastive_loss,
-                        "regression_loss": regression_loss,
-                    }
-                )
-                continue
-
-            m = epoch_pattern.search(line)
-            if m:
-                epoch, total_epochs = map(int, m.groups()[:2])
-                train_loss, val_loss, bmi_mae, bf_mae = map(float, m.groups()[2:])
-                epochs.append(
-                    {
-                        "epoch": epoch,
-                        "total_epochs": total_epochs,
-                        "train_loss": train_loss,
-                        "val_loss": val_loss,
-                        "bmi_mae": bmi_mae,
-                        "bf_mae_pct": bf_mae,
-                    }
-                )
-
+    Wraps src.eval.training_logs.* and renames fields to the keys the rest of
+    this script expects.
+    """
+    epoch_rows = parse_training_log(log_path)
+    batch_rows = parse_batch_log(log_path)
+    epochs: List[Dict] = [
+        {
+            "epoch": r.epoch,
+            "train_loss": r.train_loss,
+            "val_loss": r.val_loss,
+            "bmi_mae": r.val_mae_bmi,
+            "bf_mae_pct": r.val_mae_bf,
+        }
+        for r in epoch_rows
+    ]
+    batches: List[Dict] = [
+        {
+            "epoch": r.epoch,
+            "batch": r.batch,
+            "total_batches": r.total_batches,
+            "step": (r.epoch - 1) * r.total_batches + r.batch,
+            "total_loss": r.loss,
+            "contrastive_loss": r.contrastive,
+            "regression_loss": r.regression,
+        }
+        for r in batch_rows
+    ]
     if not epochs and not batches:
         raise SystemExit(f"No metrics matched expected patterns in {log_path}")
     return epochs, batches

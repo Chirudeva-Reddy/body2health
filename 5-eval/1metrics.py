@@ -30,6 +30,14 @@ from pathlib import Path
 from statistics import mean, median, pstdev
 from typing import Dict, List, Optional, Tuple, Any
 
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.append(str(ROOT))
+
+from src.eval.training_logs import (  # noqa: E402
+    parse_batch_log as shared_parse_batch_log,
+    parse_training_log as shared_parse_training_log,
+)
+
 # Create data directory for logging
 os.makedirs('data', exist_ok=True)
 
@@ -55,94 +63,55 @@ class TrainingMetricsExtractor:
         self.best_model_epochs = []
         self.final_metrics = {}
         
-        # Regex patterns for parsing log entries
-        self.batch_pattern = re.compile(
-            r'Epoch (\d+)/(\d+) \| Batch (\d+)/(\d+) \| Loss ([\d.]+) \| '
-            r'Contrastive ([\d.]+) \| Regression ([\d.]+)'
-        )
-        
-        self.epoch_pattern = re.compile(
-            r'Epoch (\d+)/(\d+) \| Train Loss ([\d.]+) \| Val Loss ([\d.]+) \| '
-            r'Val MAE BMI ([\d.]+) \| Val MAE BF ([\d.]+)%'
-        )
-        
+        # Best-model regex stays here; the shared parser only handles the
+        # epoch / batch progress lines.
         self.best_model_pattern = re.compile(
             r'New best model saved to (checkpoints/[\w_./]+)'
         )
-        
+
     def parse_training_log(self) -> Dict[str, Any]:
         """Parse the training log file and extract all metrics."""
         logger.info(f"Parsing training log: {self.log_path}")
-        
+
         if not os.path.exists(self.log_path):
             raise FileNotFoundError(f"Training log not found: {self.log_path}")
-        
-        try:
-            with open(self.log_path, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
-        except Exception as e:
-            logger.error(f"Error reading log file: {e}")
-            raise
-        
-        current_epoch = 0
-        epoch_batches = []
-        
-        for line_num, line in enumerate(lines, 1):
-            line = line.strip()
-            if not line:
-                continue
-            
-            # Parse batch-level metrics
-            batch_match = self.batch_pattern.search(line)
-            if batch_match:
-                try:
-                    epoch, total_epochs, batch, total_batches = map(int, batch_match.groups()[:4])
-                    total_loss, contrastive_loss, regression_loss = map(float, batch_match.groups()[4:])
-                    
-                    batch_metric = {
-                        'epoch': epoch,
-                        'batch': batch,
-                        'total_batches': total_batches,
-                        'total_loss': total_loss,
-                        'contrastive_loss': contrastive_loss,
-                        'regression_loss': regression_loss,
-                        'line_number': line_num
-                    }
-                    self.batch_metrics.append(batch_metric)
-                    current_epoch = epoch
-                    
-                except (ValueError, IndexError) as e:
-                    logger.warning(f"Failed to parse batch line {line_num}: {e}")
-                    continue
-            
-            # Parse epoch-level metrics
-            epoch_match = self.epoch_pattern.search(line)
-            if epoch_match:
-                try:
-                    epoch, total_epochs = map(int, epoch_match.groups()[:2])
-                    train_loss, val_loss, bmi_mae, bf_mae = map(float, epoch_match.groups()[2:])
-                    
-                    epoch_metric = {
-                        'epoch': epoch,
-                        'total_epochs': total_epochs,
-                        'train_loss': train_loss,
-                        'val_loss': val_loss,
-                        'bmi_mae': bmi_mae,
-                        'body_fat_mae': bf_mae,
-                        'line_number': line_num
-                    }
-                    self.epoch_metrics.append(epoch_metric)
-                    
-                except (ValueError, IndexError) as e:
-                    logger.warning(f"Failed to parse epoch line {line_num}: {e}")
-                    continue
-            
-            # Parse best model checkpoints
-            best_match = self.best_model_pattern.search(line)
-            if best_match:
-                checkpoint_path = best_match.group(1)
-                if self.epoch_metrics:
-                    epoch_metric = self.epoch_metrics[-1]
+
+        # Epoch and batch rows come from the shared parser to keep the regex
+        # for the standard log format in one place.
+        epoch_rows = shared_parse_training_log(self.log_path)
+        batch_rows = shared_parse_batch_log(self.log_path)
+        for r in batch_rows:
+            self.batch_metrics.append({
+                'epoch': r.epoch,
+                'batch': r.batch,
+                'total_batches': r.total_batches,
+                'total_loss': r.loss,
+                'contrastive_loss': r.contrastive,
+                'regression_loss': r.regression,
+            })
+        for r in epoch_rows:
+            self.epoch_metrics.append({
+                'epoch': r.epoch,
+                'train_loss': r.train_loss,
+                'val_loss': r.val_loss,
+                'bmi_mae': r.val_mae_bmi,
+                'body_fat_mae': r.val_mae_bf,
+            })
+
+        # Best-model lines must be associated with the epoch they appear after,
+        # so we still scan the file once for them and use the running tail of
+        # epoch_metrics as the active epoch.
+        with open(self.log_path, 'r', encoding='utf-8') as f:
+            running_idx = 0
+            for line in f:
+                line = line.strip()
+                # Advance running_idx whenever we cross another epoch summary.
+                if 'Train Loss' in line and 'Val Loss' in line:
+                    running_idx = min(running_idx + 1, len(self.epoch_metrics))
+                best_match = self.best_model_pattern.search(line)
+                if best_match and running_idx > 0:
+                    checkpoint_path = best_match.group(1)
+                    epoch_metric = self.epoch_metrics[running_idx - 1]
                     self.best_model_epochs.append({
                         'epoch': epoch_metric['epoch'],
                         'checkpoint_path': checkpoint_path,
