@@ -46,8 +46,7 @@ bodyfit/
 - Toy training (fake data): `python scripts/train_minimal.py`
 - Contrastive+regression training on CSV (BMI+BF%, with target normalization and stronger regression weight):  
   `python scripts/train_contrastive_reg.py --csv "data /pairs.csv" --measurement_cols bmi --batch_size 32 --epochs 20 --lr 3e-4 --lambda_reg 1.0 --tau 0.1 --augment`
-- Refine noisy silhouettes via SMPL re-render: `python 3-train/refine_silhouettes_with_smpl.py --front_mask <path> --side_mask <path> --height_cm <cm>`
-- Dataset stats: `python 1-data/dataset_stats.py --labels "data /labels.csv" --pairs "data /pairs.csv"`
+- Dataset stats: `python 1-data/3stats.py --labels "data /labels.csv" --pairs "data /pairs.csv"`
 
 ## Experimental defaults (target)
 - Optimizer Adam, lr=1e-4, batch=32, embed dim 128.

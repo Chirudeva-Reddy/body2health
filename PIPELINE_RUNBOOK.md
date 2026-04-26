@@ -19,7 +19,7 @@
 2. Build the paired dataset CSV:
 
 ```bash
-python 1-data/build_pairs_full.py
+python 1-data/1build.py
 ```
 
 Produces `data /pairs_full.csv`.
@@ -27,7 +27,7 @@ Produces `data /pairs_full.csv`.
 3. Resize masks to 640x480 and optionally make a subset:
 
 ```bash
-python 1-data/prepare_640x480_data.py --input_csv "data /pairs_full.csv" --output_dir "data /640x480_processed" --create_subset
+python 1-data/2prep.py --input_csv "data /pairs_full.csv" --output_dir "data /640x480_processed" --create_subset
 ```
 
 Produces `data /640x480_processed/pairs_640x480.csv` and, when `--create_subset` is used, `data /640x480_processed/pairs_10percent.csv`.
@@ -35,7 +35,7 @@ Produces `data /640x480_processed/pairs_640x480.csv` and, when `--create_subset`
 4. Inspect dataset stats if needed:
 
 ```bash
-python 1-data/dataset_stats.py --labels "data /labels.csv" --pairs "data /pairs_full.csv"
+python 1-data/3stats.py --labels "data /labels.csv" --pairs "data /pairs_full.csv"
 ```
 
 5. Train the model:
@@ -120,7 +120,7 @@ python 5-eval/evaluate_640x480_model.py --model_path "checkpoints/latest.pt" --s
 
 ## Notes
 - `3-train/refine_silhouettes_with_smpl.py` is optional and not part of the default path. In this checkout it still depends on `src.smpl` and `src.render`, which are not present.
-- `1-data/prepare_640x480_data.py` imports `pandas` at module import time. If `pandas` is missing, even `--help` will fail until that dependency is available.
+- `1-data/2prep.py` imports `pandas` at module import time. If `pandas` is missing, even `--help` will fail until that dependency is available.
 - The preprocessing package is now imported as `pipeline`. From the repo root, this works:
 
 ```bash

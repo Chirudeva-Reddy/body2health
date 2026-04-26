@@ -352,9 +352,9 @@ class DatasetStatisticsAnalyzer:
             return {}
         
         try:
-            # Run the existing dataset_stats.py script
+            # Run the existing 3stats.py script
             result = subprocess.run([
-                sys.executable, "1-data/dataset_stats.py",
+                sys.executable, "1-data/3stats.py",
                 "--labels", self.labels_csv,
                 "--pairs", self.pairs_csv,
                 "--out", "data/dataset_stats_temp.md"

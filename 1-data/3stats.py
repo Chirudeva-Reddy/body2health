@@ -2,7 +2,7 @@
 Compute dataset statistics for labels and pairs CSVs.
 
 Usage:
-python 1-data/dataset_stats.py --labels "data copy/labels.csv" --pairs "data copy/pairs.csv" --out docs/dataset_stats.md
+python 1-data/3stats.py --labels "data copy/labels.csv" --pairs "data copy/pairs.csv" --out docs/dataset_stats.md
 """
 import argparse
 import csv
