@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Plot training curves from `3-train/train_contrastive_640x480.py` logs.
+Plot training curves from `3-train/1train.py` logs.
 
 Parses the log text directly (same patterns as `1-data/extract_training_metrics.py`)
 and writes PNGs to an output directory.

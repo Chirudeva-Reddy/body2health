@@ -41,7 +41,7 @@ python 1-data/3stats.py --labels "data /labels.csv" --pairs "data /pairs_full.cs
 5. Train the model:
 
 ```bash
-python 3-train/train_contrastive_640x480.py --csv "data /640x480_processed/pairs_640x480.csv"
+python 3-train/1train.py --csv "data /640x480_processed/pairs_640x480.csv"
 ```
 
 Writes checkpoints into `checkpoints/` and logs to stdout. If you redirect logs to `out/train_640x480.log`, the later metrics scripts can parse them directly.
@@ -119,7 +119,6 @@ python 5-eval/evaluate_640x480_model.py --model_path "checkpoints/latest.pt" --s
 - `5-eval/generate_figures_single_subject.py`: generate paper-style figures when you already have training and IoU logs.
 
 ## Notes
-- `3-train/refine_silhouettes_with_smpl.py` is optional and not part of the default path. In this checkout it still depends on `src.smpl` and `src.render`, which are not present.
 - `1-data/2prep.py` imports `pandas` at module import time. If `pandas` is missing, even `--help` will fail until that dependency is available.
 - The preprocessing package is now imported as `pipeline`. From the repo root, this works:
 
