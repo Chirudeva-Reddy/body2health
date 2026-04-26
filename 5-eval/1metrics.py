@@ -6,7 +6,7 @@ This script parses training logs and dataset statistics to generate structured
 data files ready for visualization and analysis.
 
 Usage:
-    python 1-data/extract_training_metrics.py
+    python 5-eval/1metrics.py
 
 Output files:
     - data/training_metrics.csv: Epoch-by-epoch training metrics
@@ -332,7 +332,7 @@ class TrainingMetricsExtractor:
 
 
 class DatasetStatisticsAnalyzer:
-    """Analyze dataset statistics using the existing dataset_stats.py script."""
+    """Analyze dataset statistics using the existing 3stats.py script."""
     
     def __init__(self, labels_csv: str, pairs_csv: str):
         self.labels_csv = labels_csv
@@ -373,7 +373,7 @@ class DatasetStatisticsAnalyzer:
             return {}
     
     def _parse_dataset_stats_output(self) -> Dict[str, Any]:
-        """Parse the markdown output from dataset_stats.py."""
+        """Parse the markdown output from 3stats.py."""
         stats_file = "data/dataset_stats_temp.md"
         if not os.path.exists(stats_file):
             return {}

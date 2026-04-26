@@ -49,7 +49,7 @@ Writes checkpoints into `checkpoints/` and logs to stdout. If you redirect logs 
 6. Extract training summaries from the log:
 
 ```bash
-python 1-data/extract_training_metrics.py --log-file out/train_640x480.log
+python 5-eval/1metrics.py --log-file out/train_640x480.log
 ```
 
 Writes CSV/JSON summaries under `data/`.
@@ -57,7 +57,7 @@ Writes CSV/JSON summaries under `data/`.
 7. Plot training curves:
 
 ```bash
-python 5-eval/plot_training_curves.py --log out/train_640x480.log --out_dir out/plots
+python 5-eval/6plots.py --log out/train_640x480.log --out_dir out/plots
 ```
 
 Writes PNG plots under `out/plots`.
@@ -101,7 +101,7 @@ Use `corrected_inference.py` as a library-style helper rather than a CLI.
 - For a single raw iPhone image, run:
 
 ```bash
-python 5-eval/evaluate_640x480_model.py --model_path "checkpoints/latest.pt" --image_path "path/to/image.jpg"
+python 5-eval/2eval.py --model_path "checkpoints/latest.pt" --image_path "path/to/image.jpg"
 ```
 
 - This route runs the preprocessing app and then evaluates the checkpoint.
@@ -109,14 +109,14 @@ python 5-eval/evaluate_640x480_model.py --model_path "checkpoints/latest.pt" --i
 - If you already have a processed silhouette instead of RGB, use:
 
 ```bash
-python 5-eval/evaluate_640x480_model.py --model_path "checkpoints/latest.pt" --silhouette_path "path/to/mask.png"
+python 5-eval/2eval.py --model_path "checkpoints/latest.pt" --silhouette_path "path/to/mask.png"
 ```
 
 ## Evaluation Scripts
-- `5-eval/ablation_table.py`: compare single-view vs multi-view and simple post-hoc corrections on one checkpoint.
-- `5-eval/contrastive_vs_no_contrastive_table.py`: compare two checkpoints, usually a contrastive run against a regression-only run.
-- `5-eval/compute_silhouette_iou.py`: compute preprocessing IoU from a CSV of predicted and ground-truth mask paths.
-- `5-eval/generate_figures_single_subject.py`: generate paper-style figures when you already have training and IoU logs.
+- `5-eval/4ablate.py`: compare single-view vs multi-view and simple post-hoc corrections on one checkpoint.
+- `5-eval/5compare.py`: compare two checkpoints, usually a contrastive run against a regression-only run.
+- `5-eval/3iou.py`: compute preprocessing IoU from a CSV of predicted and ground-truth mask paths.
+- `5-eval/7figures.py`: generate paper-style figures when you already have training and IoU logs.
 
 ## Notes
 - `1-data/2prep.py` imports `pandas` at module import time. If `pandas` is missing, even `--help` will fail until that dependency is available.

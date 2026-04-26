@@ -2,11 +2,11 @@
 """
 Plot training curves from `3-train/1train.py` logs.
 
-Parses the log text directly (same patterns as `1-data/extract_training_metrics.py`)
+Parses the log text directly (same patterns as `5-eval/1metrics.py`)
 and writes PNGs to an output directory.
 
 Usage:
-  PYTHONPATH=. python 5-eval/plot_training_curves.py --log out/train_640x480.log --out_dir out/plots
+  PYTHONPATH=. python 5-eval/6plots.py --log out/train_640x480.log --out_dir out/plots
 """
 
 from __future__ import annotations
