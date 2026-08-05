@@ -11,11 +11,13 @@ the script outline the main stages of the workflow.
 import argparse
 import pathlib
 import sys
-from typing import List
+from collections import defaultdict
+from typing import Dict, List
 
 import numpy as np
 import torch
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, Subset
+from tqdm.auto import tqdm
 
 # Append the project root so imports resolve when running this script directly
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -29,10 +31,7 @@ from src.train.losses import total_loss
 def _resolve_csv_path(p: str) -> str:
     cands = [
         p,
-        "data/pairs.csv",
-        "data /pairs.csv",
-        "data/pairs_full.csv",
-        "data /pairs_full.csv",
+        "data/bodym/pairs_dimensions.csv",
     ]
     for c in cands:
         if pathlib.Path(c).exists():
@@ -52,8 +51,8 @@ def parse_args() -> argparse.Namespace:
         description="Contrastive + regression training at 640×480 resolution",
     )
     # Dataset & resolution
-    parser.add_argument("--csv", type=str, default="data/pairs_10_percent.csv")
-    parser.add_argument("--measurement_cols", type=str, default="bmi")
+    parser.add_argument("--csv", type=str, default="data/bodym/pairs_dimensions.csv")
+    parser.add_argument("--measurement_cols", type=str, default="waist_cm,hip_cm")
     parser.add_argument("--height", type=int, default=640)
     parser.add_argument("--width", type=int, default=480)
     # Training hyperparameters
@@ -92,6 +91,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--augment", action="store_true")
     parser.add_argument("--num_workers", type=int, default=2)
     parser.add_argument("--seed", type=int, default=42)
+    # Subject-disjoint split fractions (train = 1 - val_frac - test_frac)
+    parser.add_argument("--val_frac", type=float, default=0.15)
+    parser.add_argument("--test_frac", type=float, default=0.15)
     # Runtime limits & checkpointing
     parser.add_argument("--max_steps", type=int, default=None)
     parser.add_argument("--ckpt_tag", type=str, default="")
@@ -110,11 +112,13 @@ def build_dataloaders(
     seed: int,
     batch_size: int,
     num_workers: int,
-) -> tuple[DataLoader, DataLoader, SilhouetteDataset]:
-    """Construct training and validation DataLoaders from the full dataset.
+    val_frac: float,
+    test_frac: float,
+) -> tuple[DataLoader, DataLoader, DataLoader, SilhouetteDataset]:
+    """Construct train / val / test DataLoaders with a subject-disjoint split.
 
-    A 20% validation split is used by default.  A seeded generator ensures
-    reproducibility of the random split across runs.
+    The split is performed over unique ``subject_key`` values so repeated
+    captures for one person never cross split boundaries.
     """
     full_ds = SilhouetteDataset(
         csv_path,
@@ -122,15 +126,17 @@ def build_dataloaders(
         measurement_cols=measurement_cols,
         augment=augment,
     )
-    # Determine split sizes
-    n_total = len(full_ds)
-    n_val = max(1, int(0.2 * n_total))
-    n_train = n_total - n_val
-    # Reproducible random split
-    g = torch.Generator()
-    g.manual_seed(seed)
-    train_ds, val_ds = random_split(full_ds, [n_train, n_val], generator=g)
-    # Create data loaders
+    train_indices, val_indices, test_indices = _subject_disjoint_indices(
+        full_ds, seed, val_frac=val_frac, test_frac=test_frac
+    )
+    print(
+        f"Split: train={len(train_indices)} val={len(val_indices)} "
+        f"test={len(test_indices)} (subject-disjoint, val_frac={val_frac}, "
+        f"test_frac={test_frac})"
+    )
+    train_ds = Subset(full_ds, train_indices)
+    val_ds = Subset(full_ds, val_indices)
+    test_ds = Subset(full_ds, test_indices)
     train_loader = DataLoader(
         train_ds,
         batch_size=batch_size,
@@ -145,26 +151,66 @@ def build_dataloaders(
         num_workers=num_workers,
         pin_memory=True,
     )
-    return train_loader, val_loader, full_ds
+    test_loader = DataLoader(
+        test_ds,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
+        pin_memory=True,
+    )
+    return train_loader, val_loader, test_loader, full_ds
 
 
-def compute_normalization_stats(full_ds: SilhouetteDataset, device: torch.device) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
-    """Compute mean and standard deviation for measurement and body‑fat targets.
+def _subject_disjoint_indices(
+    full_ds: SilhouetteDataset, seed: int, val_frac: float, test_frac: float
+) -> tuple[List[int], List[int], List[int]]:
+    if val_frac <= 0.0 or test_frac <= 0.0 or val_frac + test_frac >= 1.0:
+        raise ValueError(f"invalid split fractions: val={val_frac}, test={test_frac}")
+    subjects: Dict[str, List[int]] = defaultdict(list)
+    for idx, row in enumerate(full_ds.rows):
+        subject_key = row.get("subject_key")
+        if not subject_key:
+            raise KeyError(f"row {idx} is missing required subject_key for subject-disjoint split")
+        subjects[subject_key].append(idx)
+
+    subject_keys = np.array(sorted(subjects.keys()))
+    rng = np.random.default_rng(seed)
+    rng.shuffle(subject_keys)
+    n_subjects = len(subject_keys)
+    n_val = max(1, int(round(val_frac * n_subjects)))
+    n_test = max(1, int(round(test_frac * n_subjects)))
+    val_subjects = set(subject_keys[:n_val].tolist())
+    test_subjects = set(subject_keys[n_val : n_val + n_test].tolist())
+
+    train_indices: List[int] = []
+    val_indices: List[int] = []
+    test_indices: List[int] = []
+    for subject_key, indices in subjects.items():
+        if subject_key in val_subjects:
+            val_indices.extend(indices)
+        elif subject_key in test_subjects:
+            test_indices.extend(indices)
+        else:
+            train_indices.extend(indices)
+
+    if not train_indices or not val_indices or not test_indices:
+        raise ValueError("subject-disjoint split produced an empty train/val/test split")
+    return train_indices, val_indices, test_indices
+
+
+def compute_normalization_stats(full_ds: SilhouetteDataset, device: torch.device) -> tuple[torch.Tensor, torch.Tensor]:
+    """Compute mean and standard deviation for dimension targets.
 
     Stats are aggregated over the entire dataset and moved to the specified
     device.  A small epsilon avoids division by zero during standardization.
     """
-    meas_list, bf_list = [], []
-    for item in full_ds:
-        meas_list.append(item["y_meas"])
-        bf_list.append(item["y_bf"])
+    meas_list = []
+    for parsed in full_ds._parsed:
+        meas_list.append(torch.tensor(parsed["meas"], dtype=torch.float32))
     meas_cat = torch.stack(meas_list)
-    bf_cat = torch.stack(bf_list)
     meas_mean = meas_cat.mean(dim=0).to(device)
     meas_std = meas_cat.std(dim=0).clamp(min=1e-6).to(device)
-    bf_mean = bf_cat.mean(dim=0).to(device)
-    bf_std = bf_cat.std(dim=0).clamp(min=1e-6).to(device)
-    return meas_mean, meas_std, bf_mean, bf_std
+    return meas_mean, meas_std
 
 
 def train_epoch(
@@ -178,19 +224,18 @@ def train_epoch(
     """Run one training epoch and return the average loss and updated step count."""
     model.train()
     losses = []
-    for batch in loader:
+    pbar = tqdm(loader, desc="train", leave=False, dynamic_ncols=True)
+    for batch in pbar:
         if args.max_steps is not None and step_count >= args.max_steps:
             break
         front = batch["front"].to(device)
         side = batch["side"].to(device)
         y_meas = batch["y_meas"].to(device)
-        y_bf = batch["y_bf"].to(device)
         optimizer.zero_grad()
         out = model(front, side)
         loss_dict = total_loss(
             out,
             y_meas,
-            y_bf,
             lambda_reg=args.lambda_reg,
             tau=args.tau,
             use_contrastive=not args.no_contrastive,
@@ -201,6 +246,8 @@ def train_epoch(
         optimizer.step()
         losses.append(total_loss_val.item())
         step_count += 1
+        pbar.set_postfix(loss=f"{total_loss_val.item():.3f}")
+    pbar.close()
     avg_loss = float(np.mean(losses)) if losses else 0.0
     return avg_loss, step_count
 
@@ -210,33 +257,40 @@ def evaluate(
     loader: DataLoader,
     args: argparse.Namespace,
     device: torch.device,
-) -> tuple[float, float, float]:
+) -> tuple[float, Dict[str, float], float]:
     """Evaluate the model on the validation set and return loss and MAEs."""
     model.eval()
-    val_losses, mae_meas, mae_bf = [], [], []
+    val_losses: List[float] = []
+    preds: List[torch.Tensor] = []
+    targets: List[torch.Tensor] = []
     with torch.no_grad():
-        for batch in loader:
+        for batch in tqdm(loader, desc="eval", leave=False, dynamic_ncols=True):
             front = batch["front"].to(device)
             side = batch["side"].to(device)
             y_meas = batch["y_meas"].to(device)
-            y_bf = batch["y_bf"].to(device)
             out = model(front, side)
             loss_dict = total_loss(
                 out,
                 y_meas,
-                y_bf,
                 lambda_reg=args.lambda_reg,
                 tau=args.tau,
                 use_contrastive=not args.no_contrastive,
             )
             val_losses.append(loss_dict["total"].item())
-            # Compute MAE in native units (measurement targets) and fraction (body‑fat)
-            mae_meas.append(torch.nn.functional.l1_loss(out["meas"], y_meas).item())
-            mae_bf.append(torch.nn.functional.l1_loss(out["bf"], y_bf).item())
+            preds.append(out["meas"].detach().cpu())
+            targets.append(y_meas.detach().cpu())
     val_loss = float(np.mean(val_losses)) if val_losses else 0.0
-    val_mae_meas = float(np.mean(mae_meas)) if mae_meas else 0.0
-    val_mae_bf = float(np.mean(mae_bf)) if mae_bf else 0.0
-    return val_loss, val_mae_meas, val_mae_bf
+    if not preds:
+        return val_loss, {}, 0.0
+    pred_cat = torch.cat(preds, dim=0)
+    target_cat = torch.cat(targets, dim=0)
+    per_col = torch.mean(torch.abs(pred_cat - target_cat), dim=0)
+    mae_by_col = {
+        col: float(per_col[idx].item())
+        for idx, col in enumerate(args.measurement_cols_list)
+    }
+    val_mae_meas = float(torch.mean(per_col).item())
+    return val_loss, mae_by_col, val_mae_meas
 
 
 def save_checkpoint(
@@ -245,8 +299,6 @@ def save_checkpoint(
     optimizer: torch.optim.Optimizer,
     meas_mean: torch.Tensor,
     meas_std: torch.Tensor,
-    bf_mean: torch.Tensor,
-    bf_std: torch.Tensor,
     args: argparse.Namespace,
     epoch: int | None = None,
     val_loss: float | None = None,
@@ -258,8 +310,7 @@ def save_checkpoint(
             "optimizer": optimizer.state_dict(),
             "meas_mean": meas_mean,
             "meas_std": meas_std,
-            "bf_mean": bf_mean,
-            "bf_std": bf_std,
+            "measurement_cols": args.measurement_cols_list,
             # Store parsed arguments for reproducibility
             "args": vars(args),
             "use_large": args.use_large,
@@ -286,15 +337,18 @@ def save_checkpoint(
 
 def main() -> None:
     args = parse_args()
-    device = torch.device(args.device)
+    device = torch.device("mps" if args.device == "mps" and torch.backends.mps.is_available() else args.device)
     args.csv = _resolve_csv_path(args.csv)
     # Seed everything for reproducibility
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
     # Parse measurement columns from comma‑separated string
     meas_cols = [c.strip() for c in args.measurement_cols.split(",") if c.strip()]
+    if not meas_cols:
+        raise ValueError("--measurement_cols must include at least one dimension target")
+    args.measurement_cols_list = meas_cols
     # Build data loaders
-    train_loader, val_loader, full_ds = build_dataloaders(
+    train_loader, val_loader, test_loader, full_ds = build_dataloaders(
         args.csv,
         target_hw=(args.height, args.width),
         measurement_cols=meas_cols,
@@ -302,6 +356,8 @@ def main() -> None:
         seed=args.seed,
         batch_size=args.batch_size,
         num_workers=args.num_workers,
+        val_frac=args.val_frac,
+        test_frac=args.test_frac,
     )
     # Instantiate model
     model = DualViewContrastive(
@@ -327,7 +383,7 @@ def main() -> None:
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
     # Compute normalisation statistics once over the full dataset
-    meas_mean, meas_std, bf_mean, bf_std = compute_normalization_stats(full_ds, device)
+    meas_mean, meas_std = compute_normalization_stats(full_ds, device)
     # Prepare checkpoint directory
     ckpt_dir = pathlib.Path("checkpoints")
     ckpt_dir.mkdir(parents=True, exist_ok=True)
@@ -348,13 +404,17 @@ def main() -> None:
     # Main training loop
     for epoch in range(start_epoch, args.epochs):
         train_loss, step_count = train_epoch(model, train_loader, optimizer, args, device, step_count)
-        val_loss, val_mae_meas, val_mae_bf = evaluate(model, val_loader, args, device)
+        val_loss, val_mae_by_col, val_mae_meas = evaluate(model, val_loader, args, device)
         scheduler.step()
+        mae_parts = " | ".join(
+            f"Val MAE {col} {val_mae_by_col[col]:.3f}"
+            for col in meas_cols
+            if col in val_mae_by_col
+        )
         # Logging summary metrics for the epoch
         print(
             f"Epoch {epoch+1}/{args.epochs} | Train {train_loss:.4f} | "
-            f"Val {val_loss:.4f} | Val MAE meas {val_mae_meas:.3f} | "
-            f"Val MAE BF {val_mae_bf*100:.3f}%",
+            f"Val {val_loss:.4f} | Val MAE meas {val_mae_meas:.3f} | {mae_parts}",
         )
         # Checkpoint the best model based on validation loss
         if val_loss < best_val:
@@ -366,8 +426,6 @@ def main() -> None:
                 optimizer,
                 meas_mean,
                 meas_std,
-                bf_mean,
-                bf_std,
                 args,
                 epoch=epoch,
                 val_loss=val_loss,
@@ -385,11 +443,29 @@ def main() -> None:
         optimizer,
         meas_mean,
         meas_std,
-        bf_mean,
-        bf_std,
         args,
     )
     print(f"Training complete. Final checkpoint: {final_path}")
+
+    # Final held-out test evaluation using the best-validation checkpoint when
+    # available, otherwise the final model in memory. The test split is
+    # subject-disjoint from both train and val.
+    best_path = ckpt_dir / f"best_640x480{tag}.pt"
+    if best_path.exists():
+        ckpt = torch.load(best_path, map_location=device)
+        model.load_state_dict(ckpt["model"])
+        print(f"Loaded best checkpoint for test eval: {best_path}")
+    else:
+        print("No best checkpoint found; using final-epoch model for test eval.")
+    test_loss, test_mae_by_col, test_mae_meas = evaluate(model, test_loader, args, device)
+    mae_parts = " | ".join(
+        f"Test MAE {col} {test_mae_by_col[col]:.3f}"
+        for col in meas_cols
+        if col in test_mae_by_col
+    )
+    print(
+        f"Test | Loss {test_loss:.4f} | MAE meas {test_mae_meas:.3f} | {mae_parts}"
+    )
 
 
 if __name__ == "__main__":
