@@ -7,8 +7,9 @@ silhouette:
 iphone_pipeline:
   target_size: [640, 480]  # (height, width) for BodyM compatibility
   use_sam: true
-  sam_model_path: "models/sam2.1_hiera_large.pt"
-  sam_config_path: "configs/sam2.1/sam2.1_hiera_l.yaml"
+  sam_model_path: "models/segmentation/sam2.1_hiera_large.pt"
+  sam_config_path: "configs/segmentation/sam2.1/sam2.1_hiera_l.yaml"
+  yolo_model_path: "models/segmentation/yolo11m.pt"
   geometry_preserving: true
   nearest_neighbor_only: true
   clothing_check_enabled: true
