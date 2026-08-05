@@ -13,7 +13,7 @@ Output:
   - logs/silhouette_iou.csv with columns: sample_id, epoch, iou
 
 Notes:
-  - This measures silhouette accuracy only; it is not related to BMI/BF prediction performance.
+  - This measures silhouette accuracy only; it is separate from dimension prediction performance.
   - IoU is valid as a preprocessing metric even in single-subject settings.
 """
 
@@ -27,6 +27,7 @@ from typing import Tuple
 
 import cv2
 import numpy as np
+from tqdm.auto import tqdm
 
 
 def load_mask(path: Path) -> np.ndarray:
@@ -67,7 +68,7 @@ def main() -> None:
             raise SystemExit(f"Missing required columns in {pairs_path}: {missing}")
         has_epoch = "epoch" in reader.fieldnames
 
-        for row in reader:
+        for row in tqdm(reader, desc="iou", dynamic_ncols=True):
             sample_id = row["sample_id"]
             pred_path = Path(row["pred_path"])
             gt_path = Path(row["gt_path"])

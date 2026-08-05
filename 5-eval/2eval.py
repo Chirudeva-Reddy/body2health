@@ -22,6 +22,8 @@ def main() -> None:
     parser.add_argument("--model_path", required=True)
     parser.add_argument("--image_path", help="Path to raw iPhone image.")
     parser.add_argument("--silhouette_path", help="Path to preprocessed silhouette.")
+    parser.add_argument("--height_cm", type=float, help="Height in cm, required for WHtR and BRI.")
+    parser.add_argument("--sex", help="Sex used only for waist/WHR risk thresholds: male or female.")
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = parser.parse_args()
 
@@ -45,12 +47,17 @@ def main() -> None:
         print(f"Warning: silhouette validation failed: {validation['issues']}")
 
     tensor = mask_to_tensor(sil, args.device)
-    result = predict_from_pair(model, ckpt, tensor, tensor)
+    result = predict_from_pair(model, ckpt, tensor, tensor, args.height_cm, args.sex)
 
     print("\nPrediction Results")
-    print(f"BMI: {result.bmi:.2f}")
-    print(f"Body Fat %: {result.bf_pct:.2f}")
-    print(f"Measurements: {result.measurements}")
+    for name, value in result.measurements.items():
+        print(f"{name}: {value:.2f} cm")
+    for name, value in result.indices.items():
+        print(f"{name}: {value:.4f}")
+    for name, value in result.risks.items():
+        print(f"{name}: {value}")
+    for name, reason in result.invalid_indices.items():
+        print(f"Skipped {name}: {reason}")
 
 
 if __name__ == "__main__":
