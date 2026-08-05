@@ -23,6 +23,8 @@ def process_iphone_image(
     target_hw: Tuple[int, int] = (640, 480),
     *,
     sam_model_path: Optional[str] = None,
+    sam_config_path: Optional[str] = None,
+    yolo_model_path: Optional[str] = None,
     view: str = "front",
     debug_dir: Optional[str] = None,
     debug_prefix: str = "silhouette",
@@ -39,6 +41,8 @@ def process_iphone_image(
     return _process(
         img_rgb,
         sam_model_path=sam_model_path,
+        sam_config_path=sam_config_path,
+        yolo_model_path=yolo_model_path,
         view=view,
         debug_dir=debug_dir,
         debug_prefix=debug_prefix,
