@@ -25,4 +25,8 @@ outputs/
 archives/
 models/*.pt
 models/*.pth
+models/**/*.pt
+models/**/*.pth
+models/**/*.torchscript
+models/**/*.npz
 data /sam/
