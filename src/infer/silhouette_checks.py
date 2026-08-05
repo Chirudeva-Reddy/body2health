@@ -27,6 +27,14 @@ MIN_TORSO_RATIO = 0.10            # central band 20%-70% of height
 MIN_ROW_WIDTH_PX = 10             # rows with width below this don't count as occupied
 MIN_OCCUPIED_ROW_FRACTION = 0.55
 
+SIDE_MIN_FOREGROUND_RATIO = 0.04
+SIDE_MAX_FOREGROUND_RATIO = 0.45
+SIDE_MIN_LARGEST_CC_OF_FRAME = 0.04
+SIDE_MIN_ASPECT_RATIO = 1.8
+SIDE_MAX_ASPECT_RATIO = 8.0
+SIDE_MIN_TORSO_RATIO = 0.04
+SIDE_MIN_OCCUPIED_ROW_FRACTION = 0.45
+
 
 @dataclass
 class EnvelopeReport:
@@ -34,7 +42,18 @@ class EnvelopeReport:
     failed: List[str]
 
 
-def envelope_check(mask: np.ndarray) -> EnvelopeReport:
+@dataclass(frozen=True)
+class EnvelopeThresholds:
+    min_foreground_ratio: float
+    max_foreground_ratio: float
+    min_largest_cc_of_frame: float
+    min_aspect_ratio: float
+    max_aspect_ratio: float
+    min_torso_ratio: float
+    min_occupied_row_fraction: float
+
+
+def envelope_check(mask: np.ndarray, view: str = "front") -> EnvelopeReport:
     """Validate that ``mask`` looks like a single, anatomically plausible person.
 
     Returns an ``EnvelopeReport`` with ``ok=True`` and an empty ``failed`` list
@@ -42,6 +61,7 @@ def envelope_check(mask: np.ndarray) -> EnvelopeReport:
     short identifiers of the rules that failed (in the order they were checked).
     """
     failed: List[str] = []
+    thresholds = _thresholds_for_view(view)
 
     if mask is None or mask.size == 0:
         return EnvelopeReport(ok=False, failed=["empty_input"])
@@ -58,7 +78,7 @@ def envelope_check(mask: np.ndarray) -> EnvelopeReport:
     if foreground_pixels == 0:
         return EnvelopeReport(ok=False, failed=["no_foreground"])
     fg_ratio = foreground_pixels / float(total_pixels)
-    if fg_ratio < MIN_FOREGROUND_RATIO or fg_ratio > MAX_FOREGROUND_RATIO:
+    if fg_ratio < thresholds.min_foreground_ratio or fg_ratio > thresholds.max_foreground_ratio:
         failed.append("foreground_ratio")
 
     num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(m, connectivity=8)
@@ -68,7 +88,7 @@ def envelope_check(mask: np.ndarray) -> EnvelopeReport:
     largest_area = int(stats[largest_idx, cv2.CC_STAT_AREA])
     if largest_area / float(foreground_pixels) < MIN_LARGEST_CC_SHARE:
         failed.append("dominant_component_share")
-    if largest_area / float(total_pixels) < MIN_LARGEST_CC_OF_FRAME:
+    if largest_area / float(total_pixels) < thresholds.min_largest_cc_of_frame:
         failed.append("dominant_component_size")
     largest_mask = (labels == largest_idx).astype(np.uint8)
 
@@ -80,7 +100,7 @@ def envelope_check(mask: np.ndarray) -> EnvelopeReport:
     if bbox_w == 0:
         return EnvelopeReport(ok=False, failed=failed + ["zero_width_bbox"])
     aspect_ratio = bbox_h / float(bbox_w)
-    if aspect_ratio < MIN_ASPECT_RATIO or aspect_ratio > MAX_ASPECT_RATIO:
+    if aspect_ratio < thresholds.min_aspect_ratio or aspect_ratio > thresholds.max_aspect_ratio:
         failed.append("aspect_ratio")
 
     torso_start = int(0.2 * h)
@@ -89,7 +109,7 @@ def envelope_check(mask: np.ndarray) -> EnvelopeReport:
         return EnvelopeReport(ok=False, failed=failed + ["torso_band_empty"])
     torso_region = largest_mask[torso_start:torso_end, :]
     torso_ratio = torso_region.sum() / float(torso_region.size)
-    if torso_ratio < MIN_TORSO_RATIO:
+    if torso_ratio < thresholds.min_torso_ratio:
         failed.append("torso_presence")
 
     widths_ok = 0
@@ -99,7 +119,30 @@ def envelope_check(mask: np.ndarray) -> EnvelopeReport:
             row_width = int(cols.max() - cols.min() + 1)
             if row_width > MIN_ROW_WIDTH_PX:
                 widths_ok += 1
-    if widths_ok / float(h) < MIN_OCCUPIED_ROW_FRACTION:
+    if widths_ok / float(h) < thresholds.min_occupied_row_fraction:
         failed.append("row_width_continuity")
 
     return EnvelopeReport(ok=(len(failed) == 0), failed=failed)
+
+
+def _thresholds_for_view(view: str) -> EnvelopeThresholds:
+    normalized = view.strip().lower()
+    if normalized in {"side", "profile"}:
+        return EnvelopeThresholds(
+            min_foreground_ratio=SIDE_MIN_FOREGROUND_RATIO,
+            max_foreground_ratio=SIDE_MAX_FOREGROUND_RATIO,
+            min_largest_cc_of_frame=SIDE_MIN_LARGEST_CC_OF_FRAME,
+            min_aspect_ratio=SIDE_MIN_ASPECT_RATIO,
+            max_aspect_ratio=SIDE_MAX_ASPECT_RATIO,
+            min_torso_ratio=SIDE_MIN_TORSO_RATIO,
+            min_occupied_row_fraction=SIDE_MIN_OCCUPIED_ROW_FRACTION,
+        )
+    return EnvelopeThresholds(
+        min_foreground_ratio=MIN_FOREGROUND_RATIO,
+        max_foreground_ratio=MAX_FOREGROUND_RATIO,
+        min_largest_cc_of_frame=MIN_LARGEST_CC_OF_FRAME,
+        min_aspect_ratio=MIN_ASPECT_RATIO,
+        max_aspect_ratio=MAX_ASPECT_RATIO,
+        min_torso_ratio=MIN_TORSO_RATIO,
+        min_occupied_row_fraction=MIN_OCCUPIED_ROW_FRACTION,
+    )

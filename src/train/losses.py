@@ -19,17 +19,13 @@ def info_nce_loss(f_z: torch.Tensor, s_z: torch.Tensor, tau: float = 0.1) -> tor
 
 def regression_losses(out: Dict[str, torch.Tensor],
                       y_meas: torch.Tensor,
-                      y_bf: torch.Tensor,
-                      meas_weight: float = 1.0,
-                      bf_weight: float = 1.0) -> torch.Tensor:
+                      meas_weight: float = 1.0) -> torch.Tensor:
     l_meas = F.l1_loss(out["meas"], y_meas)
-    l_bf = F.l1_loss(out["bf"], y_bf)
-    return meas_weight * l_meas + bf_weight * l_bf
+    return meas_weight * l_meas
 
 
 def total_loss(out: Dict[str, torch.Tensor],
                y_meas: torch.Tensor,
-               y_bf: torch.Tensor,
                lambda_reg: float = 0.1,
                tau: float = 0.1,
                use_contrastive: bool = True) -> Dict[str, torch.Tensor]:
@@ -37,5 +33,5 @@ def total_loss(out: Dict[str, torch.Tensor],
     Returns dict with contrastive, reg, total.
     """
     l_con = info_nce_loss(out["f_z"], out["s_z"], tau=tau) if use_contrastive else torch.zeros((), device=y_meas.device)
-    l_reg = regression_losses(out, y_meas, y_bf)
+    l_reg = regression_losses(out, y_meas)
     return {"contrastive": l_con, "regression": l_reg, "total": l_con + lambda_reg * l_reg}

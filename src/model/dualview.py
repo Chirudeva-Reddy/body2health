@@ -46,15 +46,13 @@ class DualViewCNN(nn.Module):
         self.side_branch = Branch()
         self.fuse_dim = 256 * 2
         self.meas_head = nn.Linear(self.fuse_dim, out_meas)
-        self.bf_head = nn.Sequential(nn.Linear(self.fuse_dim, 1), nn.Sigmoid())
 
     def forward(self, front_mask: torch.Tensor, side_mask: torch.Tensor, aux=None) -> Dict[str, torch.Tensor]:
         f_feat = self.front_branch(front_mask)
         s_feat = self.side_branch(side_mask)
         fs = torch.cat([f_feat, s_feat], dim=-1)
         meas = self.meas_head(fs)
-        bf = self.bf_head(fs)
-        return {"meas": meas, "bf": bf}
+        return {"meas": meas}
 
     def front_pretrain_params(self) -> Iterable[nn.Parameter]:
         return self.front_branch.parameters()
@@ -63,4 +61,4 @@ class DualViewCNN(nn.Module):
         return self.side_branch.parameters()
 
     def fusion_params(self) -> Iterable[nn.Parameter]:
-        return list(self.meas_head.parameters()) + list(self.bf_head.parameters())
+        return list(self.meas_head.parameters())

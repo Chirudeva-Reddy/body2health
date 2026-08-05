@@ -91,7 +91,7 @@ class DualViewContrastive(nn.Module):
     """
     Dual-branch encoder with:
     - Projection heads for InfoNCE/NT-Xent contrastive loss.
-    - Regression heads for measurements (flexible dimension) and body-fat.
+    - Regression head for tape-measured body dimensions.
     Optional: concatenate bbox features for robustness to blob silhouettes.
     """
 
@@ -118,7 +118,7 @@ class DualViewContrastive(nn.Module):
     ):
         """
         Args:
-            out_meas: number of measurement targets (e.g., BMI + hip = 2).
+            out_meas: number of dimension targets (e.g., waist_cm + hip_cm = 2).
             proj_dim: embedding dimension for contrastive loss.
             use_large: if True, use larger residual branch; else use original Branch.
             base_dim: base channel width for large branch.
@@ -160,16 +160,8 @@ class DualViewContrastive(nn.Module):
                 nn.Dropout(0.2),
                 nn.Linear(512, out_meas),
             )
-            self.bf_head = nn.Sequential(
-                nn.Linear(reg_in_dim, 512),
-                nn.ReLU(inplace=True),
-                nn.Dropout(0.2),
-                nn.Linear(512, 1),
-                nn.Sigmoid(),
-            )
         else:
             self.meas_head = nn.Linear(reg_in_dim, out_meas)
-            self.bf_head = nn.Sequential(nn.Linear(reg_in_dim, 1), nn.Sigmoid())
 
     def _encode(self, front_mask: torch.Tensor, side_mask: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         f_feat = self.front_adapter(self.front_branch(front_mask))
@@ -193,10 +185,9 @@ class DualViewContrastive(nn.Module):
             bbox_feat = extract_dual_bbox_features(front_mask, side_mask)  # (B, 8)
             fs = torch.cat([fs, bbox_feat], dim=-1)
         meas = self.meas_head(fs)
-        bf = self.bf_head(fs)
         f_z = F.normalize(self.proj_f(f_feat), dim=-1)
         s_z = F.normalize(self.proj_s(s_feat), dim=-1)
-        return {"meas": meas, "bf": bf, "f_z": f_z, "s_z": s_z}
+        return {"meas": meas, "f_z": f_z, "s_z": s_z}
 
     def front_pretrain_params(self) -> Iterable[nn.Parameter]:
         return list(self.front_branch.parameters()) + list(self.front_adapter.parameters())
@@ -205,4 +196,4 @@ class DualViewContrastive(nn.Module):
         return list(self.side_branch.parameters()) + list(self.side_adapter.parameters())
 
     def fusion_params(self) -> Iterable[nn.Parameter]:
-        return list(self.meas_head.parameters()) + list(self.bf_head.parameters()) + list(self.proj_f.parameters()) + list(self.proj_s.parameters())
+        return list(self.meas_head.parameters()) + list(self.proj_f.parameters()) + list(self.proj_s.parameters())
