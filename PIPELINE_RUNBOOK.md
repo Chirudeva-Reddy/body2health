@@ -1,127 +1,166 @@
-# BodyFit Pipeline Runbook
+# Body2Health Pipeline Runbook
 
-## What To Capture
-- For dual-view work, capture 2 full-body images per subject: 1 front view and 1 side view.
-- Keep camera height fixed and keep subject distance consistent, roughly 2.5-3.0 m.
-- Use tight-fitting clothing. Avoid coats, dresses, abayas, or anything that changes the body outline.
-- Keep the full body in frame from head to feet.
-- Use a neutral standing pose and keep the background simple enough that a person mask is recoverable.
-- Training scripts in this repo expect binary silhouette masks, not raw RGB photos.
+## Canonical Dataset
 
-## What Already Exists Vs What You Must Provide
-- Already in repo: model code in `src/`, the iPhone preprocessing app in `2-pipeline/pipeline/`, training/inference/eval entrypoints, and existing artifact folders such as `checkpoints/`, `out/`, and `outputs/`.
-- You must provide, for training: front and side silhouette masks plus metadata CSVs under `data /raw/metadata/`.
-- You must provide, for silhouette-only inference: 640x480 or resizeable front and side mask images.
-- You must provide, for raw iPhone evaluation: a trained checkpoint plus a single RGB image path. The current raw-image CLI processes one image at a time.
+Use `data/bodym/pairs_dimensions.csv` for training and evaluation. It contains renamed front/side mask paths, subject/capture keys, height/weight metadata, and tape-measured BodyM dimensions.
 
-## Default Order For Training
-1. Put front masks in `data /raw/mask/` and side masks in `data /raw/mask_left/`, with matching metadata CSVs in `data /raw/metadata/`.
-2. Build the paired dataset CSV:
+Traceability files:
+
+- `data/bodym/manifest.csv`: renamed file to original photo ID mapping.
+- `data/bodym/subject_key_map.csv`: `sub_XXXX` to original subject ID mapping.
+- `data/bodym/metadata/measurements_renamed.csv`: one row per subject with normalized measurement column names.
+
+## Training
+
+Train the active dimension model:
 
 ```bash
-python 1-data/1build.py
+PYTHONPATH=. python 3-train/1train.py \
+  --csv "data/bodym/pairs_dimensions.csv" \
+  --measurement_cols "waist_cm,hip_cm,chest_cm" \
+  --encoder resnet18 \
+  --batch_size 12 \
+  --epochs 40 \
+  --lr 3e-4 \
+  --lambda_reg 2.0 \
+  --augment \
+  --ckpt_tag _v4_resnet
 ```
 
-Produces `data /pairs_full.csv`.
+The trainer uses a subject-disjoint validation split and writes checkpoints to `checkpoints/`. Checkpoints store the target names in `measurement_cols`.
 
-3. Resize masks to 640x480 and optionally make a subset:
+## Inference
+
+Run the final RGB-to-report path:
 
 ```bash
-python 1-data/2prep.py --input_csv "data /pairs_full.csv" --output_dir "data /640x480_processed" --create_subset
+PYTHONPATH=. python 4-infer/1infer.py \
+  --front_rgb "TestPhoto/deva_front.png" \
+  --side_rgb "TestPhoto/deva_side.png" \
+  --ckpt "checkpoints/best_640x480_v4_resnet.pt" \
+  --height_cm 175 \
+  --sex male \
+  --smplx_fit \
+  --save_silhouettes outputs/final/deva \
+  --save_smplx outputs/final/deva/smplx \
+  --json outputs/final/deva/result.json
 ```
 
-Produces `data /640x480_processed/pairs_640x480.csv` and, when `--create_subset` is used, `data /640x480_processed/pairs_10percent.csv`.
-
-4. Inspect dataset stats if needed:
+Run the dimension-first silhouette path when masks already exist:
 
 ```bash
-python 1-data/3stats.py --labels "data /labels.csv" --pairs "data /pairs_full.csv"
+PYTHONPATH=. python 4-infer/1infer.py \
+  --front "path/to/front_mask.png" \
+  --side "path/to/side_mask.png" \
+  --ckpt "checkpoints/best_640x480_v4_resnet.pt" \
+  --height_cm 175
 ```
 
-5. Train the model:
+Run cached silhouettes plus front RGB through the NLF SMPL-X reliability gate:
 
 ```bash
-python 3-train/1train.py --csv "data /640x480_processed/pairs_640x480.csv"
+PYTHONPATH=. python 4-infer/1infer.py \
+  --front "out/deva_front_silhouette.png" \
+  --side "out/deva_side_silhouette.png" \
+  --front_rgb "TestPhoto/deva_front.png" \
+  --ckpt "checkpoints/best_640x480_v4_resnet.pt" \
+  --height_cm 175 \
+  --sex male \
+  --smplx_fit \
+  --save_smplx outputs/final/deva_cached/smplx \
+  --json outputs/final/deva_cached/result.json \
+  --skip-envelope-check
 ```
 
-Writes checkpoints into `checkpoints/` and logs to stdout. If you redirect logs to `out/train_640x480.log`, the later metrics scripts can parse them directly.
+The output is named dimensions plus WHR, WHtR, BRI, risk categories, `health_summary`, SMPL-X reliability status, segmentation paths, and a fitted `.obj` when `--save_smplx` is supplied. If the gate rejects the capture, `health_summary.overall_risk` becomes `not_reported`; treat the measurements and indices as diagnostic only and recapture rather than reporting them.
 
-6. Extract training summaries from the log:
+## Local Dashboard
+
+Install dashboard dependencies into the project environment:
 
 ```bash
-python 5-eval/1metrics.py --log-file out/train_640x480.log
+.venv/bin/pip install -r requirements-dashboard.txt
 ```
 
-Writes CSV/JSON summaries under `data/`.
-
-7. Plot training curves:
+Run the visual demo:
 
 ```bash
-python 5-eval/6plots.py --log out/train_640x480.log --out_dir out/plots
+.venv/bin/streamlit run dashboard/app.py
 ```
 
-Writes PNG plots under `out/plots`.
+The dashboard uploads front/side RGB photos, runs the existing segmentation and dimension pipeline, shows source images, silhouettes, predicted waist/hip/chest, WHR/WHtR/BRI, the central-adiposity risk summary, SMPL-X reliability overlays, and downloadable `result.json` / `.obj` artifacts.
 
-## Inference Order
-- If you already have silhouette masks and want the simplest prediction path:
+For quick demos, the dashboard also supports a single-front-photo mode. That mode generates the front silhouette and SMPL-X `.obj` from one image, then duplicates the front silhouette for the model's side branch to produce diagnostic dimensions and risk output. Use true front+side capture for reportable dual-view results.
+
+## Segmentation Smoke Check
+
+The active segmentation path is YOLO person box + padded box-only SAM2 + light binary cleanup. There are no point prompts, GrabCut steps, or fallback masks in the research path.
 
 ```bash
-python 4-infer/predict_from_silhouette.py --front "path/to/front_mask.png" --side "path/to/side_mask.png" --ckpt "checkpoints/latest.pt"
+PYTHONPATH=. python 5-eval/7segmentation_smoke.py \
+  --root TestPhoto \
+  --debug_dir outputs/final/segmentation \
+  --json outputs/final/segmentation/report.json
 ```
 
-- If you only have one silhouette and want it duplicated across both branches:
+This writes individual `*_final_silhouette.png` masks plus `outputs/final/segmentation/contact_sheet.png`.
+
+## Raw Image Smoke Check
+
+For a single RGB image through the preprocessing path:
 
 ```bash
-python 4-infer/predict_from_silhouette.py --mask "path/to/mask.png" --ckpt "checkpoints/latest.pt"
+PYTHONPATH=. python 5-eval/2eval.py \
+  --model_path "checkpoints/best_640x480_v4_resnet.pt" \
+  --image_path "path/to/image.jpg" \
+  --height_cm 175
 ```
 
-- If you want checkpoint-stat de-normalization and direct BMI/BF output:
+This is useful for checking preprocessing on one image. The research training path still uses paired front/side silhouettes from `data/bodym/pairs_dimensions.csv`.
+
+## Evaluation
+
+Run metadata leakage and derived-index ablations:
 
 ```bash
-python 4-infer/predict_bf.py --front "path/to/front_mask.png" --side "path/to/side_mask.png" --ckpt_dir checkpoints
+PYTHONPATH=. python 5-eval/4ablate.py \
+  --csv "data/bodym/pairs_dimensions.csv" \
+  --ckpt "checkpoints/best_640x480_v4_resnet.pt" \
+  --measurement_cols "waist_cm,hip_cm,chest_cm" \
+  --tp_on waist_cm
 ```
 
-- If you want constrained anthropometric output with optional assisted mode:
+Run the legacy proxy SMPLX reliability coverage table for BodyM mask-only rows:
 
 ```bash
-python 4-infer/infer_anthro.py --front "path/to/front_mask.png" --side "path/to/side_mask.png" --ckpt "checkpoints/latest.pt"
+PYTHONPATH=. python 5-eval/6gate_eval.py \
+  --csv "data/bodym/pairs_dimensions.csv" \
+  --ckpt "checkpoints/best_640x480_v4_resnet.pt" \
+  --measurement_cols "waist_cm,hip_cm,chest_cm" \
+  --max_rows 50 \
+  --device cpu
 ```
 
-Add `--height_cm` and `--weight_kg` to use assisted mode.
-
-- If you want the stricter BodyM-envelope path:
+Compare two checkpoints:
 
 ```bash
-python -c "import sys; sys.path.append('4-infer'); from corrected_inference import corrected_inference"
+PYTHONPATH=. python 5-eval/5compare.py \
+  --csv "data/bodym/pairs_dimensions.csv" \
+  --ckpt_contrastive "checkpoints/contrastive.pt" \
+  --ckpt_regonly "checkpoints/regonly.pt" \
+  --measurement_cols "waist_cm,hip_cm"
 ```
 
-Use `corrected_inference.py` as a library-style helper rather than a CLI.
+Mask IoU evaluation remains in `5-eval/3iou.py`.
 
-## Raw iPhone Image Path
-- For a single raw iPhone image, run:
+## Segmentation Assets
 
-```bash
-python 5-eval/2eval.py --model_path "checkpoints/latest.pt" --image_path "path/to/image.jpg"
-```
+- Binary weights live under `models/segmentation/`.
+- YAML/config files live under `configs/segmentation/`.
 
-- This route runs the preprocessing app and then evaluates the checkpoint.
-- The current CLI accepts one raw image at a time. It is useful for checking the preprocessing pipeline on a single capture, not for building a full dual-view training dataset.
-- If you already have a processed silhouette instead of RGB, use:
+## SMPL-X and NLF Assets
 
-```bash
-python 5-eval/2eval.py --model_path "checkpoints/latest.pt" --silhouette_path "path/to/mask.png"
-```
-
-## Evaluation Scripts
-- `5-eval/4ablate.py`: compare single-view vs multi-view and simple post-hoc corrections on one checkpoint.
-- `5-eval/5compare.py`: compare two checkpoints, usually a contrastive run against a regression-only run.
-- `5-eval/3iou.py`: compute preprocessing IoU from a CSV of predicted and ground-truth mask paths.
-- `5-eval/7figures.py`: generate paper-style figures when you already have training and IoU logs.
-
-## Notes
-- `1-data/2prep.py` imports `pandas` at module import time. If `pandas` is missing, even `--help` will fail until that dependency is available.
-- The preprocessing package is now imported as `pipeline`. From the repo root, this works:
-
-```bash
-python -c "from pipeline.iphone_pipeline import process_iphone_image"
-```
+- SMPLX `.npz` model files live under `models/smplx/`.
+- The default NLF model lives at `models/nlf/nlf_l_multi.torchscript`.
+- The NLF reliability gate uses the front RGB image to recover SMPL-X, then renders it back to the front silhouette for abstention.
+- The legacy `--smpl_gate` path remains available for BodyM mask-only retained-error experiments, but the active phone-reporting path is `--smplx_fit`.
