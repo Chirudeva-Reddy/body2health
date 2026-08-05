@@ -1,0 +1,3 @@
+2026-04-27 03:41:43,361 - INFO - Parsing training log: out/train_640x480.log
+2026-04-27 03:41:43,365 - INFO - Parsed 30 epochs and 1860 batches
+2026-04-27 03:41:43,365 - INFO - Found 13 best model checkpoints
