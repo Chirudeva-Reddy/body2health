@@ -1,0 +1,836 @@
+
+--- PAGE 1 ---
+
+Non-Contact Physical Health Profiling from Human Body Silhouettes Using Body
+Shape Embeddings
+Chirudeva Reddy1 , Shivang Agarwal1 , Vinaytosh Mishra2
+1Department of Computer Science, Birla Institute of Technology and Science, Pilani, Dubai Campus,
+Dubai, UAE
+2Department of Healthcare Management, College of Healthcare Management and Economics, Gulf
+Medical University, Ajman, UAE
+f20230331@dubai.bits-pilani.ac.in, shivang@dubai.bits-pilani.ac.in, dr.vinaytosh@gmu.ac.ae
+Abstract
+Non-communicable diseases associated with over-
+1
+weight and obesity are among the most pressing
+2
+public health challenges globally and within the
+3
+United Arab Emirates (UAE). According to na-
+4
+tional health estimates, nearly 68% of adults aged
+5
+18 to 69 years in the UAE are classified as over-
+6
+weight or obese, with approximately 27 to 28% liv-
+7
+ing with obesity alone and combined risk factors
+8
+for obesity continuing to increase1. These condi-
+9
+tions contribute substantially to diabetes, cardio-
+10
+Figure 1: Overview of a privacy-preserving, non-intrusive physical
+vascular disease, and reduced quality of life, while
+11 health screening framework that uses multiview human silhouettes
+traditional health screening systems still depend on
+12 captured from consumer devices to estimate body composition met-
+clinical visits and specialized equipment. We aim
+13 rics (BMI, body fat) and enable early risk assessment without spe-
+14 to propose a non-intrusive, vision-based physical cialized medical equipment.
+health assessment framework that leverages sub-
+15
+tle visual cues such as human silhouettes and pos-
+16
+1 Introduction
+17 ture extracted from multiview images to estimate 40
+18 clinically relevant indicators of physical health, in- Body Mass Index (BMI), Body Adiposity Index (BAI), and 41
+19 cluding body mass index (BMI) and body fat per- Body Fat Percentage (BF) are widely used indicators for un- 42
+20 centage. Our architecture integrates a foundational derstanding body composition and assessing health risks re- 43
+21 segmentation backbone for accurate silhouette gen- lated to undernutrition, excess weight, and obesity, particu- 44
+22 eration, a contrastive shape representation module larly in large-scale population screening scenarios [Nana et 45
+23 aligned with anthropological reference data, and a al., 2022; Xie et al., 2015]. Although conceptually simple, 46
+24 regression head grounded in medical knowledge to accurate estimation of these indices generally relies on direct 47
+25 produce interpretable physical health estimates. By anthropometric measurements and access to clinical infras- 48
+26 collaborating with healthcare professionals in the tructure or specialized equipment such as Dual Energy X-Ray 49
+27 UAE, we ensure that our mapping between visual Absorptiometry (DXA) or hydrostatic weighing [Nana et al., 50
+28 patterns and anthropometric phenotypes is medi- 2022; Nascimento et al., 2025; Bosy-Westphal et al., 2018; 51
+29 cally valid and can assist in early detection of phys- Karlsson et al., 2015; Ellis, 2000]. Such procedures are 52
+30 ical health risks, community health monitoring, and costly, time-consuming, and impractical for frequent or large- 53
+31 large-scale screening without traditional medical scale screening, especially in resource-constrained or com- 54
+32 infrastructure. This research also aligns with multi- munity settings. This limitation is particularly pressing in re- 55
+33 ple United Nations Sustainable Development Goals gions like the United Arab Emirates, where a substantial pro- 56
+34 (SDGs), including SDG 3, SDG 10 and SDG 9. portion of the adult population is affected by overweight and 57
+35 Our aim is to demonstrate how non-intrusive com- obesity, increasing the burden of non-communicable diseases 58
+36 puter vision can provide actionable physical health [World Obesity Federation, 2023; World Health Organiza- 59
+37 insights, paving the way for scalable, respectful, tion, 2022; Radwan et al., 2018]. These challenges motivate 60
+38 and context-aware health screening for diverse pop- the need for non-intrusive, scalable, and privacy-preserving 61
+39 ulations. alternatives that can enable early physical health assessment 62
+without requiring explicit medical equipment, clinical super-
+63
+1https://data.worldobesity.org/country/ vision, or invasive measurements. 64
+united-arab-emirates-225/ Recent advances in computer vision and representation 65
+
+--- PAGE 2 ---
+
+learning have enabled the use of image-based methods for 1.2 Strategy
+66 124
+67 estimating human body characteristics from visual data [Ruiz In this work, we investigate a silhouette-driven pipeline for 125
+68 et al., 2022; Yan et al., 2021]. By exploiting geometric cues, estimating body composition indicators from monocular im- 126
+69 shape priors, and learned visual patterns, such approaches ages captured using smartphones. By representing the hu- 127
+70 offer the possibility of non-intrusive physical health assess- man body through silhouettes, the proposed approach pre- 128
+71 ment, reducing reliance on explicit anthropometric measure- serves coarse geometric and shape information while sup- 129
+72 ments [Zhu et al., 2023; Bogo et al., 2016]. However, the pressing identity-sensitive visual features, thereby support- 130
+73 growing adoption of connected medical devices and digi- ing privacy-preserving health screening [Xie et al., 2015; 131
+74 tal health systems has simultaneously heightened concerns Gardner et al., 1998]. The primary objective of this study is to 132
+75 around data security, privacy, and ethical use [Organization evaluate the feasibility of silhouette-based representations for 133
+76 and others, 2021; Saxena and Mittal, 2022]. Methods that body composition estimation in a manner that preserves pri- 134
+77 operate directly on raw RGB images inherently capture iden- vacy, reduces computational overhead, and enables scalable 135
+78 tifiable biometric information, raising risks related to iden- deployment. While silhouettes offer strong privacy guaran- 136
+79 tity exposure and misuse, especially in healthcare-oriented tees, they also significantly compound the inference problem. 137
+80 deployments [Nana et al., 2022; Ruiz et al., 2022]. These A silhouette corresponds to a 2D projection of a 3D human 138
+81 challenges pose significant barriers to real-world adoption, body under unconstrained imaging conditions, including vari- 139
+82 where clinical validity, interpretability, and regulatory com- ations in camera distance, viewpoint, background, lighting, 140
+83 pliance are critical. Consequently, the development of vision- and clothing. Minor segmentation artifacts, such as holes, 141
+84 based health assessment systems necessitates close collabora- jagged edges, noise, or disconnected components can in- 142
+85 tion with medical practitioners and healthcare professionals duce large perturbations in perceived widths and areas, which 143
+86 to ensure that learned visual patterns are grounded in estab- may propagate into downstream predictions [Hofmann et al., 144
+87 lished anthropometric and clinical knowledge. 2025]. This sensitivity is particularly pronounced in con- 145
+sumer capture settings, where acquisition conditions can only
+146
+1.1 Problem Statement
+88 be partially standardized (e.g., approximate camera height
+147
+89 This project addresses the problem of screening and early or subject distance using simple visual cues) but cannot be 148
+90 risk assessment of body composition–related health condi- fully controlled [Sengupta et al., 2021; Nana et al., 2022; 149
+91 tions using visual data, with a focus on indicators such as Yan et al., 2021]. 150
+92 Body Mass Index (BMI) and Body Adiposity Index (BAI). To address these challenges, the proposed framework em- 151
+93 The objective is to design, develop, and validate a non- ploys an end-to-end processing pipeline that converts RGB 152
+94 intrusive, vision-based framework capable of estimating these smartphone images into standardized binary silhouettes and 153
+95 indicators in a privacy-preserving manner, even in resource- estimates body composition metrics from single-view or 154
+96 constrained settings where access to clinical infrastructure dual-view inputs. The preprocessing stage utilizes a segmen- 155
+97 and standardized anthropometric measurements is limited or tation module based on the Segment Anything Model (SAM) 156
+98 culturally sensitive. The proposed framework operates on sil- [Kirillov et al., 2023], combined with attentive prompting and 157
+99 houette representations derived from monocular smartphone anatomical plausibility checks, to generate fixed-resolution 158
+100 images, abstracting human body shape while deliberately re- 640 × 480 silhouette masks from variable-resolution inputs. 159
+101 moving identifiable visual features. Post-processing steps are applied to mitigate common seg- 160
+A key challenge lies in ensuring robustness under un- mentation failures and enforce structural consistency prior to
+102 161
+constrained consumer capture conditions. To this end, the feature extraction. The system adopts a two-branch architec-
+103 162
+framework explicitly accounts for segmentation instability, ture, wherein front-view and side-view silhouettes are pro-
+104 163
+viewpoint variability, and clothing-induced distortions, which cessed independently to extract shape embeddings that cap-
+105 164
+commonly affect silhouette quality in real-world scenarios ture complementary geometric cues. These embeddings are
+106 165
+[Jin et al., 2020; Lan et al., 2022]. Additionally, the sys- subsequently synchronized using a cross-modal contrastive
+107 166
+tem incorporates uncertainty-aware estimation mechanisms learning objective, designed to align related silhouette pairs
+108 167
+to identify predictions that may be unreliable, thereby sup- while reducing false negatives through precise sample asso-
+109 168
+porting cautious interpretation and referral rather than auto- ciation [Zolfaghari et al., 2021]. This design enables ro-
+110 169
+mated clinical decision-making [Begoli et al., 2019]. The bust representation learning under viewpoint variation and
+111 170
+system is intended to function as an assistive screening and partial silhouette degradation. Additionally, the architecture
+112 171
+risk awareness tool, not as a diagnostic substitute. Following draws inspiration from BMNet-style approaches that estimate
+113 172
+system development, extensive experimental evaluation will three-dimensional body measurements from silhouette inputs
+114 173
+be conducted to assess estimation accuracy, robustness across by learning mappings aligned with anthropometric measure-
+115 174
+capture conditions, and limitations arising from proxy super- ments [Ruiz et al., 2022].
+116 175
+vision. The long-term goal is to enable accessible, scalable, Due to the lack of large-scale clinical ground truth for
+117 176
+and privacy-preserving physical health screening technolo- body fat percentage (BF%) within the current data collec-
+118 177
+gies that can complement existing healthcare workflows, par- tion framework, the system initially employs Body Adipos-
+119 178
+ticularly in environments where conventional body compo- ity Index (BAI) as a surrogate supervision signal. Conse-
+120 179
+sition assessment procedures are impractical or unavailable, quently, predicted BF% values should be interpreted as ap-
+121 180
+thereby further bridging the gap between computer vision re- proximate estimates rather than clinically definitive measure-
+122 181
+search and real world public health screening. ments [Lo´pez et al., 2012]. A key objective of this project is
+123 182
+
+--- PAGE 3 ---
+
+to transition from proxy supervision to direct BF% calibration proach aims to mitigate disparities in access to early health
+183 240
+by constructing a dataset of smartphone captures paired with screening. The project also aligns with SDG 9 (Industry,
+184 241
+reference measurements obtained via multi-frequency bio- Innovation, and Infrastructure), particularly Target 9.1, by
+185 242
+electrical impedance analysis (BIA). Using an 8-point elec- leveraging scalable, low-cost digital infrastructure and con-
+186 243
+trode system (hands and feet), BIA estimates body compo- sumer graded sensing technologies to support resilient and in-
+187 244
+sition by measuring tissue-dependent impedance responses clusive health screening systems in resource limited settings.
+188 245
+to low-amplitude electrical currents, enabling detailed assess-
+189
+ment of fat mass, lean mass, and related parameters [Buckinx
+190 2 Related Work
+et al., 2015; Vela´zquez-Alva et al., 2022]. This dataset will 246
+191
+192 support clinically meaningful evaluation, calibration, and val- Accurate assessment of body composition has traditionally 247
+193 idation of the proposed vision-based screening framework. relied on clinical and imaging-based techniques, including 248
+dual-energy X-ray absorptiometry (DXA), air-displacement
+249
+1.3 Expected Outcomes and Impact
+194 plethysmography (e.g., BodyPod), magnetic resonance imag-
+250
+195 This project is expected to deliver a non-intrusive, privacy- ing (MRI), and computed tomography (CT). These meth- 251
+196 preserving vision-based framework for physical health ods provide direct estimates of fat mass, lean mass, and re- 252
+197 screening, developed through close collaboration between gional adiposity distribution, and serve as reference stan- 253
+198 computer vision researchers and healthcare professionals dards in clinical research [Heymsfield, 2005; Fields et al., 254
+199 within the UAE ecosystem. A key outcome will be a val- 2002]. In particular, whole-body MRI has enabled large- 255
+200 idated pipeline that integrates silhouette-based visual repre- scale quantification of subcutaneous and visceral adipose tis- 256
+201 sentations with expert-curated anthropometric and clinical sue and has supported the development of automated seg- 257
+202 knowledge, enabling reliable estimation of body composition mentation pipelines for population studies [Thomas et al., 258
+203 indicators suitable for early risk awareness. 2013; Addeman et al., 2015; Yan et al., 2021; Ku¨stner 259
+204 From a research perspective, the project will advance et al., 2020]. Despite their accuracy, such techniques re- 260
+205 methodological understanding of shape-based representation quire specialized equipment and controlled settings, limit- 261
+206 learning under privacy constraints, particularly in uncon- ing their scalability and accessibility. Prior studies have 262
+207 strained consumer capture settings. The study will also con- demonstrated that silhouettes retain informative morpholog- 263
+208 tribute curated datasets, collected under appropriate ethical ical cues correlated with anthropometric measurements and 264
+209 approvals linking smartphone-captured visual data with clin- health-related traits, particularly at the population level [Yan 265
+210 ically grounded body composition measurements, supporting et al., 2021; Ruiz et al., 2022]. These findings moti- 266
+211 reproducibility and further research in non-intrusive health vate the use of shape-only cues for health assessment un- 267
+212 assessment. der privacy constraints. Among silhouette-based methods, 268
+multi-view approaches have shown particular promise. The
+269
+1.4 Alignment with Sustainable Development
+213 BodyM/BMNet paradigm leverages paired front and side 270
+214 Goals (SDGs) silhouettes together with anthropometric supervision to di- 271
+215 This work addresses the real-world challenge of enabling rectly regress body measurements, avoiding explicit three- 272
+216 accessible and preventive screening for body composi- dimensional mesh reconstruction [Ruiz et al., 2022]. This 273
+217 tion–related health risks in settings where conventional clin- design reduces model complexity and supervision require- 274
+218 ical measurements are impractical, unavailable, or cultur- ments compared to full body reconstruction pipelines, while 275
+219 ally sensitive. The problem formulation and system design still exploiting complementary information across orthogo- 276
+220 are informed through consultative collaboration with health- nal views. Concurrent benchmarking efforts further highlight 277
+221 care professionals, whose advisory input guides the clini- that silhouette quality, standardization, and viewpoint consis- 278
+222 cal relevance of body composition indicators, practical con- tency play a critical role in downstream estimation accuracy 279
+223 straints of existing workflows, and ethical considerations sur- [Gardner et al., 1998]. 280
+rounding privacy and non-intrusive data collection. The pro- An alternative line of work focuses on three-dimensional
+224 281
+posed framework directly aligns with SDG 3 (Good Health body reconstruction, often using parametric models such as
+225 282
+and Well-Being), particularly Target 3.4, by supporting early SMPL-like meshes, from which anthropometric measure-
+226 283
+risk identification for non-communicable diseases associ- ments are derived [Kim et al., 2022]. While these approaches
+227 284
+ated with obesity and malnutrition through contactless es- provide detailed geometric representations and improved in-
+228 285
+timation of body composition indicators such as BMI and terpretability, they introduce additional sources of error re-
+229 286
+adiposity-related measures. It also contributes to Target 3.8 lated to pose–shape disentanglement and model mismatch,
+230 287
+by lowering barriers to basic health screening through the and typically require stronger priors or denser supervision.
+231 288
+use of consumer-grade devices, reducing reliance on special- Finally, multi-view representation learning with contrastive
+232 289
+ized clinical equipment, and enabling population-scale health objectives has emerged as an effective mechanism for align-
+233 290
+monitoring. In addition, the work aligns with SDG 10 (Re- ing embeddings across different views of the same subject
+234 291
+duced Inequalities), specifically Target 10.2, by promoting without requiring additional labels. Contrastive learning nat-
+235 292
+inclusive access to preventive health assessment in resource- urally enforces consistency between front and side silhouettes
+236 293
+limited, geographically constrained, or culturally sensitive while preserving discrimination across individuals, making
+237 294
+contexts. By minimizing dependence on costly infrastruc- it well suited for privacy-preserving body shape analysis
+238 295
+ture and standardized clinical environments, the proposed ap- [Zolfaghari et al., 2021]. Building on these insights, the
+239 296
+
+--- PAGE 4 ---
+
+Table 1: WHO Body Mass Index (BMI) Classification for Adults ing a dual-branch CNN trained with cross-view contrastive
+341
+alignment and supervised regression.
+342
+BMI Range (kg/m2) Category Subcategory All images are captured in an unsupervised environment
+343
+using an iPhone at a fixed camera height of 1.25 m, with the
+< 18.5 Underweight – 344
+subject positioned at a distance in the range [1.8 m, 2.25 m].
+18.5 – 24.9 Normal weight – 345
+25.0 – 29.9 Overweight – Silhouette Extraction and Standardization
+346
+30.0 – 34.9 Obese Class I Let I denote an RGB image captured by a smartphone. A
+347
+35.0 – 39.9 Obese Class II smartphone image processing pipeline is used to extract a bi-
+348
+≥ 40.0 Obese Class III nary human silhouette mask M from I,where foreground pix-
+349
+els take the value of 255 and background pixels are 0:
+350
+present work adopts a multi-view silhouette-based formula- M ∈ {0, 255}H×W .
+297
+tion for non-intrusive body composition screening, with pre-
+298
+To enable consistent downstream processing, each silhouette
+dicted Body Mass Index (BMI) values interpreted accord- 351
+299
+is standardized using a deterministic resizing and centering
+ing to established clinical standards. In particular, BMI- 352
+300
+operation:
+based health categories follow the World Health Organization 353
+301 M = R(M ),
+(WHO) adult classification guidelines [World Health Organi- std
+302
+303 zation, 2024], as summarized in Table 1. where 354
+R(M ) = center(scale(crop-to-bbox(M ))).
+3 System Description
+304
+such that scaling preserves aspect ratio and centering is per-
+355
+305 3.1 Dataset formed via padding. 356
+306 We use BodyM [Ruiz et al., 2022] as the primary refer- This operation ensures scale normalization and spatial 357
+307 ence dataset, as it provides real-world silhouette images alignment across samples while preserving body shape pro- 358
+308 paired with anthropometric measurements. BodyM contains portions. Separate refinement procedures are applied to front- 359
+309 8,978 frontal and lateral silhouette images corresponding to view and side-view silhouettes to mitigate view-specific seg- 360
+310 2,505 individuals, along with height, weight, and 14 addi- mentation artifacts and shape distortions commonly observed 361
+311 tional body measurements. The silhouettes are generated in consumer capture scenarios. 362
+via semantic segmentation applied to real RGB photographs,
+312 Dual-Branch Representation Learning
+363
+thereby preserving realistic segmentation artifacts that are
+313 Separate refinement procedures are applied to front-view and
+364
+typically absent in purely synthetic silhouette datasets. The
+314 side-view silhouettes to mitigate view-specific segmentation
+365
+data acquisition setup is controlled but representative of con-
+315 artifacts and shape distortions commonly observed in con-
+366
+sumer capture conditions: images are captured indoors un-
+316 sumer capture scenarios. Let x , x ∈ {0, 1}640×480 denote
+der uniform lighting, subjects adopt an A-pose while wearing f s 367
+317 the standardized binary silhouettes corresponding to the front
+368
+tight-fitting clothing, and the reported camera-to-subject dis-
+318 and side views, respectively. The network employs a dual-
+369
+tance ranges from 5.5 to 6.5 feet. The dataset is partitioned at
+319 branch architecture with separate encoders for each view:
+370
+the subject level, with 2,018/87/400 individuals assigned to
+320
+321 the Train, Test-A, and Test-B splits, respectively, correspond- h f = E f (x f ), h s = E s (x s ),
+ing to 6,134/1,684/1,160 silhouette images.
+322
+where each encoder consists of a lightweight convolutional
+Related Datasets. CAESAR [Robinette et al., 1999] pro- 371
+323
+stack followed by global average pooling and fully connected
+vides large-scale 3D body scans with associated anthropo- 372
+324
+layers. The resulting embeddings are concatenated to form a
+metric measurements; however, silhouettes or images must 373
+325
+fused representation:
+be synthetically rendered from the scans. BodyFit [Yan et 374
+326
+327 al., 2021] , which builds upon such 3D resources, includes h = [ h | h ].
+f s
+over 4,000 high-resolution body scans with computed mea-
+328
+329 surements and simulated silhouettes, along with a smaller This design enables the model to capture complementary ge- 375
+330 subset of 194 subjects captured using real photographs and ometric cues from orthogonal viewpoints while remaining 376
+331 tape-based measurements. BodyFit assumes a fixed camera computationally efficient. 377
+distance to resolve scale, which limits its applicability in un-
+332 Prediction Heads
+378
+constrained consumer capture scenarios.
+333 Measurement head. The measurement head predicts anthro-
+379
+pometric quantities, including BMI, and is defined as
+3.2 Method Overview 380
+334
+335 We estimate body health metrics, including BMI and BF%, yˆ meas = W m h + b m .
+from binary silhouette representations captured using a smart-
+336 Body fat head. The body fat head produces a sigmoid-
+381
+phone. The proposed pipeline consists of three main stages:
+337 bounded output in the range [0, 1], which is later scaled to
+382
+(i) extracting front and side-view silhouettes from RGB im-
+338 represent percentage values:
+383
+ages, (ii) standardizing silhouettes to a fixed spatial resolution
+339
+of 640 × 480, and (iii) predicting BMI and a BF%-proxy us- yˆ = σ(W h + b ) .
+340 bf b b
+
+--- PAGE 5 ---
+
+Figure 2: Overview of the proposed privacy-preserving architecture for non-intrusive body composition screening, which extracts front and
+side silhouettes using a SAM-based segmentation pipeline and estimates BMI and body fat–related measures via dual-view shape encoding
+and contrastive alignment.
+3.3 Training Objectives where λ balances representation alignment and prediction ac-
+384 401
+385 Cross-View Contrastive Alignment curacy. 402
+386 To enforce consistency between front- and side-view rep- Labels and Targets
+403
+resentations, the model employs an InfoNCE (NT-Xent)
+387 Body Mass Index (BMI), defined as body weight divided by
+404
+388 style contrastive loss [Oord et al., 2018; Chen et al., 2020; squared height [Keys et al., 2014], is used as a primary an-
+405
+Zolfaghari et al., 2021]. Let the normalized projected em-
+389 thropometric indicator.
+406
+beddings be
+390
+BMI label. Given height h (in meters) and weight w (in
+407
+g(h ) g(h )
+z = f , z = s , kilograms), BMI is computed as 408
+f ∥g(h )∥ s ∥g(h )∥
+f s w
+BMI = .
+391 where g(·) denotes a projection head and ∥·∥ is the ℓ 2 norm. h2
+For a batch of size N , with positive pairs (i, i) and negative
+392 Body fat proxy. Due to the limited availability of large-
+pairs (i, j) for j ̸= i, the contrastive loss is defined as 409
+393 scale clinical body fat percentage (BF%) ground truth, the
+410
+(cid:16) (cid:17)
+N exp z⊤ z /τ Body Adiposity Index (BAI) [Bergman et al., 2011] is used 411
+1 (cid:88) f,i s,i
+L con = − N log (cid:80)N exp (cid:16) z⊤ z /τ (cid:17) , as a proxy target: 412
+i=1 j=1 f,i s,j BAI = hip cm − 18.
+where τ is a temperature scaling parameter. h1.5
+394 m
+395 Regression Supervision During training, BAI values are scaled and clipped to obtain 413
+396 Supervised learning is applied using ℓ 1 (MAE) losses for both a sigmoid-compatible target: 414
+397 anthropometric measurements and body fat estimation: (cid:18) BAI (cid:19)
+y = clip , 0, 1 .
+L reg = ∥yˆ meas − y meas ∥ 1 + ∥yˆ bf − y bf ∥ 1 . bf 100
+Total Loss
+398 It is acknowledged that BAI may exhibit systematic bi-
+415
+The overall training objective is a weighted combination of
+399 ases due to its reliance on limited anthropometric measure-
+416
+contrastive alignment and regression supervision:
+400 ments, with reduced accuracy reported across sex, ethnicity,
+417
+L = L + λL , and body fat distribution patterns [Geliebter et al., 2013].
+con reg 418
+
+--- PAGE 6 ---
+
+Table 2: Silhouette overlap metrics under the privacy-preserving
+evaluation protocol.
+Setting IoU ↑ Dice ↑
+Post pixel alignment 0.9015 0.9482
+4 Experimental Setup and Preliminary
+419 (a) Training and validation loss. (b) Contrastive vs. reg. loss.
+Analysis
+420
+4.1 Silhouette Quality Evaluation
+421
+We evaluate the quality of the extracted silhouettes using
+422
+spatial overlap metrics between a predicted silhouette and
+423
+a reference silhouette. Since facial pixels are intention-
+424
+ally excluded as part of the privacy-preserving design, over-
+425
+lap evaluation is performed after removing the top portion
+426
+of each mask. For a binary mask M , we define a mod- (c) Validation BMI MAE. (d) Validation BF% MAE.
+427
+ified mask M ′ by eliminating the top 25% of rows corre-
+428
+sponding to the head and face region. This preprocessing Figure 3: Training dynamics and validation performance of the pro-
+429
+is motivated by two factors. First, the available reference posed model: (a) training and validation loss, (b) loss decomposi-
+430
+tion, (c) BMI MAE, and (d) BF% MAE across epochs.
+data include only two real-subject image pairs, and the IoU
+431
+and Dice scores are therefore computed on this limited sub-
+432
+433 set. Second, there is a general scarcity of publicly avail- validation MAE trends. Quantitative results highlighting the 462
+434 able datasets containing full-body human images captured impact of auxiliary metadata are reported in Table 3. 463
+in neutral poses with ground-truth silhouettes, particularly
+435
+436 under privacy-preserving constraints. Silhouette overlap is 1 (cid:88) N
+MAE(y, yˆ) = |y − yˆ |
+437 evaluated using Intersection-over-Union (IoU) and the Dice N i i
+similarity coefficient, both of which are standard metrics in i=1
+438
+439 medical image segmentation and shape analysis [Dice, 1945; To further contextualize error magnitudes, we also report 464
+440 Rezatofighi et al., 2019]: threshold-based true-positive rates defined as: 465
+N
+|P ∩ R| 2|P ∩ R| TP@δ = 100 · 1 (cid:88) 1(|y − yˆ | ≤ δ), δ ∈ {2.0, 1.0, 0.5}
+IoU(P, R) = , Dice(P, R) = N i i
+|P ∪ R| |P | + |R|
+i=1
+Results summarized in Table 2 suggest that silhouettes retain
+441 4.3 Results Analysis
+body contour structure with high spatial overlap relative to the 466
+442
+443 reference silhouettes, supporting the suitability of silhouette- Table 5 compares BMI prediction accuracy under single-view 467
+444 based representations as robust inputs for downstream body and multi-view configurations. The results indicate that in- 468
+445 composition estimation. corporating a complementary viewpoint leads to a noticeable 469
+reduction in BMI prediction error on the evaluated samples,
+470
+4.2 Training Dynamics highlighting the benefit of multi-view shape information even
+446 471
+under limited supervision. This improvement suggests that
+To analyze optimization behavior and training stability, we 472
+447
+front and side silhouettes capture complementary geometric
+monitor multiple quantities across training epochs, including: 473
+448
+cues that are not fully observable from a single view.
+474
+449 • training and validation total loss (raw and smoothed), Table 4 further analyzes the impact of contrastive align- 475
+450 • decomposition of contrastive and regression loss com- ment on both BMI and BF% estimation. Models trained with 476
+451 ponents, contrastive learning exhibit lower error metrics (MAE and 477
+RMSE) and higher correlation measures compared to their
+478
+• validation BMI mean absolute error (MAE), and
+452 non-contrastive counterparts. These results indicate that con-
+479
+453 • validation BF% MAE in proxy-target space. trastive alignment improves cross-view representation consis- 480
+tency, which in turn supports more stable and accurate regres-
+Across all experimental runs, both contrastive and regres- 481
+454 sion of body composition indicators, particularly under con-
+sion losses decrease steadily, while validation MAE curves 482
+455 strained data conditions.
+exhibit higher variance during early epochs followed by sta- 483
+456
+bilization in later stages. This trend indicates stable opti-
+457 5 Challenges, Risks & Ethical Considerations
+mization under the current supervision regime and suggests 484
+458
+that the contrastive alignment objective does not impede con- Data variability and bias pose risks, as consumer-captured
+459 485
+vergence of the regression task. Figures 3a–3d illustrate the images can exhibit variations in pose, clothing, lighting, and
+460 486
+training and validation loss curves, loss decomposition, and camera geometry, potentially impacting silhouette quality
+461 487
+
+--- PAGE 7 ---
+
+Table 3: Impact of auxiliary metadata on estimation accuracy.
+Mode TP@2 ↑ TP@1 ↑ TP@0.5 ↑ BMI MAE ↓ BAI MAE ↓ Hip MAE ↓
+cm
+Single-View 0.00 0.00 0.00 22.752 25.172 99.466
+Multi-View 0.00 0.00 0.00 22.873 25.298 99.587
+Multi-View + Height 35.00 10.00 7.50 3.035 2.725 5.995
+Multi-View + Weight 62.50 30.00 20.00 1.728 3.424 3.150
+Multi-View + Height + Weight 100.00 95.00 85.00 0.00 1.251 2.472
+Table 4: Effect of contrastive learning on BMI and BF% estimation performance.
+Setting BMI MAE↓ BMI RMSE↓ BMI R2↑ BMI r↑ BF% MAE↓ BF% RMSE↓ BF% R2↑ BF% r↑
+Contrastive 1.053 1.767 0.931 0.969 1.940 2.428 0.877 0.937
+No-Contrastive 2.100 3.231 0.770 0.908 4.449 6.929 -0.004 0.719
+Table 5: Comparison of BMI and BF% prediction errors under an inherent identifiability constraint: silhouettes alone pro-
+520
+single-view and multi-view settings
+vide limited predictive accuracy, while incorporating height
+521
+and weight substantially improves performance. A single-
+Mode BMI (G.T) BMI (Pred) BMI MAE 522
+subject analysis indicates accurate BMI estimation, whereas
+523
+Single-View 21.46 22.75 1.29
+BF% estimates remain more variable, highlighting the limi-
+524
+Multi-View 21.46 21.17 0.29
+tations of proxy supervision. Future work will focus on ex-
+525
+panding datasets with clinically measured BF% ground truth
+526
+and introducing a WHO-aligned interpretability layer to map
+and downstream predictions. Limited availability of clin- 527
+488 predictions to standardized health risk categories, improving
+ically validated ground-truth data for body fat percentage 528
+489 transparency and translational relevance.
+further constrains supervision and model calibration. These 529
+490
+risks will be mitigated by incorporating robust preprocessing
+491
+492 and data augmentation, uncertainty-aware estimation, grad- References 530
+ual calibration using clinically measured data.
+493 [Addeman et al., 2015] Bryan T Addeman, Shelby Kutty,
+531
+All human-related data used in this project will be collected
+494 Thomas G Perkins, Abraam S Soliman, Curtis N Wiens,
+532
+with appropriate informed consent or sourced from publicly
+495 Colin M McCurdy, Melanie D Beaton, Robert A Hegele,
+533
+available datasets that explicitly permit research use. Where
+496 and Charles A McKenzie. Validation of volumetric and
+534
+required, prior approval will be obtained from relevant Insti-
+497 single-slice mri adipose analysis using a novel fully auto-
+535
+tutional Review Boards (IRBs) or ethics committees before
+498 mated segmentation method. Journal of Magnetic Reso-
+536
+initiating any data collection involving human participants.
+499 nance Imaging, 41(1):233–241, 2015.
+537
+To protect participant privacy, all data will be anonymized
+500
+501 prior to analysis. Raw images containing identifiable facial [Begoli et al., 2019] Edmon Begoli, Tanmoy Bhattacharya, 538
+502 features or personal identifiers will not be stored or processed; and Dimitri Kusnezov. The need for uncertainty quantifi- 539
+503 instead, all visual data will be converted into silhouette-based cation in machine-assisted medical decision making. Na- 540
+504 representations before any modeling or experimentation. The ture Machine Intelligence, 1(1):20–23, 2019. 541
+505 project will be conducted in close collaboration with health- [Bergman et al., 2011] Richard N Bergman, Darko Ste- 542
+506 care professionals to ensure that model development, eval- fanovski, Thomas A Buchanan, Anne E Sumner, James C 543
+507 uation, and interpretation adhere to established ethical and Reynolds, Nancy G Sebring, Anny H Xiang, and 544
+508 clinical standards. Richard M Watanabe. A better index of body adiposity. 545
+Obesity, 19(5):1083–1089, 2011.
+546
+509 6 Conclusion [Bogo et al., 2016] Federica Bogo, Angjoo Kanazawa, 547
+Christoph Lassner, Peter Gehler, Javier Romero, and
+We presented a privacy-preserving silhouette-based frame- 548
+510 Michael J Black. Keep it smpl: Automatic estimation
+work for estimating body health metrics, including BMI and 549
+511 of 3d human pose and shape from a single image. In
+BF%, from smartphone images. The system integrates SAM- 550
+512 European conference on computer vision, pages 561–578.
+based silhouette extraction with anatomy-aware refinements 551
+513 Springer, 2016.
+and a dual-branch contrastive model that processes frontal 552
+514
+and lateral views, with support for single-view inference. [Bosy-Westphal et al., 2018] Anja Bosy-Westphal, Wiebke
+515 553
+Preliminary experiments demonstrate that the extracted sil- Braun, Corinna Geisler, Kristina Norman, and Manfred J
+516 554
+houettes retain sufficient structural fidelity under a privacy- Mu¨ller. Body composition and cardiometabolic health: the
+517 555
+preserving evaluation protocol and that training remains sta- need for novel concepts. European journal of clinical nu-
+518 556
+ble under the proposed objectives. Ablation studies reveal trition, 72(5):638–644, 2018.
+519 557
+
+--- PAGE 8 ---
+
+[Buckinx et al., 2015] Fanny Buckinx, Jean-Yves Regin- of relative weight and obesity. International journal of
+558 613
+ster, Nadia Dardenne, Jean-Louis Croisiser, Jean-Franc¸ois epidemiology, 43(3):655–665, 2014.
+559 614
+560 Kaux, Charlotte Beaudart, Justine Slomian, and Olivier [Kim et al., 2022] Hyomin Kim, Hyeonseo Nam, Jungeon
+615
+Bruye`re. Concordance between muscle mass assessed by
+561 Kim, Jaesik Park, and Seungyong Lee. Laplacianfusion:
+616
+bioelectrical impedance analysis and by dual energy x-
+562 Detailed 3d clothed-human body reconstruction. ACM
+617
+ray absorptiometry: a cross-sectional study. BMC mus-
+563 Transactions on Graphics (TOG), 41(6):1–14, 2022.
+618
+culoskeletal disorders, 16(1):60, 2015.
+564
+[Kirillov et al., 2023] Alexander Kirillov, Eric Mintun,
+619
+565 [Chen et al., 2020] Ting Chen, Simon Kornblith, Moham- Nikhila Ravi, Hanzi Mao, Chloe Rolland, Laura 620
+566 mad Norouzi, and Geoffrey Hinton. A simple framework Gustafson, Tete Xiao, Spencer Whitehead, Alexander C 621
+567 for contrastive learning of visual representations. In In- Berg, Wan-Yen Lo, et al. Segment anything. In Pro- 622
+568 ternational conference on machine learning, pages 1597– ceedings of the IEEE/CVF international conference on 623
+569 1607. PmLR, 2020. computer vision, pages 4015–4026, 2023. 624
+570 [Dice, 1945] Lee R Dice. Measures of the amount of eco- [Ku¨stner et al., 2020] Thomas Ku¨stner, Tobias Hepp, Marc 625
+571 logic association between species. Ecology, 26(3):297– Fischer, Martin Schwartz, Andreas Fritsche, Hans-Ulrich 626
+572 302, 1945. Ha¨ring, Konstantin Nikolaou, Fabian Bamberg, Bin Yang, 627
+573 [Ellis, 2000] Kenneth J Ellis. Human body composition: Fritz Schick, et al. Fully automated and standardized seg- 628
+574 in vivo methods. Physiological reviews, 80(2):649–680, mentation of adipose tissue compartments via deep learn- 629
+575 2000. ing in 3d whole-body mri of epidemiologic cohort studies. 630
+Radiology: Artificial Intelligence, 2(6):e200010, 2020.
+[Fields et al., 2002] David A Fields, Michael I Goran, and 631
+576
+577 Megan A McCrory. Body-composition assessment via [Lan et al., 2022] Gongjin Lan, Yu Wu, Fei Hu, and Qi Hao. 632
+578 air-displacement plethysmography in adults and children: Vision-based human pose estimation via deep learning: A 633
+579 a review. The American journal of clinical nutrition, survey. IEEE Transactions on Human-Machine Systems, 634
+580 75(3):453–467, 2002. 53(1):253–268, 2022. 635
+[Gardner et al., 1998] Rick M Gardner, Brenda N Friedman, [Lo´pez et al., 2012] Angel A Lo´pez, Mey L Cespedes, Te- 636
+581
+ofila Vicente, Matias Tomas, Miguel Bennasar-Veny, Pe-
+and Natalie A Jackson. Methodological concerns when 637
+582
+dro Tauler, and Antoni Aguilo. Body adiposity index uti-
+using silhouettes to measure body image. Perceptual and 638
+583
+lization in a spanish mediterranean population: compar-
+motor skills, 86(2):387–395, 1998. 639
+584
+ison with the body mass index. PloS one, 7(4):e35281,
+640
+[Geliebter et al., 2013] Allan Geliebter, Deniz Atalayer,
+585 2012.
+641
+Louis Flancbaum, and Charlisa D Gibson. Comparison
+586 [Nana et al., 2022] A Nana, JMD Staynor, S Arlai, A El-
+of body adiposity index (bai) and bmi with estimations 642
+587
+Sallam, N Dhungel, and MK Smith. Agreement of anthro-
+of% body fat in clinically severe obese women. Obesity, 643
+588
+pometric and body composition measures predicted from
+21(3):493–498, 2013. 644
+589
+2d smartphone images and body impedance scales with
+645
+590 [Heymsfield, 2005] Steven Heymsfield. Human body com- criterion methods. Obesity Research & Clinical Practice, 646
+591 position, volume 918. Human kinetics, 2005. 16(1):37–43, 2022. 647
+592 [Hofmann et al., 2025] Felix O Hofmann, Christian [Nascimento et al., 2025] Navar Medeiros M Nasci- 648
+593 Heiliger, Tengis Tschaidse, Stefanie Jarmusch, Liv A mento, Pedro Cavalcante de Sousa Junior, Pedro 649
+594 Auhage, Ughur Aghamaliyev, Alena B Gesenhues, Yuri Rodrigues Nunes, Suane Pires Pinheiro da Silva, 650
+595 Tobias S Schiergens, Hanno Niess, Matthias Ilmer, et al. Luiz Lannes Loureiro, Victor Zaban Bittencourt, Valden 651
+596 Validation of body composition parameters extracted via Luis Matos Capistrano Junior, and Pedro Pedrosa 652
+597 deep learning-based segmentation from routine computed Rebouc¸as Filho. New advances in body composition as- 653
+598 tomographies. Scientific reports, 15(1):11909, 2025. sessment with shapednet: A single image deep regression 654
+599 [Jin et al., 2020] Sheng Jin, Lumin Xu, Jin Xu, Can Wang, approach. Pattern Recognition Letters, 188:88–94, 2025. 655
+600 Wentao Liu, Chen Qian, Wanli Ouyang, and Ping Luo. [Oord et al., 2018] Aaron van den Oord, Yazhe Li, and Oriol 656
+601 Whole-body human pose estimation in the wild. In Eu- Vinyals. Representation learning with contrastive predic- 657
+602 ropean Conference on Computer Vision, pages 196–214. tive coding. arXiv preprint arXiv:1807.03748, 2018. 658
+Springer, 2020.
+603 [Organization and others, 2021] World Health Organization
+659
+604 [Karlsson et al., 2015] Anette Karlsson, Johannes Rosander, et al. Ethics and governance of artificial intelligence 660
+605 Thobias Romu, Joakim Tallberg, Anders Gro¨nqvist, Mag- for health: WHO guidance: executive summary. World 661
+606 nus Borga, and Olof Dahlqvist Leinhard. Automatic Health Organization, 2021. 662
+and quantitative assessment of regional muscle volume by
+607 [Radwan et al., 2018] Hadia Radwan, Rami A Ballout, Hay-
+663
+multi-atlas segmentation using whole-body water–fat mri.
+608 der Hasan, Nader Lessan, Mirey Karavetian, and Rana
+664
+Journal of Magnetic Resonance Imaging, 41(6):1558–
+609 Rizk. The epidemiology and economic burden of obesity
+665
+1569, 2015.
+610 and related cardiometabolic disorders in the united arab
+666
+[Keys et al., 2014] Ancel Keys, Flaminio Fidanza, Martti J emirates: a systematic review and qualitative synthesis.
+611 667
+Karvonen, Noburu Kimura, and Henry L Taylor. Indices Journal of obesity, 2018(1):2185942, 2018.
+612 668
+
+--- PAGE 9 ---
+
+[Rezatofighi et al., 2019] Hamid Rezatofighi, Nathan Tsoi, ner, Heidi J Kalkwarf, Joan Lappe, Sharon Oberfield, et al.
+669 725
+JunYoung Gwak, Amir Sadeghian, Ian Reid, and Silvio Accurate body composition measures from whole-body
+670 726
+Savarese. Generalized intersection over union: A metric silhouettes. Medical physics, 42(8):4668–4677, 2015.
+671 727
+672 and a loss for bounding box regression. In Proceedings of [Yan et al., 2021] Song Yan, Johan Wirta, and Joni-Kristian
+728
+the IEEE/CVF conference on computer vision and pattern
+673 Ka¨ma¨ra¨inen. Silhouette body measurement benchmarks.
+729
+recognition, pages 658–666, 2019.
+674 In 2020 25th international conference on pattern recogni-
+730
+675 [Robinette et al., 1999] Kathleen M Robinette, Hans Daa- tion (ICPR), pages 7804–7809. IEEE, 2021. 731
+676 nen, and Eric Paquet. The caesar project: a 3-d surface [Zhu et al., 2023] Haidong Zhu, Zhaoheng Zheng, and Ram
+732
+anthropometry survey. In Second international conference
+677 Nevatia. Gait recognition using 3-d human body shape in-
+733
+on 3-D digital imaging and modeling (cat. No. PR00062),
+678 ference. In Proceedings of the IEEE/CVF Winter Confer-
+734
+pages 380–386. IEEE, 1999.
+679 ence on Applications of Computer Vision, pages 909–918,
+735
+680 [Ruiz et al., 2022] Nataniel Ruiz, Miriam Bellver, Timo 2023. 736
+681 Bolkart, Ambuj Arora, Ming C Lin, Javier Romero, and [Zolfaghari et al., 2021] Mohammadreza Zolfaghari,
+737
+Raja Bala. Human body measurement estimation with ad-
+682 Yi Zhu, Peter Gehler, and Thomas Brox. Crossclr:
+738
+versarial augmentation. In 2022 International Conference
+683 Cross-modal contrastive learning for multi-modal video
+739
+684 on 3D Vision (3DV), pages 219–230. IEEE, 2022. representations. In Proceedings of the IEEE/CVF interna-
+740
+685 [Saxena and Mittal, 2022] Arpna Saxena and Sangeeta Mit- tional conference on computer vision, pages 1450–1459, 741
+686 tal. Internet of medical things (iomt) security and privacy: 2021. 742
+A survey of recent advances and enabling technologies. In
+687
+Proceedings of the 2022 fourteenth international confer- A Author Biographies
+688 743
+ence on contemporary computing, pages 550–559, 2022.
+689 Chirudeva Reddy is an undergraduate student in the Depart-
+744
+690 [Sengupta et al., 2021] Akash Sengupta, Ignas Budvytis, ment of Computer Science at Birla Institute of Technology 745
+691 and Roberto Cipolla. Probabilistic 3d human shape and and Science, Pilani, Dubai Campus. He is driven by research 746
+692 pose estimation from multiple unconstrained images in the that bridges computer science and healthcare through inter- 747
+693 wild. In Proceedings of the IEEE/CVF Conference on disciplinary collaboration. His research interests lie in com- 748
+694 Computer Vision and Pattern Recognition, pages 16094– puter vision, privacy-preserving machine learning, and non- 749
+695 16104, 2021. intrusive health assessment using visual data. His current 750
+[Thomas et al., 2013] E Louise Thomas, JA Fitzpatrick, work focuses on silhouette-based representation learning for 751
+696
+scalable and culturally sensitive physical health screening.
+SJ Malik, Simon D Taylor-Robinson, and Jimmy D Bell. 752
+697
+698 Whole body fat: content and distribution. Progress in nu- Shivang Agarwal is a researcher and educator specializing 753
+699 clear magnetic resonance spectroscopy, 73:56–80, 2013. in computer vision, generative AI, and AI for social good. He 754
+700 [Vela´zquez-Alva et al., 2022] Mar´ıa Consuelo Vela´zquez- holds a Ph.D. in Computer Science from IIT (BHU), India, 755
+701 Alva, Mar´ıa Esther Irigoyen-Camacho, Marco Antonio and completed over three years of postdoctoral research at IIT 756
+702 Zepeda-Zepeda, Itzam Rangel-Castillo, Isabel Arrieta- Jodhpur, India. His work includes AI-driven collaborations 757
+703 Cruz, Luciano Mendoza-Garce´s, Antonio Castan˜o- with government and private organizations, and his contribu- 758
+704 Seiquer, Javier Flores-Fraile, and Roger Gutie´rrez-Jua´rez. tions to face recognition were recognized by the Ministry of 759
+705 Comparison of body fat percentage assessments by bio- Education, India, for supporting identification efforts during 760
+706 electrical impedance analysis, anthropometrical prediction the Balasore train accident. In 2024, he received the NASS- 761
+707 equations, and dual-energy x-ray absorptiometry in older COM AI Gamechangers Award for research impact. He is 762
+708 women. Frontiers in nutrition, 9:978971, 2022. currently an Assistant Professor at BITS Pilani, Dubai Cam- 763
+pus, where he designs and teaches courses in Generative AI.
+[World Health Organization, 2022] World Health 764
+709 He has published research in leading venues including IJCAI,
+Organization. Noncommunicable diseases 765
+710 AAAI, and ICCV.
+country profiles 2022: United arab emi- 766
+711
+712 rates. https://www.who.int/publications/m/item/ Vinaytosh Mishra is the Associate Dean at the Thumbay 767
+713 noncommunicable-diseases-country-profiles-2022, 2022. College of Management and AI in Healthcare, Gulf Med- 768
+714 WHO Regional Office for the Eastern Mediterranean; ical University, Ajman, UAE. He holds a Ph.D. in Health- 769
+715 UAE country profile; accessed January 2026. care Management and a B.Tech. in Electronics Engineering 770
+from IIT (BHU), India, and has completed postdoctoral re-
+[World Health Organization, 2024] World Health Organiza- 771
+716
+search in AI in Healthcare at the University of Arizona (USA)
+tion. Body mass index (bmi), 2024. Accessed January 772
+717
+and in Ethical AI in Healthcare at Ben-Gurion University (Is-
+2026. 773
+718
+rael). With over 19 years of cross-sector experience span-
+774
+[World Obesity Federation, 2023] World Obesity Federa-
+719 ning healthcare, information technology, manufacturing, fi-
+775
+tion. World obesity atlas 2023: United arab emirates
+720 nance, and education, he previously served as CEO of a multi-
+776
+country profile. https://data.worldobesity.org/country/
+721 specialty hospital. He is an inventor on international patents
+777
+united-arab-emirates-225/, 2023. Accessed January 2026.
+722 in AI for healthcare, serves as a domain expert for AI imple-
+778
+[Xie et al., 2015] Bowen Xie, Jesus I Avila, Bennett K Ng, mentation in healthcare, and actively contributes to academic
+723 779
+Bo Fan, Victoria Loo, Vicente Gilsanz, Thomas Hangart- publishing, program development, and healthcare innovation.
+724 780

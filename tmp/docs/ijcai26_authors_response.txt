@@ -1,0 +1,101 @@
+
+--- PAGE 1 ---
+
+1 Rebuttal for Submission ID 117 based segmentation with anatomical prompts is designed to
+remain robust under loose clothing. Segmentation Process:
+We thank the reviewers for taking the time to review our
+All silhouettes are generated using our SAM-based pipeline
+submission and for their valuable feedback. However, we
+at runtime, not from prior work. We will clarify that pre-
+must firmly emphasize that our submission was explicitly in-
+processing applies SAM (Kirillov et al. 2023) directly on
+tended for the AI and Social Good track under the Pro-
+raw smartphone images. Silhouettes Alone Are Insuffi-
+posal category, and it appears to have been evaluated un-
+cient: We agree silhouettes alone are insufficient (high BMI
+der the research paper track, which follows entirely different
+M AE = 22.8). Our results explicitly show this limitation;
+criteria.
+accurate prediction requires additional cues, consistent with
+Looking at the reviews and the interim decision made by
+prior work. Role of Height/Weight Inputs: Our method is
+the SPC, it is clearly evident that this distinction has been
+not vision-only; it fuses visual and anthropometric inputs.
+overlooked. The SPC’s statement, “This paper should be
+As shown, adding height/weight drastically reduces error,
+desk rejected because it violates the double blind review pol-
+with visuals acting as a consistency check rather than a stan-
+icy.” reflects a fundamental misunderstanding of the submis-
+dalone predictor. Limited Evaluation (2 Pairs & 1 Sub-
+sion category. Dear SPC, this is a proposal submission, it re-
+ject): We acknowledge the limited evaluation and will ex-
+quires a single-blind review process, and therefore, the claim
+pand it with more annotated samples and multi-subject anal-
+of violating double-blind policy is not applicable. This is not
+ysis. Current results are preliminary but indicative. Cloth-
+a minor procedural issue, rather it is a critical evaluation mis-
+ing Note: We note that even BodyM has limited clothing
+match that has directly impacted the fairness of the review.
+variation. Expanding validation under UAE-specific attire is
+When assessed under the appropriate Proposal track crite-
+part of ongoing data collection. Sample Size (Contrastive
+ria, the reviewers’ interpretations would necessarily change.
+vs. Non-Contrastive): Both models use identical BodyM
+For instance, the comment by PC#dfc990d, “The process de-
+splits ( 7,200 train / 1,800 test). The only difference is the
+scribed in the paper appears technically sound, but the ex-
+contrastive loss, which we will clarify. Comparison with
+perimental protocol was not reported, hence, the chances of
+BMNet on BodyM: Our model achieves comparable accu-
+reproducing the paper as reported are slim.” clearly reflects
+racy to BMNet on the same dataset. We plan to explicitly
+expectations aligned with a completed research paper, not a
+include BMNet’s reported numbers for direct comparison.
+proposal. Similarly, the comment by PC#dfcaa37 explicitly
+Role of Healthcare Professionals: Healthcare collaborators
+reinforces our concern: “This is clearly a research project
+defined clinically relevant targets, guided study design, and
+proposal rather than a completed research paper, yet it is not
+validated outputs from a medical perspective, ensuring real-
+explicitly framed as such. The experimental evaluation is ex-
+world applicability. We will clarify that our healthcare co-
+tremely preliminary. . . .” We appreciate this observation, as
+authors guided the choice of targets (BMI, BAI) and inter-
+it directly acknowledges the true nature of our submission.
+pretation. Their input ensures that the features highlighted
+However, instead of being evaluated positively within the
+by the silhouette-alignment heatmap are medically meaning-
+Proposal track, this recognition appears to have contributed
+ful. In the revision, we will include a brief statement of their
+to its rejection under inappropriate criteria.
+specific contributions (e.g. metric selection and expert vali-
+Importantly, even the SPC acknowledges this mismatch
+dation).
+by stating, “...as the work currently reads more like an early
+proposal than a validated research contribution.” We fully
+3 Relevance to AI and Social Good Track
+agree with this characterization because that is precisely what
+the submission is intended to be: a proposal. This further We are encouraged that multiple reviewers independently rec-
+strengthens our position that the evaluation has been con- ognize this alignment. PC#dfcbfef notes that “The paper is
+ducted under the wrong track expectations. Additionally, in well-written and the concept of estimating body fat percent-
+response to “Question 5. What should the authors focus on age from images is a nice one. If you can manage to solve this
+addressing during the rebuttal period to change your opin- then that would be of great benefit to the community.” This ex-
+ion?”, the SPC provides a generic response: “The authors plicitly highlights the societal benefit and community impact,
+should carefully read and follow the IJCAI policy. In terms of which are central to this track. Further, PC#dfcaa37 empha-
+paper quality, the authors should clarify the core contribution sizes both relevance and ethical design, stating, ‘‘The prob-
+and strengthen the experimental evidence”. We respectfully lem is well-motivated and relevant. The focus on privacy-
+state that our submission already adheres to IJCAI policy preserving health screening using silhouettes rather than raw
+for Proposal submissions, and the expectation of “strength- images addresses a genuine concern, particularly in cultur-
+ened experimental evidence” is misaligned with the Proposal ally sensitive regions like the UAE. SDG alignment: The pa-
+track, where early-stage results are both acceptable and ex- per provides a thorough discussion of alignment with SDGs 3,
+pected. 9, and 10.” Additionally, PC#dfce176 acknowledges the pub-
+lic health significance and responsible methodology, noting,
+2 Point-to-Point Responses “One of the main strengths of this project is that it addresses
+a clearly important public-health problem with a practical
+Domain Adaptation (Loose Clothing vs. BodyM): We ac-
+and privacy-respecting approach. The use of silhouette repre-
+knowledge the domain gap and plan to address it via tar-
+sentations is a sensible design choice that attempts to reduce
+geted UAE data collection and model refinement (e.g., pose-
+privacy concerns.” This further reinforces that our work.
+aware completion, generative augmentation). Our SAM-
