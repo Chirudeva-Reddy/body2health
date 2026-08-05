@@ -1,0 +1,6 @@
+ultralytics
+smplx[all]
+trimesh
+pyrender
+torchvision
+git+https://github.com/facebookresearch/sam2.git
