@@ -204,12 +204,13 @@ function updateUIWithResults(data) {
 
   // Timings
   const timings = data.timings || {};
-  document.getElementById("latency-total").textContent = `${timings.total_pipeline_ms || 52} ms`;
-  document.getElementById("timing-envelope").textContent = `${timings.step2_envelope_checks_ms || 11}ms`;
-  document.getElementById("timing-decomp").textContent = `${timings.step3_part_decomposition_ms || 14}ms`;
-  document.getElementById("timing-model").textContent = `${timings.step4_5_forward_pass_ms || 28}ms`;
-  document.getElementById("timing-clinical").textContent = `${timings.step6_clinical_indices_ms || 2}ms`;
-  document.getElementById("timing-smplx").textContent = `${timings.step7_smplx_gating_ms || 4}ms`;
+  const ms = (v, suffix) => (typeof v === "number" ? `${v}${suffix}` : "--");
+  document.getElementById("latency-total").textContent = ms(timings.total_pipeline_ms, " ms");
+  document.getElementById("timing-envelope").textContent = ms(timings.step2_envelope_checks_ms, "ms");
+  document.getElementById("timing-decomp").textContent = ms(timings.step3_part_decomposition_ms, "ms");
+  document.getElementById("timing-model").textContent = ms(timings.step4_5_forward_pass_ms, "ms");
+  document.getElementById("timing-clinical").textContent = ms(timings.step7_clinical_indices_ms, "ms");
+  document.getElementById("timing-smplx").textContent = ms(timings.step6_smplx_gating_ms, "ms");
 
   // Envelope Check Badge
   const env = data.envelope_checks || {};
@@ -335,8 +336,10 @@ function updateUIWithResults(data) {
     gateBadge.className = "text-xs font-bold px-3 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/30 flex items-center";
     gateBadge.innerHTML = `<i data-lucide="alert-circle" class="w-3.5 h-3.5 mr-1.5"></i>REJECTED (Recapture)`;
   }
-  document.getElementById("gate-iou").textContent = gate.front_iou ? `${(gate.front_iou * 100).toFixed(1)}%` : "71.0%";
-  document.getElementById("gate-chamfer").textContent = gate.front_chamfer ? gate.front_chamfer.toFixed(3) : "0.011";
+  document.getElementById("gate-iou").textContent =
+    typeof gate.front_iou === "number" ? `${(gate.front_iou * 100).toFixed(1)}%` : "n/a";
+  document.getElementById("gate-chamfer").textContent =
+    typeof gate.front_chamfer === "number" ? gate.front_chamfer.toFixed(3) : "n/a";
 
   if (gate.rendered_silhouette) {
     document.getElementById("img-smplx-rendered").src = gate.rendered_silhouette;
