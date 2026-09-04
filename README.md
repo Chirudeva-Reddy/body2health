@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <img alt="body2fit demo: one click runs dual-view inference, recovers tape girths in 50ms, updates the WHO risk gauges, and renders the SMPL-X mesh" src="docs/assets/bodyfit_pipeline_walkthrough.gif" width="760">
+  <img alt="body2fit web demo: one click runs dual-view inference, then the page shows recovered waist, hip and chest girths, the WHO central-adiposity indices, the SMPL-X render-back gate scorecard with its accept verdict, and the recovered 3D mesh in the geometry studio" src="docs/assets/bodyfit_pipeline_walkthrough.gif" width="760">
 </p>
 
 <p align="center">
@@ -109,7 +109,7 @@ $ ./run_demo.sh 8080
 ✓ API Predict: http://localhost:8080/api/predict
 ```
 
-Open `http://localhost:8080`. The one-click test runs full dual-view inference on subject Deva in under 50ms, and the 3D studio loads the recovered 10,475-vertex SMPL-X mesh with orbit controls and a wireframe toggle. REST endpoints are documented in [DEMO.md](DEMO.md).
+Open `http://localhost:8080`. The one-click test runs full dual-view inference on subject Deva in about 55ms once the model is warm; the first run after start-up takes several hundred milliseconds while MPS initialises. The 3D studio loads the recovered 10,475-vertex SMPL-X mesh with orbit controls and a wireframe toggle. REST endpoints are documented in [DEMO.md](DEMO.md).
 
 ## Benchmark results
 
