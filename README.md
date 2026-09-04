@@ -8,7 +8,7 @@
   <img alt="licence Research" src="https://img.shields.io/badge/licence-research-blue?style=flat-square">
   <img alt="python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white">
   <img alt="pytorch 2.9" src="https://img.shields.io/badge/pytorch-2.9-EE4C2C?style=flat-square&logo=pytorch&logoColor=white">
-  <img alt="paper PDF" src="https://img.shields.io/badge/paper-PDF-red?style=flat-square">
+  <a href="docs/paper/Non_Contact_Physical_Health_Profiling_Chirudeva.pdf"><img alt="paper PDF" src="https://img.shields.io/badge/paper-IJCAI'26_PDF-red?style=flat-square"></a>
   <img alt="demo live" src="https://img.shields.io/badge/demo-localhost%3A8080-brightgreen?style=flat-square">
 </p>
 
@@ -83,11 +83,15 @@ BodyFit solves three core problems:
 
 ## Research paper
 
-The complete research paper detailing the literature gap analysis, mathematical framework, and ablation studies is available in PDF format:
+> **Non-Contact Physical Health Profiling from Human Body Silhouettes Using Body Shape Embeddings**  
+> **Chirudeva Reddy¹**, **Shivang Agarwal¹**, **Vinaytosh Mishra²**  
+> *¹Department of Computer Science, BITS Pilani, Dubai Campus, UAE*  
+> *²College of Healthcare Management and Economics, Gulf Medical University, Ajman, UAE*  
+> *Under submission to IJCAI 2026*
 
-- **Download Paper:** [**`docs/paper/BodyFit_Research_Paper.pdf`**](docs/paper/BodyFit_Research_Paper.pdf) (269 KB, IEEE/Nature formatted PDF)
-- **Web Mirror:** [`docs/paper/paper.html`](docs/paper/paper.html)
-- **Video Script & Novelty Analysis:** [`docs/video_explainer_script.md`](docs/video_explainer_script.md)
+- **Download Official Paper (PDF):** [**`docs/paper/Non_Contact_Physical_Health_Profiling_Chirudeva.pdf`**](docs/paper/Non_Contact_Physical_Health_Profiling_Chirudeva.pdf)
+- **Direct Mirror (PDF):** [**`docs/paper/BodyFit_Research_Paper.pdf`**](docs/paper/BodyFit_Research_Paper.pdf)
+- **Scene-by-Scene Script & Novelty Report:** [`docs/video_explainer_script.md`](docs/video_explainer_script.md)
 
 ## Live demo
 
