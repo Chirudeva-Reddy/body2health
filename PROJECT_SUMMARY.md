@@ -1,6 +1,6 @@
-# Body2Health Project Summary
+# Body2Fit Project Summary
 
-Body2Health is now a dimension-first silhouette anthropometry pipeline. The active v1 target is not BMI or direct body-fat percentage. The model predicts tape-measured body dimensions from paired front/side silhouettes, then computes clinically interpretable central-adiposity indices from those dimensions.
+Body2Fit is now a dimension-first silhouette anthropometry pipeline. The active v1 target is not BMI or direct body-fat percentage. The model predicts tape-measured body dimensions from paired front/side silhouettes, then computes clinically interpretable central-adiposity indices from those dimensions.
 
 ## Active Pipeline
 

@@ -1,5 +1,5 @@
 /**
- * BodyFit Interactive Demo Application Controller
+ * Body2Fit Interactive Demo Application Controller
  * Handles UI interactions, live pipeline API calls, Three.js 3D rendering,
  * and clinical risk interpretation.
  */

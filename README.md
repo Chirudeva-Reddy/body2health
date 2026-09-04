@@ -1,4 +1,4 @@
-<h1 align="center">bodyfit</h1>
+<h1 align="center">body2fit</h1>
 
 <p align="center">
   <em>Dual-view silhouette anthropometry with an SMPL-X geometry reliability gate.</em>
@@ -13,11 +13,11 @@
 </p>
 
 <p align="center">
-  <img alt="BodyFit interactive demo: 1-click test runs dual-view inference, recovers tape girths in 50ms, updates WHO cardiometabolic risk gauges, and renders the SMPL-X 3D mesh" src="docs/assets/bodyfit_pipeline_walkthrough.gif" width="760">
+  <img alt="Body2Fit interactive demo: 1-click test runs dual-view inference, recovers tape girths in 50ms, updates WHO cardiometabolic risk gauges, and renders the SMPL-X 3D mesh" src="docs/assets/bodyfit_pipeline_walkthrough.gif" width="760">
 </p>
 
 <p align="center">
-  <code>bodyfit</code> recovers tape-measured body circumferences from orthogonal phone photos, then derives
+  <code>body2fit</code> recovers tape-measured body circumferences from orthogonal phone photos, then derives
   <b>central-adiposity indices</b> (WHtR, WHR, BRI).<br>
   If the personalized 3D body cannot explain the observed silhouettes, <b>it refuses to report</b>.
 </p>
@@ -58,7 +58,7 @@ Full prediction payload stored at [`outputs/final/deva/result.json`](outputs/fin
 ## How it works
 
 <p align="center">
-  <img alt="BodyFit end-to-end architecture diagram: Dual-View RGB -> Strict YOLO+SAM2 -> Dual-Branch Siamese Encoders -> Tape Girths -> Central Adiposity -> SMPL-X Render-Back Gate" src="docs/diagrams/pipeline_architecture.svg" width="760">
+  <img alt="Body2Fit end-to-end architecture diagram: Dual-View RGB -> Strict YOLO+SAM2 -> Dual-Branch Siamese Encoders -> Tape Girths -> Central Adiposity -> SMPL-X Render-Back Gate" src="docs/diagrams/pipeline_architecture.svg" width="760">
 </p>
 
 That diagram is the entire architecture:
@@ -75,7 +75,7 @@ Body Mass Index (**BMI = kg/m²**) divides total weight by height squared. It ca
 
 Clinical guidelines (UK NICE 2022, WHO) recommend screening **central adiposity** directly via waist circumference and waist-to-height ratio. But consumer fitness apps typically take a photo and emit a synthetic "body-fat percentage" without DEXA labels.
 
-BodyFit solves three core problems:
+Body2Fit solves three core problems:
 
 1. **Supervised only on physical ground truth:** The supervised target is what the dataset actually labels: tape-measured body girths (`waist_cm`, `hip_cm`, `chest_cm`). No synthetic body-fat percentages.
 2. **Zero-fiction central-adiposity indices:** WHtR, WHR, and BRI are computed arithmetically from recovered girths, providing clinically interpretable risk screening.
@@ -90,15 +90,15 @@ BodyFit solves three core problems:
 > *Under submission to IJCAI 2026*
 
 - **Download Official Paper (PDF):** [**`docs/paper/Non_Contact_Physical_Health_Profiling_Chirudeva.pdf`**](docs/paper/Non_Contact_Physical_Health_Profiling_Chirudeva.pdf)
-- **Direct Mirror (PDF):** [**`docs/paper/BodyFit_Research_Paper.pdf`**](docs/paper/BodyFit_Research_Paper.pdf)
+- **Direct Mirror (PDF):** [**`docs/paper/Body2Fit_Research_Paper.pdf`**](docs/paper/Body2Fit_Research_Paper.pdf)
 - **Scene-by-Scene Script & Novelty Report:** [`docs/video_explainer_script.md`](docs/video_explainer_script.md)
 
 ## Live demo
 
-BodyFit includes a standalone web demo with live PyTorch inference, WHO cardiometabolic risk gauges, and an interactive Three.js 3D mesh viewer.
+Body2Fit includes a standalone web demo with live PyTorch inference, WHO cardiometabolic risk gauges, and an interactive Three.js 3D mesh viewer.
 
 ```bash
-git clone https://github.com/Chirudeva-Reddy/bodyfit && cd bodyfit
+git clone https://github.com/Chirudeva-Reddy/body2fit && cd body2fit
 ./run_demo.sh 8080
 ```
 

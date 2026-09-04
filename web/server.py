@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-BodyFit Interactive Web Application Server
-Provides REST API endpoints and modern frontend assets for recruiter demo.
-Features live model inference with checkpoints/best_640x480_v4_resnet.pt,
-anatomical decomposition, clinical cardiometabolic risk scoring, and SMPL-X 3D mesh serving.
+Body2Fit Interactive Web Application Server
+============================================
+A fast, lightweight, standalone HTTP server serving the interactive recruiter demo,
+providing REST endpoints for live forward pass inference, 3D mesh streaming,
+and ablation benchmark visualization.
 """
 from __future__ import annotations
 
@@ -25,6 +26,16 @@ from typing import Any, Dict, Optional, Tuple
 import cv2
 import numpy as np
 import torch
+import torch.nn as nn
+from PIL import Image
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%H:%M:%S",
+)
+logger = logging.getLogger("body2fit.server")
 
 # Ensure project root is on sys.path
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,9 +49,6 @@ from src.infer.silhouette_checks import envelope_check
 from src.infer.silhouette_regions import make_region_overlay, region_metrics
 from src.metrics.body_indices import derive_indices, derive_risk_categories
 from src.metrics.health_risk import assess_health_risk
-
-logger = logging.getLogger("bodyfit.server")
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 DEFAULT_CKPT = str(ROOT / "checkpoints" / "best_640x480_v4_resnet.pt")
 DEFAULT_PORT = 8080
@@ -349,7 +357,7 @@ def run_pipeline_inference(
     }
 
 
-class BodyFitRequestHandler(SimpleHTTPRequestHandler):
+class Body2FitRequestHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
@@ -388,7 +396,7 @@ class BodyFitRequestHandler(SimpleHTTPRequestHandler):
             global GLOBAL_DEVICE
             payload = {
                 "status": "healthy",
-                "service": "BodyFit Dual-View Anthropometry API",
+                "service": "Body2Fit Dual-View Anthropometry API",
                 "version": "4.0.0-resnet",
                 "checkpoint": "checkpoints/best_640x480_v4_resnet.pt",
                 "device": GLOBAL_DEVICE,
@@ -511,6 +519,10 @@ class BodyFitRequestHandler(SimpleHTTPRequestHandler):
         self.wfile.write(encoded)
 
 
+# Compatibility alias
+BodyFitRequestHandler = Body2FitRequestHandler
+
+
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     daemon_threads = True
     allow_reuse_address = True
@@ -518,21 +530,21 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 
 def run_server(port: int = DEFAULT_PORT, host: str = "0.0.0.0") -> None:
     init_model()
-    server = ThreadedHTTPServer((host, port), BodyFitRequestHandler)
+    server = ThreadedHTTPServer((host, port), Body2FitRequestHandler)
     print("=" * 70)
-    print(f"🔥 BodyFit Interactive Demo Server running at http://localhost:{port}/")
+    print(f"🔥 Body2Fit Interactive Demo Server running at http://localhost:{port}/")
     print(f"📡 API endpoints available at http://localhost:{port}/api/health and /api/predict")
     print(f"🎨 3D SMPL-X Mesh viewer and recruiter walkthrough ready")
     print("=" * 70)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        print("\nShutting down BodyFit Demo Server...")
+        print("\nShutting down Body2Fit Demo Server...")
         server.shutdown()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="BodyFit Interactive Demo Server")
+    parser = argparse.ArgumentParser(description="Body2Fit Interactive Demo Server")
     parser.add_argument("--port", type=int, default=DEFAULT_PORT, help=f"Server port (default: {DEFAULT_PORT})")
     parser.add_argument("--host", default="0.0.0.0", help="Host address (default: 0.0.0.0)")
     parser.add_argument("--ckpt", default=DEFAULT_CKPT, help="Path to checkpoint")

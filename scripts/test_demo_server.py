@@ -20,7 +20,7 @@ import threading
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from web.server import ThreadedHTTPServer, BodyFitRequestHandler, init_model
+from web.server import ThreadedHTTPServer, Body2FitRequestHandler, init_model
 
 TEST_PORT = 8089
 
@@ -28,7 +28,7 @@ def main():
     print("Initializing PyTorch model...")
     init_model()
     
-    server = ThreadedHTTPServer(("127.0.0.1", TEST_PORT), BodyFitRequestHandler)
+    server = ThreadedHTTPServer(("127.0.0.1", TEST_PORT), Body2FitRequestHandler)
     server_thread = threading.Thread(target=server.serve_forever, daemon=True)
     server_thread.start()
     print(f"Test server running on port {TEST_PORT}")
@@ -42,7 +42,7 @@ def main():
         with urllib.request.urlopen(f"{base_url}/") as res:
             assert res.status == 200, f"Expected 200, got {res.status}"
             html = res.read().decode("utf-8")
-            assert "BodyFit" in html, "HTML missing BodyFit brand title"
+            assert "Body2Fit" in html, "HTML missing Body2Fit brand title"
             print("  ✓ GET / succeeded (length:", len(html), "bytes)")
 
         # Test 2: GET /api/health

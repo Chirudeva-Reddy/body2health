@@ -32,8 +32,8 @@ class PipelineRunError(RuntimeError):
 
 
 def main() -> None:
-    st.set_page_config(page_title="Body2Health Demo", layout="wide")
-    st.title("Body2Health")
+    st.set_page_config(page_title="Body2Fit Demo", layout="wide")
+    st.title("Body2Fit")
     st.caption(
         "Phone-image anthropometry for waist, hip, and chest, with central-adiposity "
         "and cardiometabolic screening interpretation. This is not a diagnosis."

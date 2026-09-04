@@ -1,4 +1,4 @@
-# BodyFit Interactive Web Application Demo
+# Body2Fit Interactive Web Application Demo
 
 > **Dual-View Silhouette Anthropometry & Cardiometabolic Clinical Screening AI**  
 > *Production-Grade Recruiter, Hiring Manager, and Clinical Interview Demo*
@@ -7,9 +7,9 @@
 
 ## 🌟 Executive Summary
 
-**BodyFit** solves the 180-year-old clinical failure of Body Mass Index (**BMI = kg/m²**). While traditional BMI conflates dense lean muscle with visceral fat—failing athletes and missing normal-weight central obesity ("TOFI" patients)—BodyFit reconstructs millimeter-accurate tape anthropometry (**Waist**, **Hip**, **Chest**) and cardiometabolic risk indices (**WHtR**, **WHR**, **BRI**) from privacy-preserving, camera-derived orthogonal silhouettes.
+**Body2Fit** solves the 180-year-old clinical failure of Body Mass Index (**BMI = kg/m²**). While traditional BMI conflates dense lean muscle with visceral fat—failing athletes and missing normal-weight central obesity ("TOFI" patients)—Body2Fit reconstructs millimeter-accurate tape anthropometry (**Waist**, **Hip**, **Chest**) and cardiometabolic risk indices (**WHtR**, **WHR**, **BRI**) from privacy-preserving, camera-derived orthogonal silhouettes.
 
-To ensure clinical safety, BodyFit introduces the **SMPL-X Render-Back Reliability Gate**: an anatomical 3D mesh is fitted and re-projected back into the 2D camera plane. If the re-projection intersection-over-union (**IoU**) falls below **65%** or the bidirectional Chamfer distance exceeds **0.025**, the system automatically **suppresses clinical risk scores** and requests recapture, preventing black-box hallucinations.
+To ensure clinical safety, Body2Fit introduces the **SMPL-X Render-Back Reliability Gate**: an anatomical 3D mesh is fitted and re-projected back into the 2D camera plane. If the re-projection intersection-over-union (**IoU**) falls below **65%** or the bidirectional Chamfer distance exceeds **0.025**, the system automatically **suppresses clinical risk scores** and requests recapture, preventing black-box hallucinations.
 
 ---
 
@@ -87,7 +87,7 @@ curl -s http://localhost:8080/api/health
 ```json
 {
   "status": "healthy",
-  "service": "BodyFit Dual-View Anthropometry API",
+  "service": "Body2Fit Dual-View Anthropometry API",
   "version": "4.0.0-resnet",
   "checkpoint": "checkpoints/best_640x480_v4_resnet.pt",
   "device": "mps",
@@ -146,7 +146,7 @@ curl -O -J http://localhost:8080/api/mesh
 
 ## 📊 Research Ablation Study Results
 
-Results from the BodyFit evaluation benchmark across diverse test subjects:
+Results from the Body2Fit evaluation benchmark across diverse test subjects:
 
 | Configuration | TP &le; 2cm (%) | TP &le; 5cm (%) | Waist MAE (cm) | Hip MAE (cm) | Chest MAE (cm) | WHtR MAE |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -163,10 +163,10 @@ The application is fully containerized for deployment to AWS ECS, Google Cloud R
 
 ```bash
 # 1. Build Docker image
-docker build -t bodyfit-demo .
+docker build -t body2fit-demo .
 
 # 2. Run container
-docker run -d -p 8080:8080 --name bodyfit-app bodyfit-demo
+docker run -d -p 8080:8080 --name body2fit-app body2fit-demo
 
 # 3. Verify health
 curl http://localhost:8080/api/health
@@ -177,7 +177,7 @@ curl http://localhost:8080/api/health
 ## 📂 Web App Architecture & File Map
 
 ```text
-bodyfit/
+body2fit/
 ├── web/
 │   ├── server.py             # Multi-threaded HTTP server & PyTorch inference endpoint
 │   ├── index.html            # Modern Tailwind CSS single-page application

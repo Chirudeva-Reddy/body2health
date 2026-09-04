@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# BodyFit Web Demo Launcher
+# Body2Fit Web Demo Launcher
 # Starts the high-performance standalone web demo with live PyTorch inference,
 # Three.js 3D mesh rendering, and clinical cardiometabolic risk interpretation.
 # ==============================================================================
@@ -15,7 +15,7 @@ HOST="${2:-0.0.0.0}"
 CKPT="checkpoints/best_640x480_v4_resnet.pt"
 
 echo "================================================================================"
-echo "🚀 Starting BodyFit Anthropometry & Health Screening Demo"
+echo "🚀 Starting Body2Fit Anthropometry & Health Screening Demo"
 echo "================================================================================"
 
 # Check checkpoint
