@@ -1,335 +1,188 @@
-<div align="center">
-
-# BodyFit: Dual-View Silhouette Anthropometry
-
-### Privacy-Preserving Computer Vision for Dimension Recovery & Clinical Cardiometabolic Screening
-
-[![Research Paper](https://img.shields.io/badge/Research_Paper-Download_PDF-b31b1b.svg?style=for-the-badge&logo=adobeacrobatreader)](docs/paper/BodyFit_Research_Paper.pdf)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.9-ee4c2c.svg?style=for-the-badge&logo=pytorch)](https://pytorch.org/)
-[![SAM2](https://img.shields.io/badge/Meta_SAM_2.1-Hiera--Large-0081fb.svg?style=for-the-badge)](https://github.com/facebookresearch/sam2)
-[![YOLOv11](https://img.shields.io/badge/Ultralytics-YOLOv11m-00ffff.svg?style=for-the-badge)](https://docs.ultralytics.com/)
-[![SMPL-X](https://img.shields.io/badge/SMPL--X-Parametric_3D_Mesh-8a2be2.svg?style=for-the-badge)](https://smpl-x.is.tue.mpg.de/)
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Localhost:8080-success.svg?style=for-the-badge&logo=fastapi)](DEMO.md)
+<h1 align="center">bodyfit</h1>
 
 <p align="center">
-  <a href="#-interactive-pipeline-walkthrough">🎬 Live Walkthrough</a> &bull;
-  <a href="#-research-paper">📄 Research Paper (PDF)</a> &bull;
-  <a href="#-system-architecture">📐 Architecture Diagram</a> &bull;
-  <a href="#-quickstart--recruiter-demo">🚀 Recruiter Demo</a> &bull;
-  <a href="#-scientific-novelty--core-contributions">🔬 Scientific Novelty</a> &bull;
-  <a href="#-empirical-benchmarks--leakage-ablations">📊 Benchmark Results</a> &bull;
-  <a href="DEMO.md">📖 Recruiter Manual</a>
+  <em>Dual-view silhouette anthropometry with an SMPL-X geometry reliability gate.</em>
+</p>
+
+<p align="center">
+  <img alt="licence Research" src="https://img.shields.io/badge/licence-research-blue?style=flat-square">
+  <img alt="python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white">
+  <img alt="pytorch 2.9" src="https://img.shields.io/badge/pytorch-2.9-EE4C2C?style=flat-square&logo=pytorch&logoColor=white">
+  <img alt="paper PDF" src="https://img.shields.io/badge/paper-PDF-red?style=flat-square">
+  <img alt="demo live" src="https://img.shields.io/badge/demo-localhost%3A8080-brightgreen?style=flat-square">
+</p>
+
+<p align="center">
+  <img alt="BodyFit interactive demo: 1-click test runs dual-view inference, recovers tape girths in 50ms, updates WHO cardiometabolic risk gauges, and renders the SMPL-X 3D mesh" src="docs/assets/bodyfit_pipeline_walkthrough.gif" width="760">
+</p>
+
+<p align="center">
+  <code>bodyfit</code> recovers tape-measured body circumferences from orthogonal phone photos, then derives
+  <b>central-adiposity indices</b> (WHtR, WHR, BRI).<br>
+  If the personalized 3D body cannot explain the observed silhouettes, <b>it refuses to report</b>.
 </p>
 
 ---
 
-</div>
+That run is real, and it is the whole pitch: **2D phone images can support dimension recovery and clinically interpretable shape indices only when the capture passes a geometry reliability gate.**
 
-## 🎬 Interactive Pipeline Walkthrough
+<details>
+<summary><b>&nbsp;Read the full inference telemetry from that run&nbsp;</b></summary>
 
-Below is a live screen recording showing the BodyFit web application in action: executing the **1-Click Test** on primary validation subject Deva (175cm Male), recovering tape circumferences in under 50ms, updating WHO cardiometabolic risk gauges, and smoothly interacting with the reconstructed 10,475-vertex **SMPL-X 3D mesh manifold** in WebGL:
+<br>
 
-<div align="center">
+> ## Predicted Tape Circumferences (cm)
+>
+> | Measurement | Predicted | Ground Truth | Absolute Error | 95% Confidence Interval |
+> | :--- | :---: | :---: | :---: | :---: |
+> | **Waist Circumference** | `91.65 cm` | `90.80 cm` | `0.85 cm` | $\pm 1.97\text{ cm}$ |
+> | **Hip Circumference** | `106.68 cm` | `107.20 cm` | `0.52 cm` | $\pm 1.89\text{ cm}$ |
+> | **Chest Circumference** | `99.79 cm` | `100.50 cm` | `0.71 cm` | $\pm 2.10\text{ cm}$ |
+>
+> ## Derived Central-Adiposity Indices
+>
+> - **Waist-to-Height Ratio (WHtR):** `0.5237` (UK NICE boundary: `<0.50` Healthy, `0.50–0.59` Increased Risk).
+> - **Waist-to-Hip Ratio (WHR):** `0.8591` (WHO cardiovascular threshold: `<0.90` Male).
+> - **Body Roundness Index (BRI):** `3.8142` (Thomas et al. eccentric ellipse formulation).
+>
+> ## SMPL-X Geometry Reliability Gate
+>
+> - **Render-Back IoU:** `71.0%` (Acceptance threshold: $\ge 55.0\%$).
+> - **Contour Chamfer Distance:** `0.011` (Acceptance threshold: $\le 0.050$).
+> - **Gate Decision:** **`ACCEPTED`** &mdash; 3D body manifold verified against observed silhouettes.
 
-![BodyFit Pipeline Live Walkthrough](docs/assets/bodyfit_pipeline_walkthrough.gif)
+Full prediction payload stored at [`outputs/final/deva/result.json`](outputs/final/deva/result.json).
 
-<p align="center">
-  <em>⚡ Real-time interactive screen capture recorded directly from the local WebGL application.</em><br>
-  <strong><a href="docs/assets/bodyfit_demo_walkthrough.mp4">▶️ Watch High-Definition Video Walkthrough (MP4)</a></strong> &bull; <strong><a href="DEMO.md">Explore Recruiter Showcase Guide</a></strong>
-</p>
+</details>
 
-</div>
-
----
-
-## 📄 Research Paper
-
-The complete academic research paper detailing the clinical motivations, literature gap analysis, mathematical framework, and ablation studies is published in the repository:
-
-| Asset | Format | Direct Link | Description |
-| :--- | :---: | :---: | :--- |
-| **Research Paper** | **PDF** | [**`docs/paper/BodyFit_Research_Paper.pdf`**](docs/paper/BodyFit_Research_Paper.pdf) | Full IEEE/Nature-formatted publication document with figures & citations |
-| **Web Paper Mirror** | **HTML** | [**`docs/paper/paper.html`**](docs/paper/paper.html) | High-fidelity browser-viewable paper layout |
-| **Video Script & Novelty Report** | **Markdown** | [**`docs/video_explainer_script.md`**](docs/video_explainer_script.md) | Scene-by-scene script with timestamps & competitive novelty matrix |
-
-> [!NOTE]
-> **Citation & Research Scope**:
-> *Chirudeva Reddy. "Research Direction for SMPL-Gated Phone Anthropometry & Central-Adiposity Screening." BodyFit Computer Vision & Healthcare AI Research, Dubai, UAE.*
-
----
-
-## 📐 System Architecture
-
-Below is the complete architectural diagram of the BodyFit pipeline, created using the Excalidraw design system, showing the end-to-end dataflow from dual-view smartphone captures to clinical report dispatch and 3D geometry verification.
-
-<div align="center">
-
-[![BodyFit Pipeline Architecture](docs/diagrams/pipeline_architecture.png)](docs/diagrams/pipeline_architecture.svg)
+## How it works
 
 <p align="center">
-  <em>Figure: Full end-to-end architecture diagram of BodyFit. Click image for full resolution.</em><br>
-  <strong><a href="docs/diagrams/pipeline_architecture.svg">View Full Vector SVG</a></strong> &bull; <strong><a href="docs/diagrams/pipeline_architecture.excalidraw">Download Editable Excalidraw JSON</a></strong>
+  <img alt="BodyFit end-to-end architecture diagram: Dual-View RGB -> Strict YOLO+SAM2 -> Dual-Branch Siamese Encoders -> Tape Girths -> Central Adiposity -> SMPL-X Render-Back Gate" src="docs/diagrams/pipeline_architecture.svg" width="760">
 </p>
 
-</div>
+That diagram is the entire architecture:
 
-### Pipeline Workflow Summary
+1. **Strict Segmentation:** An Ultralytics YOLOv11m detector and Meta SAM 2.1 Hiera-Large generate multi-mask candidates scored with a solidity objective ($2 \times \text{solidity} + \text{extent} + \text{conf} - 0.75 \times \text{border}$), centering silhouettes onto a standardized 640×480 canvas.
+2. **Siamese Latent Modeling:** Twin ResNet-18 branches process front and side silhouettes simultaneously, aligned into a 512-D latent space via symmetric InfoNCE contrastive loss ($\tau = 0.07$).
+3. **Dimension Regression:** Concatenated latents ($1032\text{-D}$) feed multi-task regression heads predicting physical tape girths.
+4. **Clinical Indices:** WHtR, WHR, and BRI are derived arithmetically from predicted dimensions and known height.
+5. **SMPL-X Geometry Gate:** Neural Localizer Fields (NLF) fit a 3D parametric SMPL-X body mesh to the front capture and render it back to the camera view. If render-back IoU drops below 0.55, the model **actively abstains** instead of reporting corrupted health metrics.
 
-```text
-Dual-View Smartphone Photos (Front & Side RGB, ~2.8m distance)
-  │
-  ▼ [Stage 1: Strict Segmentation & Quality Filtering]
-YOLOv11m Person Detector ──► SAM 2.1 Hiera-Large ──► Mask Quality Objective
-  │                                                    Score = 2*Solidity + Extent + Conf - 0.75*Border
-  ▼ [Stage 2: Canvas Normalization & Part Parsing]
-Aspect-Preserving Resize to 640×480 Canvas ──► Anatomical Envelope Verification
-  │
-  ▼ [Stage 3: Siamese Latent Embedding]
-Front ResNet-18 Branch (512-D) ──┬── Side ResNet-18 Branch (512-D)
-                                 │
-                   InfoNCE Contrastive Loss (τ=0.07)
-                                 │
-  ▼ [Stage 4: Multimodal Latent Fusion & Dimension Regression]
-Fused Latent z = [h_front ∥ h_side ∥ bbox_8d] ∈ ℝ¹⁰³²
-  │
-  ▼
-Multi-Head MLP Regressor (Smooth L1 Loss, λ=2.0)
-  ├──► Waist Circumference (cm)   [MAE: 2.40 cm]
-  ├──► Hip Circumference (cm)     [MAE: 2.82 cm]
-  └──► Chest Circumference (cm)   [MAE: 2.28 cm]
-  │
-  ▼ [Stage 5: Arithmetic Central-Adiposity Index Derivation]
-Physiological Arithmetic (No Black-Box Hallucination)
-  ├──► WHtR = waist / height       (UK NICE cutoff: <0.50 Healthy)
-  ├──► WHR  = waist / hip          (WHO cutoff: <0.90 Male, <0.85 Female)
-  └──► BRI  = Body Roundness Index (Thomas et al. eccentric ellipse)
-  │
-  ▼ [Stage 6: SMPL-X 3D Geometry Reliability Gate]
-Front RGB ──► NLF (Neural Localizer Fields) ──► Parametric SMPL-X 3D Mesh
-  │                                                  (10,475 vertices, 20,908 faces)
-  ▼
-Differentiable Silhouette Render-Back ──► Mismatch Penalty = 0.70*(1 - IoU) + 0.30*Chamfer
-  ├──► IoU ≥ 0.55 & Chamfer ≤ 0.05 ──► [ACCEPTED]  Verified Clinical Report + 3D Mesh Export (.obj)
-  └──► Render-Back Mismatch Failed ──► [REJECTED]  Safe Model Abstention (Request Recapture)
+## Why bother
+
+Body Mass Index (**BMI = kg/m²**) divides total weight by height squared. It cannot distinguish between 5 kg of dense athletic muscle and 5 kg of visceral fat stored around internal abdominal organs. An athlete with low body fat gets flagged as "obese," while a normal-weight individual with high visceral adiposity receives a clean bill of health.
+
+Clinical guidelines (UK NICE 2022, WHO) recommend screening **central adiposity** directly via waist circumference and waist-to-height ratio. But consumer fitness apps typically take a photo and emit a synthetic "body-fat percentage" without DEXA labels.
+
+BodyFit solves three core problems:
+
+1. **Supervised only on physical ground truth:** The supervised target is what the dataset actually labels: tape-measured body girths (`waist_cm`, `hip_cm`, `chest_cm`). No synthetic body-fat percentages.
+2. **Zero-fiction central-adiposity indices:** WHtR, WHR, and BRI are computed arithmetically from recovered girths, providing clinically interpretable risk screening.
+3. **Abstains instead of hallucinating:** When handed loose clothing, posture changes, or segmentation failures, standard deep neural networks guess wrong with high confidence. The SMPL-X render-back gate catches geometric mismatch and refuses to report.
+
+## Research paper
+
+The complete research paper detailing the literature gap analysis, mathematical framework, and ablation studies is available in PDF format:
+
+- **Download Paper:** [**`docs/paper/BodyFit_Research_Paper.pdf`**](docs/paper/BodyFit_Research_Paper.pdf) (269 KB, IEEE/Nature formatted PDF)
+- **Web Mirror:** [`docs/paper/paper.html`](docs/paper/paper.html)
+- **Video Script & Novelty Analysis:** [`docs/video_explainer_script.md`](docs/video_explainer_script.md)
+
+## Live demo
+
+BodyFit includes a standalone web demo with live PyTorch inference, WHO cardiometabolic risk gauges, and an interactive Three.js 3D mesh viewer.
+
+```bash
+git clone https://github.com/Chirudeva-Reddy/bodyfit && cd bodyfit
+./run_demo.sh 8080
 ```
 
----
+Open **`http://localhost:8080`** in your browser.
 
-## 🔬 Scientific Novelty & Core Contributions
+```console
+$ ./run_demo.sh 8080
+✓ Checkpoint: checkpoints/best_640x480_v4_resnet.pt (MPS hardware accelerated)
+✓ Serving on: http://localhost:8080
+✓ API Health: http://localhost:8080/api/health
+✓ API Predict: http://localhost:8080/api/predict
+```
 
-### 1. Dimension-First Grounding (No Fake Body-Fat Labels)
-Most commercial mobile anthropometry apps predict "body-fat percentage" using hidden empirical linear equations (e.g., Navy circumference formula or regression to BMI). Because standard public datasets (BodyM) provide tape-measured dimensions and silhouettes—not DEXA scans—BodyFit grounds its supervised training **exclusively in verifiable physical girths** (`waist_cm`, `hip_cm`, `chest_cm`).
+- **⚡ 1-Click Test:** Executes full dual-view inference on subject Deva in under 50ms.
+- **🧊 Three.js 3D Studio:** Inspect the recovered 10,475-vertex SMPL-X 3D body mesh with orbit controls and wireframe toggles.
+- **REST APIs:** Full programmatic inference endpoints documented in [`DEMO.md`](DEMO.md).
 
-### 2. Zero-Fiction Central-Adiposity Biomarkers
-Rather than treating clinical risk as an uninterpretable classification head, BodyFit computes central-adiposity indices arithmetically:
-- **Waist-to-Height Ratio (WHtR)**: $\text{WHtR} = \frac{\text{waist}}{\text{height}}$. Backed by UK NICE guidelines (2022) as the primary clinical screening index for cardiometabolic mortality.
-- **Waist-to-Hip Ratio (WHR)**: $\text{WHR} = \frac{\text{waist}}{\text{hip}}$. Standard WHO cardiovascular risk indicator.
-- **Body Roundness Index (BRI)**: $\text{BRI} = 364.2 - 365.5 \sqrt{1 - \frac{(\text{waist} / 2\pi)^2}{(0.5 \cdot \text{height})^2}}$. Models body eccentricity to quantify visceral adipose tissue volume.
+## Benchmark results
 
-### 3. SMPL-X Render-Back Geometry Reliability Gate
-Deep learning models typically emit high-confidence predictions even on corrupted inputs (e.g., baggy clothes, occlusions, incorrect posture). BodyFit solves this with a **geometry abstention gate**:
-1. Front RGB is processed by NLF (Neural Localizer Fields) to recover SMPL-X parameters ($\beta, \theta, \mathbf{t}$).
-2. The 3D body mesh is reconstructed and projected back into the camera view plane.
-3. The rendered silhouette $S_{\text{render}}$ is compared against the segmented silhouette $S_{\text{observed}}$ using IoU and bidirectional contour Chamfer distance:
-   $$\text{Mismatch} = 0.70 \times (1 - \text{IoU}) + 0.30 \times d_{\text{chamfer}}$$
-4. If $\text{IoU} < 0.55$ or $d_{\text{chamfer}} > 0.05$, the system **refuses to report measurements**, signaling the patient to adjust capture conditions.
+Evaluated on the canonical subject-disjoint BodyM split (`data/bodym/pairs_dimensions.csv`).
 
-### 4. Strict Subject-Disjoint Dataset Integrity
-All train, validation, and test splits are strictly partitioned on unique subject IDs (`sub_XXXX` in a 70/15/15 ratio). Cross-capture leakage (same subject photographed in multiple sessions appearing in both train and test) is completely eliminated.
+### Feature input & leakage ablation
 
----
+| Feature Setting | TP $\le$ 2cm | TP $\le$ 5cm | Waist MAE | Hip MAE | Chest MAE | WHtR MAE | BRI MAE |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Silhouette-Only (Single Front)** | 3.1% | 25.0% | 9.38 cm | 8.78 cm | 8.55 cm | 0.0558 | 1.217 |
+| **Dual-View (Proposed Active)** | **56.2%** | **81.3%** | **2.40 cm** | **2.82 cm** | **2.28 cm** | **0.0139** | **0.275** |
+| **Dual-View + Height** | 59.4% | 96.9% | 1.97 cm | 1.89 cm | 2.10 cm | 0.0114 | 0.227 |
+| **Dual-View + Weight** | 59.4% | 96.9% | 1.94 cm | 1.66 cm | 1.81 cm | 0.0113 | 0.223 |
+| **Dual-View + Height + Weight** | 56.3% | 96.9% | 1.93 cm | 1.68 cm | 1.93 cm | 0.0113 | 0.223 |
 
-## 📊 Empirical Benchmarks & Leakage Ablations
+Moving from single-view to orthogonal dual-view silhouettes cuts Waist MAE by **74.4%** (from 9.38 cm to 2.40 cm). Adding weight metadata provides negligible gain (<0.07 cm), demonstrating that **fused dual-view silhouettes directly encode 3D body volume**.
 
-All models were evaluated on the canonical subject-disjoint BodyM test split (`data/bodym/pairs_dimensions.csv`).
+### Reliability gate coverage vs. error
 
-### Table 1: Feature Input Ablation & Leakage Study
-Evaluated using `5-eval/4ablate.py` to determine whether silhouettes genuinely encode 3D body volume or merely rely on metadata leakage.
-
-| Feature Setting | TP $\le$ 2cm | TP $\le$ 5cm | TP $\le$ 10cm | Waist MAE (cm) | Hip MAE (cm) | Chest MAE (cm) | WHtR MAE | BRI MAE |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Silhouette-Only (Single Front)** | 3.1% | 25.0% | 59.4% | 9.38 | 8.78 | 8.55 | 0.0558 | 1.217 |
-| **Dual-View (Proposed Active)** | **56.2%** | **81.3%** | **100.0%** | **2.40** | **2.82** | **2.28** | **0.0139** | **0.275** |
-| **Dual-View + Height** | 59.4% | 96.9% | 100.0% | 1.97 | 1.89 | 2.10 | 0.0114 | 0.227 |
-| **Dual-View + Weight** | 59.4% | 96.9% | 100.0% | 1.94 | 1.66 | 1.81 | 0.0113 | 0.223 |
-| **Dual-View + Height + Weight** | 56.3% | 96.9% | 100.0% | 1.93 | 1.68 | 1.93 | 0.0113 | 0.223 |
-
-> [!NOTE]
-> **Key Finding**: Moving from single-view to dual-view orthogonal silhouettes cuts Waist MAE by **74.4%** (from 9.38 cm to 2.40 cm). Adding weight metadata provides minimal additional gain (<0.07 cm), proving that **fused dual-view silhouettes capture physical body volume directly**.
-
----
-
-### Table 2: SMPL-X Reliability Gate Coverage vs. Error Tradeoff
-Evaluated on 100 test captures using `5-eval/6gate_eval.py`.
-
-| Gate Threshold | Population Coverage | Accepted Samples | Dimension MAE (cm) | WHR MAE | WHtR MAE | Waist Risk Agreement |
+| Gate Threshold | Coverage | Accepted | Dimension MAE | WHR MAE | WHtR MAE | Risk Agreement |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **None (100% Coverage)** | 100.0% | 100 / 100 | 2.11 cm | 0.0184 | 0.0108 | 81.0% |
 | **Score $\le$ 0.95 (Active Gate)** | **88.2%** | **88 / 100** | **2.08 cm** | **0.0180** | **0.0105** | **86.7%** |
-| **Score $\le$ 0.84 (High Stringency)**| 70.0% | 70 / 100 | 2.36 cm | 0.0211 | 0.0125 | 84.3% |
+| **Score $\le$ 0.84 (High Stringency)** | 70.0% | 70 / 100 | 2.36 cm | 0.0211 | 0.0125 | 84.3% |
 
----
+## Use
 
-## 🚀 Quickstart & Recruiter Demo
-
-BodyFit includes a production-grade, interactive web demo with live inference and real-time Three.js 3D mesh rendering.
-
-### 1. Launch Interactive Demo
 ```bash
-./run_demo.sh 8080
-```
-Open **[http://localhost:8080](http://localhost:8080)** in your browser.
-
-<div align="center">
-
-| Feature | Description |
-| :--- | :--- |
-| ⚡ **1-Click Test** | Instantly runs the full pipeline for test subject Deva in ~50ms |
-| 🔍 **Step-by-Step Inspector** | Visualizes input photos, SAM2 masks, anatomical regions, and dimensions |
-| 🩺 **WHO Risk Gauges** | Dynamic animated clinical risk dials for WHtR, WHR, and BRI |
-| 🧊 **Three.js 3D Studio** | Real-time WebGL viewer for reconstructed SMPL-X 3D meshes (`.obj`) |
-| 📊 **Ablations Explorer** | Interactive tables displaying paper benchmark matrices and leakage checks |
-
-</div>
-
-> [!TIP]
-> Read the full [Recruiter Demo Documentation (`DEMO.md`)](DEMO.md) for detailed feature breakdowns and curl examples.
-
----
-
-## 💻 CLI Reproduction Runbook
-
-### Environment Setup
-```bash
-# Clone the repository
-git clone https://github.com/Chirudeva-Reddy/bodyfit.git
-cd bodyfit
-
-# Verify environment
-python3 -c "import torch; print('PyTorch Version:', torch.__version__)"
-```
-
-### 1. Inference: Full RGB-to-Report Path (with SMPL-X Gate)
-```bash
+# Run full RGB-to-report inference with SMPL-X reliability gate
 PYTHONPATH=. python3 4-infer/1infer.py \
-  --front_rgb "TestPhoto/deva_front.png" \
-  --side_rgb "TestPhoto/deva_side.png" \
-  --ckpt "checkpoints/best_640x480_v4_resnet.pt" \
+  --front_rgb TestPhoto/deva_front.png \
+  --side_rgb TestPhoto/deva_side.png \
+  --ckpt checkpoints/best_640x480_v4_resnet.pt \
   --height_cm 175 \
   --sex male \
   --smplx_fit \
-  --save_silhouettes "outputs/demo/deva" \
-  --save_smplx "outputs/demo/deva/smplx" \
-  --json "outputs/demo/deva/result.json"
+  --save_silhouettes outputs/demo/deva \
+  --save_smplx outputs/demo/deva/smplx \
+  --json outputs/demo/deva/result.json
 ```
 
-### 2. Inference: Direct Precomputed Silhouette Masks
 ```bash
+# Run direct inference on precomputed silhouettes
 PYTHONPATH=. python3 4-infer/1infer.py \
-  --front "out/deva_front_silhouette.png" \
-  --side "out/deva_side_silhouette.png" \
-  --ckpt "checkpoints/best_640x480_v4_resnet.pt" \
+  --front out/deva_front_silhouette.png \
+  --side out/deva_side_silhouette.png \
+  --ckpt checkpoints/best_640x480_v4_resnet.pt \
   --height_cm 175 \
   --sex male
 ```
 
-### 3. Model Training (Subject-Disjoint Split)
-```bash
-PYTHONPATH=. python3 3-train/1train.py \
-  --csv "data/bodym/pairs_dimensions.csv" \
-  --measurement_cols "waist_cm,hip_cm,chest_cm" \
-  --encoder resnet18 \
-  --batch_size 12 \
-  --epochs 40 \
-  --lr 3e-4 \
-  --lambda_reg 2.0 \
-  --augment \
-  --ckpt_tag _v4_resnet
-```
+| Flag | Description |
+| :--- | :--- |
+| `--front_rgb PATH` | Frontal smartphone RGB photograph |
+| `--side_rgb PATH` | Lateral smartphone RGB photograph (~2.8m distance) |
+| `--front PATH` / `--side PATH` | Precomputed binary silhouette masks (640×480) |
+| `--height_cm FLOAT` | Subject height in centimeters |
+| `--sex male\|female` | Biological sex for WHO WHR risk thresholding |
+| `--smplx_fit` | Enable NLF SMPL-X 3D mesh recovery and render-back reliability gate |
+| `--save_smplx DIR` | Export fitted 3D mesh (`.obj`) and rendered silhouette overlay |
+| `--json PATH` | Output structured measurement and risk metrics |
 
-### 4. Evaluation & Metadata Leakage Ablations
-```bash
-# Run metadata leakage study
-PYTHONPATH=. python3 5-eval/4ablate.py \
-  --csv "data/bodym/pairs_dimensions.csv" \
-  --ckpt "checkpoints/best_640x480_v4_resnet.pt" \
-  --measurement_cols "waist_cm,hip_cm,chest_cm" \
-  --tp_on waist_cm
+## Design notes
 
-# Run SMPL-X geometry reliability gate evaluation
-PYTHONPATH=. python3 5-eval/6gate_eval.py \
-  --csv "data/bodym/pairs_dimensions.csv" \
-  --ckpt "checkpoints/best_640x480_v4_resnet.pt" \
-  --measurement_cols "waist_cm,hip_cm,chest_cm" \
-  --max_rows 100 \
-  --device cpu
-```
+**Deliberately not included:** direct body-fat percentage estimation without explicit anchor labels, loose-clothing baseline claims without separate domain-shift validation, and single-view circumference estimation without sagittal depth.
 
----
+**Why dual-view rather than single-view:** A frontal silhouette cannot resolve sagittal depth. Two individuals with identical frontal widths can have vastly different abdominal depths. Dual-view orthogonal capture resolves this ambiguity geometrically without radiation or contact scanning.
 
-## 📁 Repository Structure & Asset Layout
+**Why abstention rather than continuous confidence:** A continuous score still leaves downstream clinical systems to guess whether an output is safe to trust. A hard geometric threshold based on physical 3D mesh consistency turns failure modes into explicit recapture requests.
 
-```text
-bodyfit/
-├── 3-train/                          # Training entrypoints & experiment launchers
-│   └── 1train.py                     # Subject-disjoint training loop (InfoNCE + L1)
-├── 4-infer/                          # Production inference entrypoints
-│   └── 1infer.py                     # Full RGB / silhouette-to-indices pipeline
-├── 5-eval/                          # Evaluation and ablation suite
-│   ├── 4ablate.py                    # Metadata leakage ablation table generator
-│   ├── 5compare.py                   # Checkpoint vs. baseline comparator
-│   └── 6gate_eval.py                 # SMPL-X reliability gate & coverage evaluator
-├── checkpoints/                      # Model checkpoints (best_640x480_v4_resnet.pt)
-├── configs/                          # Segmentation model settings (SAM 2.1 Hiera-L)
-├── data/bodym/                       # Cleaned, anonymized BodyM dataset
-│   ├── manifest.csv                  # Renamed file to original capture traceability
-│   ├── pairs_dimensions.csv          # Canonical training CSV with standardized tape labels
-│   └── subject_key_map.csv           # sub_XXXX anonymization mapping
-├── docs/
-│   ├── assets/                       # Video walkthrough GIF & MP4 animations
-│   │   ├── bodyfit_demo_walkthrough.mp4
-│   │   └── bodyfit_pipeline_walkthrough.gif
-│   ├── diagrams/                     # Architectural diagram artifacts
-│   │   ├── pipeline_architecture.excalidraw  # Editable Excalidraw JSON
-│   │   ├── pipeline_architecture.svg         # Standalone vector SVG
-│   │   └── pipeline_architecture.png         # High-resolution 2x rendered raster
-│   ├── paper/                        # Academic research paper distribution
-│   │   ├── BodyFit_Research_Paper.pdf        # Publication-grade compiled PDF
-│   │   └── paper.html                        # Web viewable paper mirror
-│   └── video_explainer_script.md     # Full scene-by-scene narrated video script
-├── models/
-│   ├── nlf/                          # NLF TorchScript 3D pose localizer
-│   ├── segmentation/                 # YOLOv11m & SAM2.1 weights
-│   └── smplx/                        # SMPL-X neutral/male/female .npz assets
-├── pipeline/                         # Strict RGB -> standardized silhouette segmentation
-│   ├── iphone_pipeline.py            # Canvas standardization (640x480) & envelope checks
-│   └── sam_seg.py                    # Strict YOLOv11m + SAM2.1 multi-mask scoring
-├── src/
-│   ├── infer/                        # Mask I/O, part decomposition, envelope tests
-│   ├── metrics/                      # WHR, WHtR, BRI arithmetic & WHO risk scoring
-│   ├── model/                        # DualViewContrastive, Siamese branches, ConViT GPSA
-│   ├── smplx_fit/                    # NLF SMPL-X recovery & render-back IoU gate
-│   └── train/                        # InfoNCE symmetric loss, data loaders, augmentations
-├── web/                              # Standalone recruiter demo application
-│   ├── index.html                    # Responsive glassmorphic single-page app
-│   ├── app.js                        # UI controller & Three.js 3D WebGL loader
-│   └── server.py                     # Multi-threaded Python server with PyTorch inference
-├── DEMO.md                           # Comprehensive recruiter demo manual
-└── run_demo.sh                       # 1-line demo startup script
-```
+Editable diagram source: [`docs/diagrams/pipeline_architecture.excalidraw`](docs/diagrams/pipeline_architecture.excalidraw) &mdash; open it at [excalidraw.com](https://excalidraw.com).
 
----
+## License
 
-## 🛡️ Clinical Disclaimer & Ethics
-
-> [!WARNING]
-> **Research Disclaimer**: BodyFit is designed for research, risk screening, and non-diagnostic tele-anthropometry. Derived central-adiposity indices (WHtR, WHR, BRI) are screening proxies and do not replace clinical imaging (DEXA, MRI, CT) or formal physician evaluation.
-
----
-
-<div align="center">
-
-**BodyFit Anthropometry &bull; Developed by Chirudeva Reddy**  
-*Computer Vision &bull; Medical AI &bull; Deep Learning*
-
-</div>
+Research and educational use only. See [LICENSE](LICENSE).
