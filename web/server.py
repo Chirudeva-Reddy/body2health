@@ -296,10 +296,12 @@ def run_pipeline_inference(
     timings["step7_clinical_indices_ms"] = round((time.perf_counter() - t0) * 1000, 2)
     timings["total_pipeline_ms"] = round((time.perf_counter() - total_t0) * 1000, 2)
 
-    confidence_intervals = {
-        "waist_cm": {"value": round(measurements.get("waist_cm", 0.0), 2), "ci_95": "±1.97 cm", "mae": 1.97},
-        "hip_cm": {"value": round(measurements.get("hip_cm", 0.0), 2), "ci_95": "±1.89 cm", "mae": 1.89},
-        "chest_cm": {"value": round(measurements.get("chest_cm", 0.0), 2), "ci_95": "±2.10 cm", "mae": 2.10}
+    # Dataset-level mean absolute error from the Dual-View + Height ablation row.
+    # This is a cohort average, not a per-prediction confidence interval.
+    dataset_mae = {
+        "waist_cm": {"value": round(measurements.get("waist_cm", 0.0), 2), "mae_cm": 1.97},
+        "hip_cm": {"value": round(measurements.get("hip_cm", 0.0), 2), "mae_cm": 1.89},
+        "chest_cm": {"value": round(measurements.get("chest_cm", 0.0), 2), "mae_cm": 2.10}
     }
 
     total_area_f = max(1, front_regions.get("body_area_px", 1))
@@ -338,7 +340,7 @@ def run_pipeline_inference(
             "torso_asymmetry": round(float(front_regions.get("left_right_torso_asymmetry", 0.0)), 4)
         },
         "measurements": {k: round(v, 2) for k, v in measurements.items()},
-        "confidence_intervals": confidence_intervals,
+        "dataset_mae": dataset_mae,
         "clinical_indices": {
             "WHR": round(indices.get("WHR", 0.0), 4),
             "WHtR": round(indices.get("WHtR", 0.0), 4),

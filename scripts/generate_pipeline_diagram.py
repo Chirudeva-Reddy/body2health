@@ -87,9 +87,9 @@ def card(x: int, y: int, num: str, title: str, detail: str, t: Dict[str, str],
 
 
 def chip(x: int, label: str, detail: str, fill: str, stroke: str,
-         text_col: str, t: Dict[str, str]) -> str:
+         text_col: str, t: Dict[str, str], css_class: str) -> str:
     return f"""
-  <g>
+  <g class="{css_class}">
     <rect x="{x}" y="{CHIP_Y}" width="{CHIP_W}" height="{CHIP_H}" rx="10"
           fill="{fill}" stroke="{stroke}" stroke-width="1.5"/>
     <text x="{x + CHIP_W // 2}" y="{CHIP_Y + 25}" text-anchor="middle"
@@ -106,19 +106,93 @@ def arrow(x1: int, y1: int, x2: int, y2: int, t: Dict[str, str]) -> str:
             f'stroke="{t["border"]}" stroke-width="2" marker-end="url(#tip)"/>')
 
 
-def build(theme_name: str) -> str:
+# Motion exists to show one thing: the same pipeline runs twice, and the gate
+# sends the result somewhere different each time. Pass one is accepted and
+# reaches Report; pass two is rejected and reaches Abstain. Nothing else moves.
+# CSS animation rather than SMIL so prefers-reduced-motion can switch it off.
+PACKET_SECONDS = 9
+CYCLE_SECONDS = PACKET_SECONDS * 2
+
+
+def animation_css() -> str:
+    return f"""  <style>
+    .packet      {{ animation: flow {PACKET_SECONDS}s linear infinite; }}
+    .out-accept  {{ animation: to-report {CYCLE_SECONDS}s linear infinite; }}
+    .out-abstain {{ animation: to-abstain {CYCLE_SECONDS}s linear infinite; }}
+    .chip-accept {{ animation: lit-report {CYCLE_SECONDS}s linear infinite; }}
+    .chip-abstain{{ animation: lit-abstain {CYCLE_SECONDS}s linear infinite; }}
+
+    /* One trip down the pipeline, ending at the gate. Runs twice per cycle. */
+    @keyframes flow {{
+      0%   {{ transform: translate(200px, 150px); opacity: 0; }}
+      2%   {{ opacity: 1; }}
+      13%  {{ transform: translate(560px, 150px); }}
+      24%  {{ transform: translate(920px, 150px); }}
+      30%  {{ transform: translate(920px, 200px); }}
+      40%  {{ transform: translate(200px, 200px); }}
+      46%  {{ transform: translate(200px, 330px); }}
+      57%  {{ transform: translate(560px, 330px); }}
+      68%  {{ transform: translate(920px, 330px); opacity: 1; }}
+      73%  {{ transform: translate(920px, 330px); opacity: 0; }}
+      100% {{ transform: translate(920px, 330px); opacity: 0; }}
+    }}
+
+    /* Pass one: the gate accepts, so the result reaches Report. */
+    @keyframes to-report {{
+      0%, 33%   {{ transform: translate(920px, 350px); opacity: 0; }}
+      34%       {{ transform: translate(920px, 350px); opacity: 1; }}
+      40%       {{ transform: translate(750px, 370px); opacity: 1; }}
+      44%       {{ transform: translate(750px, 396px); opacity: 1; }}
+      47%, 100% {{ transform: translate(750px, 396px); opacity: 0; }}
+    }}
+
+    /* Pass two: the gate rejects, so the result reaches Abstain instead. */
+    @keyframes to-abstain {{
+      0%, 83%   {{ transform: translate(920px, 350px); opacity: 0; }}
+      84%       {{ transform: translate(920px, 350px); opacity: 1; }}
+      90%       {{ transform: translate(970px, 370px); opacity: 1; }}
+      94%       {{ transform: translate(970px, 396px); opacity: 1; }}
+      97%, 100% {{ transform: translate(970px, 396px); opacity: 0; }}
+    }}
+
+    @keyframes lit-report {{
+      0%, 43%   {{ opacity: 0.4; }}
+      45%, 56%  {{ opacity: 1; }}
+      58%, 100% {{ opacity: 0.4; }}
+    }}
+    @keyframes lit-abstain {{
+      0%, 4%    {{ opacity: 1; }}
+      6%, 93%   {{ opacity: 0.4; }}
+      95%, 100% {{ opacity: 1; }}
+    }}
+
+    @media (prefers-reduced-motion: reduce) {{
+      .packet, .out-accept, .out-abstain {{ animation: none; opacity: 0; }}
+      .chip-accept, .chip-abstain {{ animation: none; opacity: 1; }}
+    }}
+  </style>
+"""
+
+
+def build(theme_name: str, animated: bool) -> str:
     t = THEMES[theme_name]
     parts: List[str] = [
         # Intrinsic width/height give the image a real aspect ratio to scale
         # inside GitHub's column. height="auto" is not valid SVG.
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WIDTH} {HEIGHT}" '
-        f'width="{WIDTH}" height="{HEIGHT}" role="img">',
+        f'width="{WIDTH}" height="{HEIGHT}" role="img" '
+        f'aria-label="Six pipeline stages feed an SMPL-X geometry gate. The gate '
+        f'either reports the measurements or abstains and asks for a recapture.">',
         '  <defs>',
         f'    <marker id="tip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" '
         f'markerHeight="6" orient="auto-start-reverse">',
         f'      <path d="M 0 0 L 10 5 L 0 10 z" fill="{t["border"]}"/>',
         '    </marker>',
         '  </defs>',
+    ]
+    if animated:
+        parts.append(animation_css())
+    parts += [
         f'  <rect width="{WIDTH}" height="{HEIGHT}" fill="{t["bg"]}"/>',
     ]
 
@@ -165,9 +239,21 @@ def build(theme_name: str) -> str:
             f'fill="none" stroke="{colour}" stroke-width="2" marker-end="url(#tip)"/>')
 
     parts.append(chip(accept_x, "Report", "render-back agrees",
-                      t["accept_bg"], t["accept"], t["accept"], t))
+                      t["accept_bg"], t["accept"], t["accept"], t,
+                      "chip-accept" if animated else ""))
     parts.append(chip(abstain_x, "Abstain", "recapture requested",
-                      t["abstain_bg"], t["abstain"], t["abstain"], t))
+                      t["abstain_bg"], t["abstain"], t["abstain"], t,
+                      "chip-abstain" if animated else ""))
+
+    # The moving parts. Drawn last so they sit above the cards they travel over.
+    # The static variant omits them entirely rather than freezing them mid-path.
+    if animated:
+        parts.append(
+            f'  <circle class="packet" r="7" fill="{t["accent"]}" opacity="0"/>')
+        parts.append(
+            f'  <circle class="out-accept" r="7" fill="{t["accept"]}" opacity="0"/>')
+        parts.append(
+            f'  <circle class="out-abstain" r="7" fill="{t["abstain"]}" opacity="0"/>')
 
     parts.append(
         f'  <text x="40" y="{CHIP_Y + 36}" font-family="{SANS}" font-size="16" '
@@ -183,9 +269,10 @@ def build(theme_name: str) -> str:
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for theme in ("light", "dark"):
-        path = OUT_DIR / f"pipeline_{theme}.svg"
-        path.write_text(build(theme), encoding="utf-8")
-        print(f"{path.relative_to(BASE_DIR)}  ({path.stat().st_size / 1024:.1f} KB)")
+        for animated, suffix in ((True, ""), (False, "_static")):
+            path = OUT_DIR / f"pipeline_{theme}{suffix}.svg"
+            path.write_text(build(theme, animated), encoding="utf-8")
+            print(f"{path.relative_to(BASE_DIR)}  ({path.stat().st_size / 1024:.1f} KB)")
 
 
 if __name__ == "__main__":

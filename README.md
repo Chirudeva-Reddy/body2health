@@ -76,6 +76,8 @@ Full payload: [`docs/samples/deva_gate_accepted.json`](docs/samples/deva_gate_ac
 
 <p align="center">
   <picture>
+    <source media="(prefers-color-scheme: dark) and (prefers-reduced-motion: reduce)" srcset="docs/diagrams/pipeline_dark_static.svg">
+    <source media="(prefers-reduced-motion: reduce)" srcset="docs/diagrams/pipeline_light_static.svg">
     <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/pipeline_dark.svg">
     <img alt="Pipeline: dual-view capture, segmentation, Siamese encoders, girth regression and clinical indices feed an SMPL-X geometry gate, which either reports the measurements or abstains and asks for a recapture" src="docs/diagrams/pipeline_light.svg" width="900">
   </picture>
