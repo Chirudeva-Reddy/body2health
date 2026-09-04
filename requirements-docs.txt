@@ -1,0 +1,3 @@
+# Tooling for regenerating README assets (scripts/record_live_demo_video.py).
+# Also needs ffmpeg on PATH and a one-time: python3 -m playwright install chromium
+playwright
