@@ -75,7 +75,10 @@ Full payload: [`docs/samples/deva_gate_accepted.json`](docs/samples/deva_gate_ac
 ## How it works
 
 <p align="center">
-  <img alt="body2fit architecture: dual-view RGB, YOLO and SAM2 segmentation, Siamese encoders, tape girths, central adiposity, SMPL-X render-back gate" src="docs/diagrams/pipeline_architecture.svg" width="760">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/pipeline_dark.svg">
+    <img alt="Pipeline: dual-view capture, segmentation, Siamese encoders, girth regression and clinical indices feed an SMPL-X geometry gate, which either reports the measurements or abstains and asks for a recapture" src="docs/diagrams/pipeline_light.svg" width="900">
+  </picture>
 </p>
 
 1. **Segmentation.** An Ultralytics YOLOv11m detector and Meta SAM 2.1 Hiera-Large generate multi-mask candidates, scored with a solidity objective (`2·solidity + extent + conf − 0.75·border`). Silhouettes are centered on a standardized 640x480 canvas.
@@ -83,6 +86,19 @@ Full payload: [`docs/samples/deva_gate_accepted.json`](docs/samples/deva_gate_ac
 3. **Dimension regression.** The concatenated 1032-D latent feeds multi-task regression heads that predict physical tape girths.
 4. **Clinical indices.** WHtR, WHR, and BRI are computed arithmetically from the predicted girths and the known height.
 5. **Geometry gate.** Neural Localizer Fields fit an SMPL-X body mesh to the front capture and render it back to the camera view. When the render-back disagrees with the observed silhouette, the model abstains rather than reporting corrupted health metrics.
+
+<details>
+<summary><b>&nbsp;Full architecture diagram, with per-stage tensor shapes and loss terms&nbsp;</b></summary>
+
+<br>
+
+The diagram above is the shape of the system. This one carries the implementation detail: candidate mask scoring, the InfoNCE formulation, the fused 1032-D representation, the subject-disjoint split, and the gate's scoring terms.
+
+<img alt="Detailed four-phase architecture with per-stage tensor shapes, loss terms and gate scoring" src="docs/diagrams/pipeline_architecture.png" width="900">
+
+Editable source: [`docs/diagrams/pipeline_architecture.excalidraw`](docs/diagrams/pipeline_architecture.excalidraw), which opens at [excalidraw.com](https://excalidraw.com).
+
+</details>
 
 ## Why bother
 
@@ -207,8 +223,6 @@ Without `--smplx_fit` there is no gate, so `reportable` is absent from the paylo
 **Why abstention rather than a confidence score.** A continuous score leaves the downstream clinical system to decide whether an output is safe to trust. A hard threshold on physical 3D mesh consistency turns a failure into an explicit request to recapture.
 
 **Deliberately out of scope.** Body-fat percentage without anchor labels, loose-clothing performance claims without separate domain-shift validation, and single-view circumference estimation without sagittal depth.
-
-The architecture diagram is editable: open [`docs/diagrams/pipeline_architecture.excalidraw`](docs/diagrams/pipeline_architecture.excalidraw) at [excalidraw.com](https://excalidraw.com).
 
 ## License
 
