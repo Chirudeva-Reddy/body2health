@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Chirudeva-Reddy/bodyfit/blob/main/docs/assets/bodyfit_demo_walkthrough.mp4">Watch in HD</a>
+  <a href="https://github.com/Chirudeva-Reddy/body2health/blob/main/docs/assets/bodyfit_demo_walkthrough.mp4">Watch in HD</a>
   &nbsp;·&nbsp; <a href="#how-it-works">How it works</a>
   &nbsp;·&nbsp; <a href="#live-demo">Run the demo</a>
   &nbsp;·&nbsp; <a href="#benchmark-results">Benchmarks</a>
@@ -97,7 +97,7 @@ body2fit is supervised only on what the dataset actually measures: tape girths (
 A standalone web app with live PyTorch inference, WHO cardiometabolic risk gauges, and a Three.js mesh viewer.
 
 ```bash
-git clone https://github.com/Chirudeva-Reddy/bodyfit && cd bodyfit
+git clone https://github.com/Chirudeva-Reddy/body2health && cd body2health
 ./run_demo.sh 8080
 ```
 
