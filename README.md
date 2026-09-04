@@ -117,6 +117,12 @@ git clone https://github.com/Chirudeva-Reddy/body2health && cd body2health
 ./run_demo.sh 8080
 ```
 
+Nothing else to set up. The trained checkpoint is 136 MB, so it ships as a
+[release asset](https://github.com/Chirudeva-Reddy/body2health/releases/tag/v1.0.0-weights)
+rather than in git; `run_demo.sh` downloads it on first run, checks it against a known
+SHA-256, and reuses it afterwards. The sample captures, silhouettes and the SMPL-X mesh
+are all in the repository, so the demo runs offline once the checkpoint is in place.
+
 ```console
 $ ./run_demo.sh 8080
 ✓ Checkpoint: checkpoints/best_640x480_v4_resnet.pt (MPS hardware accelerated)

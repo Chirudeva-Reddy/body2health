@@ -53,6 +53,8 @@ from src.smpl.gate import default_gate_thresholds, evaluate_smplx_gate
 
 DEFAULT_CKPT = str(ROOT / "checkpoints" / "best_640x480_v4_resnet.pt")
 SMPLX_MODEL_DIR = str(ROOT / "body_models" / "smplx")
+# Demo fixtures live in-repo so a fresh clone can serve the demo.
+DEMO_ASSETS = ROOT / "web" / "demo_assets"
 DEFAULT_PORT = 8080
 TARGET_HW = (640, 480)
 
@@ -98,14 +100,14 @@ def get_cached_presets() -> Dict[str, Dict[str, Any]]:
             "capture_mode": "dual_view",
             "front_photo": "/media/TestPhoto/deva_front.png",
             "side_photo": "/media/TestPhoto/deva_side.png",
-            "front_silhouette": "/media/out/deva_front_silhouette.png",
-            "side_silhouette": "/media/out/deva_side_silhouette.png",
-            "front_overlay": "/media/outputs/demo/deva_strict/front_part_overlay.png",
-            "side_overlay": "/media/outputs/demo/deva_strict/side_part_overlay.png",
-            "smplx_overlay": "/media/outputs/demo/deva_strict/smplx/smplx_front_overlay.png",
-            "smplx_rendered": "/media/outputs/demo/deva_strict/smplx/smplx_rendered_front.png",
+            "front_silhouette": "/media/web/demo_assets/deva_front_silhouette.png",
+            "side_silhouette": "/media/web/demo_assets/deva_side_silhouette.png",
+            "front_overlay": "/media/web/demo_assets/deva_front_part_overlay.png",
+            "side_overlay": "/media/web/demo_assets/deva_side_part_overlay.png",
+            "smplx_overlay": "/media/web/demo_assets/smplx_front_overlay.png",
+            "smplx_rendered": "/media/web/demo_assets/smplx_rendered_front.png",
             "obj_path": "/api/mesh?preset=deva",
-            "cached_result_json": "/media/outputs/demo/deva_strict/result.json",
+            "cached_result_json": "/media/web/demo_assets/deva_strict_result.json",
             "real_measurements": {"waist_cm": 86.73, "hip_cm": 100.29, "chest_cm": 93.36}
         },
         "subject_4577": {
@@ -118,12 +120,12 @@ def get_cached_presets() -> Dict[str, Dict[str, Any]]:
             "capture_mode": "dual_view",
             "front_photo": "/media/TestPhoto/IMG_4577.jpg",
             "side_photo": "/media/TestPhoto/IMG_4373.jpeg",
-            "front_silhouette": "/media/out/IMG_4577_final_silhouette.png",
-            "side_silhouette": "/media/out/IMG_4373_silhouette.png",
-            "front_overlay": "/media/outputs/final/deva/front_regions_overlay.png",
-            "side_overlay": "/media/outputs/final/deva/side_regions_overlay.png",
-            "smplx_overlay": "/media/outputs/demo/deva_strict/smplx/smplx_front_overlay.png",
-            "smplx_rendered": "/media/outputs/demo/deva_strict/smplx/smplx_rendered_front.png",
+            "front_silhouette": "/media/web/demo_assets/img4577_front_silhouette.png",
+            "side_silhouette": "/media/web/demo_assets/img4373_side_silhouette.png",
+            "front_overlay": "/media/web/demo_assets/deva_front_regions_overlay.png",
+            "side_overlay": "/media/web/demo_assets/deva_side_regions_overlay.png",
+            "smplx_overlay": "/media/web/demo_assets/smplx_front_overlay.png",
+            "smplx_rendered": "/media/web/demo_assets/smplx_rendered_front.png",
             "obj_path": "/api/mesh?preset=deva"
         },
         "diagnostic_copy4": {
@@ -136,19 +138,19 @@ def get_cached_presets() -> Dict[str, Dict[str, Any]]:
             "capture_mode": "single_front_view",
             "front_photo": "/media/TestPhoto/image copy 4.png",
             "side_photo": "/media/TestPhoto/image copy 4.png",
-            "front_silhouette": "/media/out/image_copy_4_silhouette.png",
-            "side_silhouette": "/media/out/image_copy_4_silhouette.png",
-            "front_overlay": "/media/outputs/final/deva/front_regions_overlay.png",
-            "side_overlay": "/media/outputs/final/deva/side_regions_overlay.png",
-            "smplx_overlay": "/media/outputs/demo/deva_strict/smplx/smplx_front_overlay.png",
-            "smplx_rendered": "/media/outputs/demo/deva_strict/smplx/smplx_rendered_front.png",
+            "front_silhouette": "/media/web/demo_assets/image_copy_4_silhouette.png",
+            "side_silhouette": "/media/web/demo_assets/image_copy_4_silhouette.png",
+            "front_overlay": "/media/web/demo_assets/deva_front_regions_overlay.png",
+            "side_overlay": "/media/web/demo_assets/deva_side_regions_overlay.png",
+            "smplx_overlay": "/media/web/demo_assets/smplx_front_overlay.png",
+            "smplx_rendered": "/media/web/demo_assets/smplx_rendered_front.png",
             "obj_path": "/api/mesh?preset=deva"
         }
     }
 
 
 def _preset_mask_path(preset_info: Optional[Dict[str, Any]], key: str) -> Optional[str]:
-    """Resolve a preset's silhouette entry ("/media/out/x.png") to a repo-relative path."""
+    """Resolve a preset silhouette entry ("/media/web/demo_assets/x.png") to a repo path."""
     if not preset_info:
         return None
     value = preset_info.get(key)
@@ -214,13 +216,13 @@ def run_pipeline_inference(
     preset_side = _preset_mask_path(preset_info, "side_silhouette")
 
     if front_np is None:
-        resolved_front_path = front_mask_path or preset_front or str(ROOT / "out" / "deva_front_silhouette.png")
+        resolved_front_path = front_mask_path or preset_front or str(DEMO_ASSETS / "deva_front_silhouette.png")
         if not Path(resolved_front_path).is_absolute():
             resolved_front_path = str(ROOT / resolved_front_path)
         front_np = load_mask_binary(resolved_front_path, TARGET_HW)
 
     if side_np is None:
-        resolved_side_path = side_mask_path or preset_side or str(ROOT / "out" / "deva_side_silhouette.png")
+        resolved_side_path = side_mask_path or preset_side or str(DEMO_ASSETS / "deva_side_silhouette.png")
         if not Path(resolved_side_path).is_absolute():
             resolved_side_path = str(ROOT / resolved_side_path)
         side_np = load_mask_binary(resolved_side_path, TARGET_HW)
@@ -363,8 +365,8 @@ def run_pipeline_inference(
                 else "Gate rejected the capture: " + ", ".join(gate_reasons)
             ),
             "obj_url": "/api/mesh?preset=deva",
-            "front_render_overlay": "/media/outputs/demo/deva_strict/smplx/smplx_front_overlay.png",
-            "rendered_silhouette": "/media/outputs/demo/deva_strict/smplx/smplx_rendered_front.png"
+            "front_render_overlay": "/media/web/demo_assets/smplx_front_overlay.png",
+            "rendered_silhouette": "/media/web/demo_assets/smplx_rendered_front.png"
         }
     }
 
@@ -397,7 +399,7 @@ class Body2FitRequestHandler(SimpleHTTPRequestHandler):
             self.serve_file(ROOT / "web" / rel)
             return
 
-        # Route: Media (TestPhoto/, out/, outputs/)
+        # Route: Media (TestPhoto/, web/demo_assets/, and other in-repo assets)
         if path.startswith("/media/"):
             rel = path[7:]
             self.serve_file(ROOT / rel)
@@ -445,10 +447,7 @@ class Body2FitRequestHandler(SimpleHTTPRequestHandler):
 
         # API: 3D OBJ Mesh streaming
         if path == "/api/mesh":
-            obj_path = ROOT / "outputs" / "demo" / "deva_strict" / "smplx" / "smplx_fit.obj"
-            if not obj_path.exists():
-                obj_path = ROOT / "outputs" / "final" / "deva" / "smplx" / "smplx_fit.obj"
-            
+            obj_path = DEMO_ASSETS / "smplx_fit.obj"
             if obj_path.exists():
                 self.serve_file(obj_path, content_type="model/obj")
             else:
