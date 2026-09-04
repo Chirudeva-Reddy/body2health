@@ -116,10 +116,10 @@ curl -X POST http://localhost:8080/api/predict \
     "hip_cm": 106.68,
     "chest_cm": 99.79
   },
-  "confidence_intervals": {
-    "waist_cm": { "value": 91.65, "ci_95": "±1.97 cm", "mae": 1.97 },
-    "hip_cm": { "value": 106.68, "ci_95": "±1.89 cm", "mae": 1.89 },
-    "chest_cm": { "value": 99.79, "ci_95": "±2.10 cm", "mae": 2.10 }
+  "dataset_mae": {
+    "waist_cm": { "value": 91.65, "mae_cm": 1.97 },
+    "hip_cm": { "value": 106.68, "mae_cm": 1.89 },
+    "chest_cm": { "value": 99.79, "mae_cm": 2.10 }
   },
   "clinical_indices": {
     "WHR": 0.8591,

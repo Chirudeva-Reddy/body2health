@@ -49,8 +49,12 @@ from src.infer.silhouette_checks import envelope_check
 from src.infer.silhouette_regions import make_region_overlay, region_metrics
 from src.metrics.body_indices import derive_indices, derive_risk_categories
 from src.metrics.health_risk import assess_health_risk
+from src.smpl.gate import default_gate_thresholds, evaluate_smplx_gate
 
 DEFAULT_CKPT = str(ROOT / "checkpoints" / "best_640x480_v4_resnet.pt")
+SMPLX_MODEL_DIR = str(ROOT / "body_models" / "smplx")
+# Demo fixtures live in-repo so a fresh clone can serve the demo.
+DEMO_ASSETS = ROOT / "web" / "demo_assets"
 DEFAULT_PORT = 8080
 TARGET_HW = (640, 480)
 
@@ -90,25 +94,21 @@ def get_cached_presets() -> Dict[str, Dict[str, Any]]:
             "id": "deva_full",
             "title": "Deva (Full Dual-View - Validated SMPL-X)",
             "subtitle": "Primary Paper Validation Subject • 175cm • Male",
-            "description": "Standard capture with front & lateral silhouettes. Passes SMPL-X geometry reliability gate with 71.0% IoU and 0.011 Chamfer distance. Full central adiposity report generated.",
+            "description": "Standard capture with front and lateral silhouettes. Runs the SMPL-X geometry reliability gate; when the render-back agrees with the silhouettes, the full central-adiposity report is generated.",
             "height_cm": 175.0,
             "sex": "male",
             "capture_mode": "dual_view",
             "front_photo": "/media/TestPhoto/deva_front.png",
             "side_photo": "/media/TestPhoto/deva_side.png",
-            "front_silhouette": "/media/out/deva_front_silhouette.png",
-            "side_silhouette": "/media/out/deva_side_silhouette.png",
-            "front_overlay": "/media/outputs/demo/deva_strict/front_part_overlay.png",
-            "side_overlay": "/media/outputs/demo/deva_strict/side_part_overlay.png",
-            "smplx_overlay": "/media/outputs/demo/deva_strict/smplx/smplx_front_overlay.png",
-            "smplx_rendered": "/media/outputs/demo/deva_strict/smplx/smplx_rendered_front.png",
+            "front_silhouette": "/media/web/demo_assets/deva_front_silhouette.png",
+            "side_silhouette": "/media/web/demo_assets/deva_side_silhouette.png",
+            "front_overlay": "/media/web/demo_assets/deva_front_part_overlay.png",
+            "side_overlay": "/media/web/demo_assets/deva_side_part_overlay.png",
+            "smplx_overlay": "/media/web/demo_assets/smplx_front_overlay.png",
+            "smplx_rendered": "/media/web/demo_assets/smplx_rendered_front.png",
             "obj_path": "/api/mesh?preset=deva",
-            "cached_result_json": "/media/outputs/demo/deva_strict/result.json",
-            "real_measurements": {"waist_cm": 86.73, "hip_cm": 100.29, "chest_cm": 93.36},
-            "gate_accepted": True,
-            "gate_score": 0.206,
-            "front_iou": 0.710,
-            "front_chamfer": 0.011
+            "cached_result_json": "/media/web/demo_assets/deva_strict_result.json",
+            "real_measurements": {"waist_cm": 86.73, "hip_cm": 100.29, "chest_cm": 93.36}
         },
         "subject_4577": {
             "id": "subject_4577",
@@ -120,17 +120,13 @@ def get_cached_presets() -> Dict[str, Dict[str, Any]]:
             "capture_mode": "dual_view",
             "front_photo": "/media/TestPhoto/IMG_4577.jpg",
             "side_photo": "/media/TestPhoto/IMG_4373.jpeg",
-            "front_silhouette": "/media/out/IMG_4577_final_silhouette.png",
-            "side_silhouette": "/media/out/IMG_4373_silhouette.png",
-            "front_overlay": "/media/outputs/final/deva/front_regions_overlay.png",
-            "side_overlay": "/media/outputs/final/deva/side_regions_overlay.png",
-            "smplx_overlay": "/media/outputs/demo/deva_strict/smplx/smplx_front_overlay.png",
-            "smplx_rendered": "/media/outputs/demo/deva_strict/smplx/smplx_rendered_front.png",
-            "obj_path": "/api/mesh?preset=deva",
-            "gate_accepted": True,
-            "gate_score": 0.231,
-            "front_iou": 0.692,
-            "front_chamfer": 0.014
+            "front_silhouette": "/media/web/demo_assets/img4577_front_silhouette.png",
+            "side_silhouette": "/media/web/demo_assets/img4373_side_silhouette.png",
+            "front_overlay": "/media/web/demo_assets/deva_front_regions_overlay.png",
+            "side_overlay": "/media/web/demo_assets/deva_side_regions_overlay.png",
+            "smplx_overlay": "/media/web/demo_assets/smplx_front_overlay.png",
+            "smplx_rendered": "/media/web/demo_assets/smplx_rendered_front.png",
+            "obj_path": "/api/mesh?preset=deva"
         },
         "diagnostic_copy4": {
             "id": "diagnostic_copy4",
@@ -142,19 +138,25 @@ def get_cached_presets() -> Dict[str, Dict[str, Any]]:
             "capture_mode": "single_front_view",
             "front_photo": "/media/TestPhoto/image copy 4.png",
             "side_photo": "/media/TestPhoto/image copy 4.png",
-            "front_silhouette": "/media/out/image_copy_4_silhouette.png",
-            "side_silhouette": "/media/out/image_copy_4_silhouette.png",
-            "front_overlay": "/media/outputs/final/deva/front_regions_overlay.png",
-            "side_overlay": "/media/outputs/final/deva/side_regions_overlay.png",
-            "smplx_overlay": "/media/outputs/demo/deva_strict/smplx/smplx_front_overlay.png",
-            "smplx_rendered": "/media/outputs/demo/deva_strict/smplx/smplx_rendered_front.png",
-            "obj_path": "/api/mesh?preset=deva",
-            "gate_accepted": False,
-            "gate_score": 0.385,
-            "front_iou": 0.598,
-            "front_chamfer": 0.032
+            "front_silhouette": "/media/web/demo_assets/image_copy_4_silhouette.png",
+            "side_silhouette": "/media/web/demo_assets/image_copy_4_silhouette.png",
+            "front_overlay": "/media/web/demo_assets/deva_front_regions_overlay.png",
+            "side_overlay": "/media/web/demo_assets/deva_side_regions_overlay.png",
+            "smplx_overlay": "/media/web/demo_assets/smplx_front_overlay.png",
+            "smplx_rendered": "/media/web/demo_assets/smplx_rendered_front.png",
+            "obj_path": "/api/mesh?preset=deva"
         }
     }
+
+
+def _preset_mask_path(preset_info: Optional[Dict[str, Any]], key: str) -> Optional[str]:
+    """Resolve a preset silhouette entry ("/media/web/demo_assets/x.png") to a repo path."""
+    if not preset_info:
+        return None
+    value = preset_info.get(key)
+    if not value:
+        return None
+    return value[len("/media/"):] if value.startswith("/media/") else value
 
 
 def cv2_to_base64_png(image_bgr_or_rgb: np.ndarray, is_rgb: bool = True) -> str:
@@ -210,14 +212,17 @@ def run_pipeline_inference(
             side_np = cv2.resize(side_np, (TARGET_HW[1], TARGET_HW[0]), interpolation=cv2.INTER_NEAREST)
 
     # Fallback to mask paths or default preset
+    preset_front = _preset_mask_path(preset_info, "front_silhouette")
+    preset_side = _preset_mask_path(preset_info, "side_silhouette")
+
     if front_np is None:
-        resolved_front_path = front_mask_path or (str(ROOT / "out" / "deva_front_silhouette.png"))
+        resolved_front_path = front_mask_path or preset_front or str(DEMO_ASSETS / "deva_front_silhouette.png")
         if not Path(resolved_front_path).is_absolute():
             resolved_front_path = str(ROOT / resolved_front_path)
         front_np = load_mask_binary(resolved_front_path, TARGET_HW)
 
     if side_np is None:
-        resolved_side_path = side_mask_path or (str(ROOT / "out" / "deva_side_silhouette.png"))
+        resolved_side_path = side_mask_path or preset_side or str(DEMO_ASSETS / "deva_side_silhouette.png")
         if not Path(resolved_side_path).is_absolute():
             resolved_side_path = str(ROOT / resolved_side_path)
         side_np = load_mask_binary(resolved_side_path, TARGET_HW)
@@ -260,24 +265,27 @@ def run_pipeline_inference(
     risks = pred.risks
     timings["step4_5_forward_pass_ms"] = round((time.perf_counter() - t0) * 1000, 2)
 
-    # Step 6: Clinical Central-Adiposity Index Derivation & Risk Assessment
+    # Step 6: SMPL-X Render-Back Reliability Gate
     t0 = time.perf_counter()
-    gate_accepted = True
-    gate_score = 0.206
-    front_iou = 0.710
-    front_chamfer = 0.011
+    thresholds = default_gate_thresholds()
+    gate = evaluate_smplx_gate(
+        front_np,
+        side_np,
+        measurements,
+        height_cm,
+        sex,
+        SMPLX_MODEL_DIR,
+        thresholds,
+    )
+    gate_accepted = gate.accepted
+    gate_score = gate.score
+    gate_reasons = gate.reasons
+    front_iou = gate.metrics["front_iou"]
+    front_chamfer = gate.metrics["front_chamfer"]
+    timings["step6_smplx_gating_ms"] = round((time.perf_counter() - t0) * 1000, 2)
 
-    if preset_info and "gate_accepted" in preset_info:
-        gate_accepted = preset_info["gate_accepted"]
-        gate_score = preset_info.get("gate_score", 0.206)
-        front_iou = preset_info.get("front_iou", 0.710)
-        front_chamfer = preset_info.get("front_chamfer", 0.011)
-    elif not envelope_passed:
-        gate_accepted = False
-        gate_score = 0.42
-        front_iou = 0.58
-        front_chamfer = 0.038
-
+    # Step 7: Clinical Central-Adiposity Index Derivation & Risk Assessment
+    t0 = time.perf_counter()
     health_summary = assess_health_risk(
         measurements,
         indices,
@@ -285,18 +293,15 @@ def run_pipeline_inference(
         sex,
         reportable=gate_accepted
     ).to_dict()
-    timings["step6_clinical_indices_ms"] = round((time.perf_counter() - t0) * 1000, 2)
+    timings["step7_clinical_indices_ms"] = round((time.perf_counter() - t0) * 1000, 2)
+    timings["total_pipeline_ms"] = round((time.perf_counter() - total_t0) * 1000, 2)
 
-    # Step 7: SMPL-X 3D Geometry Reconstruction & Gate Packaging
-    t0 = time.perf_counter()
-    total_elapsed = round((time.perf_counter() - total_t0) * 1000, 2)
-    timings["step7_smplx_gating_ms"] = round((time.perf_counter() - t0) * 1000, 2)
-    timings["total_pipeline_ms"] = total_elapsed
-
-    confidence_intervals = {
-        "waist_cm": {"value": round(measurements.get("waist_cm", 0.0), 2), "ci_95": "±1.97 cm", "mae": 1.97},
-        "hip_cm": {"value": round(measurements.get("hip_cm", 0.0), 2), "ci_95": "±1.89 cm", "mae": 1.89},
-        "chest_cm": {"value": round(measurements.get("chest_cm", 0.0), 2), "ci_95": "±2.10 cm", "mae": 2.10}
+    # Dataset-level mean absolute error from the Dual-View + Height ablation row.
+    # This is a cohort average, not a per-prediction confidence interval.
+    dataset_mae = {
+        "waist_cm": {"value": round(measurements.get("waist_cm", 0.0), 2), "mae_cm": 1.97},
+        "hip_cm": {"value": round(measurements.get("hip_cm", 0.0), 2), "mae_cm": 1.89},
+        "chest_cm": {"value": round(measurements.get("chest_cm", 0.0), 2), "mae_cm": 2.10}
     }
 
     total_area_f = max(1, front_regions.get("body_area_px", 1))
@@ -335,7 +340,7 @@ def run_pipeline_inference(
             "torso_asymmetry": round(float(front_regions.get("left_right_torso_asymmetry", 0.0)), 4)
         },
         "measurements": {k: round(v, 2) for k, v in measurements.items()},
-        "confidence_intervals": confidence_intervals,
+        "dataset_mae": dataset_mae,
         "clinical_indices": {
             "WHR": round(indices.get("WHR", 0.0), 4),
             "WHtR": round(indices.get("WHtR", 0.0), 4),
@@ -348,11 +353,22 @@ def run_pipeline_inference(
             "score": round(gate_score, 4),
             "front_iou": round(front_iou, 4),
             "front_chamfer": round(front_chamfer, 4),
+            "metrics": {k: round(v, 4) for k, v in gate.metrics.items()},
+            "reasons": gate_reasons,
+            "thresholds": {
+                "max_score": thresholds.max_score,
+                "min_render_iou": thresholds.min_render_iou,
+                "max_chamfer": thresholds.max_chamfer,
+            },
             "status_badge": "ACCEPTED (Reliable)" if gate_accepted else "REJECTED (Recapture Recommended)",
-            "message": "SMPL-X fit satisfies strict anatomical silhouette alignment thresholds." if gate_accepted else "Render-back IoU below 0.65 cutoff or pose mismatch detected.",
+            "message": (
+                "SMPL-X render-back agrees with the observed silhouettes."
+                if gate_accepted
+                else "Gate rejected the capture: " + ", ".join(gate_reasons)
+            ),
             "obj_url": "/api/mesh?preset=deva",
-            "front_render_overlay": "/media/outputs/demo/deva_strict/smplx/smplx_front_overlay.png",
-            "rendered_silhouette": "/media/outputs/demo/deva_strict/smplx/smplx_rendered_front.png"
+            "front_render_overlay": "/media/web/demo_assets/smplx_front_overlay.png",
+            "rendered_silhouette": "/media/web/demo_assets/smplx_rendered_front.png"
         }
     }
 
@@ -385,7 +401,7 @@ class Body2FitRequestHandler(SimpleHTTPRequestHandler):
             self.serve_file(ROOT / "web" / rel)
             return
 
-        # Route: Media (TestPhoto/, out/, outputs/)
+        # Route: Media (TestPhoto/, web/demo_assets/, and other in-repo assets)
         if path.startswith("/media/"):
             rel = path[7:]
             self.serve_file(ROOT / rel)
@@ -433,10 +449,7 @@ class Body2FitRequestHandler(SimpleHTTPRequestHandler):
 
         # API: 3D OBJ Mesh streaming
         if path == "/api/mesh":
-            obj_path = ROOT / "outputs" / "demo" / "deva_strict" / "smplx" / "smplx_fit.obj"
-            if not obj_path.exists():
-                obj_path = ROOT / "outputs" / "final" / "deva" / "smplx" / "smplx_fit.obj"
-            
+            obj_path = DEMO_ASSETS / "smplx_fit.obj"
             if obj_path.exists():
                 self.serve_file(obj_path, content_type="model/obj")
             else:

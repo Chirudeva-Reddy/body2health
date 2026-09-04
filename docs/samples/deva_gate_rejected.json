@@ -1,0 +1,231 @@
+{
+  "capture_mode": "front_side_rgb",
+  "checkpoint": "checkpoints/best_640x480_v4_resnet.pt",
+  "estimate_mode": "dual_view",
+  "front": "outputs/final/deva/front_silhouette.png",
+  "health_summary": {
+    "components": [
+      {
+        "borderline": false,
+        "category": "increased",
+        "label": "Increased central-adiposity screening risk",
+        "message": "WHtR is 0.5220; cutoff reference: 0.50 and 0.60.",
+        "name": "WHtR",
+        "value": 0.5220375279017857
+      },
+      {
+        "borderline": false,
+        "category": "not_increased",
+        "label": "No increased WHR risk",
+        "message": "WHR is 0.8657; cutoff reference: 0.90.",
+        "name": "WHR",
+        "value": 0.8656513761494419
+      },
+      {
+        "borderline": false,
+        "category": "not_increased",
+        "label": "No increased waist circumference risk",
+        "message": "waist circumference is 91.3566; cutoff reference: 94 cm and 102 cm.",
+        "name": "waist_circumference",
+        "value": 91.3565673828125
+      },
+      {
+        "borderline": false,
+        "category": "exploratory",
+        "label": "Exploratory index",
+        "message": "BRI is reported for context only; no WHO-style risk category is assigned.",
+        "name": "BRI",
+        "value": 3.7814843472223743
+      }
+    ],
+    "disclaimer": "Screening estimate of central-adiposity and cardiometabolic risk from image-based anthropometry; not a diagnosis or substitute for clinical assessment.",
+    "message": "Central-adiposity risk labels were not reported because the SMPL-X reliability gate rejected the capture.",
+    "overall_risk": "not_reported",
+    "primary_driver": "geometry_gate",
+    "reportable": false
+  },
+  "height_cm": 175.0,
+  "indices": {
+    "BRI": 3.7814843472223743,
+    "WHR": 0.8656513761494419,
+    "WHtR": 0.5220375279017857
+  },
+  "invalid_indices": {},
+  "measurements": {
+    "chest_cm": 98.12692260742188,
+    "hip_cm": 105.5350570678711,
+    "waist_cm": 91.3565673828125
+  },
+  "output_dir": "outputs/final/deva",
+  "reportable": false,
+  "risks": {
+    "BRI": "exploratory_no_who_category",
+    "WHR": "not_increased",
+    "WHtR_secondary": "increased",
+    "waist_circumference": "not_increased"
+  },
+  "segmentation_paths": {
+    "front": "outputs/final/deva/front_silhouette.png",
+    "side": "outputs/final/deva/side_silhouette.png"
+  },
+  "sex": "male",
+  "side": "outputs/final/deva/side_silhouette.png",
+  "silhouette_region_artifacts": {
+    "front": {
+      "metrics": "outputs/final/deva/front_regions.json",
+      "overlay": "outputs/final/deva/front_regions_overlay.png"
+    },
+    "side": {
+      "metrics": "outputs/final/deva/side_regions.json",
+      "overlay": "outputs/final/deva/side_regions_overlay.png"
+    }
+  },
+  "smpl_gate": null,
+  "smplx_fit": {
+    "accepted": false,
+    "alignment": {
+      "center_x_px": 239.0,
+      "center_y_px": 325.5,
+      "roll_deg": 0.0,
+      "scale_px_per_m": 352.4285138857139,
+      "yaw_deg": 0.0
+    },
+    "betas": [
+      0.6488145589828491,
+      -0.3267430365085602,
+      -0.0034983051009476185,
+      -0.002556145889684558,
+      0.0027097275014966726,
+      -0.0006536143482662737,
+      0.0015960747841745615,
+      0.000534267514012754,
+      0.0007039450574666262,
+      0.00019525499374140054
+    ],
+    "body_pose": [
+      0.1296304613351822,
+      0.0703306496143341,
+      0.14803460240364075,
+      0.07569684088230133,
+      -0.00802867766469717,
+      -0.13479186594486237,
+      0.15547344088554382,
+      -0.012792715802788734,
+      -0.0023818816989660263,
+      0.0343698151409626,
+      0.002451046835631132,
+      -0.015469820238649845,
+      0.02851543016731739,
+      0.015793174505233765,
+      -0.029827266931533813,
+      -0.06762398779392242,
+      0.024188626557588577,
+      -0.0671323761343956,
+      -0.15554103255271912,
+      0.30208152532577515,
+      0.012874744832515717,
+      0.08854182064533234,
+      -0.3049759268760681,
+      0.08202874660491943,
+      -0.03365848585963249,
+      -0.0040898812003433704,
+      -0.0020491224713623524,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      -0.13687506318092346,
+      0.03310605511069298,
+      0.013490339741110802,
+      0.1055302545428276,
+      -0.03769216686487198,
+      -0.17912575602531433,
+      0.05035216361284256,
+      0.011559109203517437,
+      0.17779767513275146,
+      0.03006885014474392,
+      0.006140764337033033,
+      -0.011584603227674961,
+      0.11952225118875504,
+      -0.3048489987850189,
+      -0.8869903683662415,
+      0.20375269651412964,
+      0.3536720275878906,
+      0.9079347848892212,
+      0.13169647753238678,
+      -0.19675162434577942,
+      -0.13358794152736664,
+      0.08235858380794525,
+      0.21284210681915283,
+      0.12173037976026535,
+      -0.2442179024219513,
+      -0.027920514345169067,
+      0.11356371641159058,
+      -0.1267324984073639,
+      -0.005865927319973707,
+      -0.15715710818767548
+    ],
+    "global_orient": [
+      3.173370599746704,
+      0.029138898476958275,
+      -0.11885932087898254
+    ],
+    "metrics": {
+      "bbox_center_distance_px": 6.0,
+      "bbox_center_x_error_px": 0.0,
+      "bbox_center_y_error_px": 6.0,
+      "bbox_height_ratio": 0.9625,
+      "bbox_width_ratio": 0.942652329749104,
+      "front_chamfer": 0.007842542827129364,
+      "front_foreground_ratio": 0.257412109375,
+      "front_iou": 0.7961349961180124,
+      "hip_iou": 0.6673270403604864,
+      "input_bbox_x0": 100.0,
+      "input_bbox_x1": 378.0,
+      "input_bbox_y0": 0.0,
+      "input_bbox_y1": 639.0,
+      "input_touches_border": 1.0,
+      "input_touches_bottom": 1.0,
+      "input_touches_left": 0.0,
+      "input_touches_right": 0.0,
+      "input_touches_top": 1.0,
+      "left_shoulder_residual_area": 0.06201334816462736,
+      "lower_body_iou": 0.6668980196187303,
+      "rendered_bbox_x0": 108.0,
+      "rendered_bbox_x1": 370.0,
+      "rendered_bbox_y0": 18.0,
+      "rendered_bbox_y1": 633.0,
+      "rendered_foreground_ratio": 0.22455078125,
+      "right_shoulder_residual_area": 0.04126704795424549,
+      "score": 0.16657036983816786,
+      "shoulder_chamfer": 0.0066775587045081715,
+      "shoulder_iou": 0.9519558939354161,
+      "torso_iou": 0.8640862322390985
+    },
+    "reasons": [
+      "hip_render_mismatch",
+      "lower_body_render_mismatch"
+    ],
+    "score": 0.16657036983816786,
+    "smplx_model_path": "models/smplx/SMPLX_MALE.npz",
+    "translation": [
+      -0.005363134667277336,
+      0.3292480409145355,
+      -0.04129957780241966
+    ],
+    "visuals": {
+      "alignment_diagnostics": "outputs/final/deva/smplx/smplx_alignment_diagnostics.json",
+      "front_overlay": "outputs/final/deva/smplx/smplx_front_overlay.png",
+      "front_overlay_bboxes": "outputs/final/deva/smplx/smplx_front_overlay_bboxes.png",
+      "front_shoulder_overlay": "outputs/final/deva/smplx/smplx_front_shoulder_overlay.png",
+      "obj": "outputs/final/deva/smplx/smplx_fit.obj",
+      "rendered_front": "outputs/final/deva/smplx/smplx_rendered_front.png"
+    }
+  },
+  "source_image_paths": {
+    "front": "TestPhoto/deva_front.png",
+    "side": "TestPhoto/deva_side.png"
+  }
+}
