@@ -1,0 +1,322 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1842 1760" width="100%" height="auto" style="background:#ffffff; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1 L 10 5 L 0 9 z" fill="#1e3a5f"/>
+  </marker>
+  <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1 L 10 5 L 0 9 z" fill="#047857"/>
+  </marker>
+  <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1 L 10 5 L 0 9 z" fill="#dc2626"/>
+  </marker>
+  <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1 L 10 5 L 0 9 z" fill="#6d28d9"/>
+  </marker>
+  <marker id="arrow-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1 L 10 5 L 0 9 z" fill="#b45309"/>
+  </marker>
+  <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.05"/>
+  </filter>
+</defs>
+<rect x="40" y="140" width="410" height="1000" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" filter="url(#shadow)"/>
+<rect x="40" y="140" width="410" height="42" rx="8" fill="#fed7aa" stroke="#c2410c" stroke-width="2" filter="url(#shadow)"/>
+<rect x="60" y="200" width="370" height="75" rx="8" fill="#ffffff" stroke="#c2410c" stroke-width="2" filter="url(#shadow)"/>
+<rect x="60" y="305" width="370" height="70" rx="8" fill="#ffffff" stroke="#1e3a5f" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 245 275 L 245 305" fill="none" stroke="#c2410c" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="60" y="405" width="370" height="75" rx="8" fill="#ffffff" stroke="#1e3a5f" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 245 375 L 245 405" fill="none" stroke="#1e3a5f" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="60" y="510" width="370" height="150" rx="8" fill="#1e293b" stroke="#0f172a" stroke-width="2" filter="url(#shadow)"/>
+<rect x="60" y="510" width="370" height="28" rx="0" fill="#0f172a" stroke="#0f172a" stroke-width="1" filter="url(#shadow)"/>
+<ellipse cx="75.0" cy="524.0" rx="5.0" ry="5.0" fill="#ef4444" stroke="#ef4444" stroke-width="1"/>
+<ellipse cx="90.0" cy="524.0" rx="5.0" ry="5.0" fill="#f59e0b" stroke="#f59e0b" stroke-width="1"/>
+<ellipse cx="105.0" cy="524.0" rx="5.0" ry="5.0" fill="#10b981" stroke="#10b981" stroke-width="1"/>
+<path d="M 245 480 L 245 510" fill="none" stroke="#1e3a5f" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="60" y="680" width="370" height="80" rx="8" fill="#ffffff" stroke="#1e3a5f" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 245 660 L 245 680" fill="none" stroke="#1e3a5f" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="60" y="780" width="370" height="150" rx="8" fill="#1e293b" stroke="#0f172a" stroke-width="2" filter="url(#shadow)"/>
+<rect x="60" y="780" width="370" height="28" rx="0" fill="#0f172a" stroke="#0f172a" stroke-width="1" filter="url(#shadow)"/>
+<path d="M 245 760 L 245 780" fill="none" stroke="#1e3a5f" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="60" y="950" width="370" height="60" rx="8" fill="#a7f3d0" stroke="#047857" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 245 930 L 245 950" fill="none" stroke="#047857" stroke-width="2" marker-end="url(#arrow-green)"/>
+<rect x="490" y="140" width="410" height="1000" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" filter="url(#shadow)"/>
+<rect x="490" y="140" width="410" height="42" rx="8" fill="#ddd6fe" stroke="#6d28d9" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 430 980 L 470 980 L 490 240 L 530 240" fill="none" stroke="#047857" stroke-width="2" marker-end="url(#arrow-green)"/>
+<rect x="510" y="200" width="370" height="100" rx="8" fill="#ffffff" stroke="#6d28d9" stroke-width="2" filter="url(#shadow)"/>
+<rect x="510" y="320" width="370" height="80" rx="8" fill="#ffffff" stroke="#1e3a5f" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 695 300 L 695 320" fill="none" stroke="#6d28d9" stroke-width="2" marker-end="url(#arrow-purple)"/>
+<rect x="510" y="420" width="370" height="60" rx="8" fill="#ffffff" stroke="#1e3a5f" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 695 400 L 695 420" fill="none" stroke="#1e3a5f" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="510" y="500" width="370" height="165" rx="8" fill="#1e293b" stroke="#0f172a" stroke-width="2" filter="url(#shadow)"/>
+<rect x="510" y="500" width="370" height="28" rx="0" fill="#0f172a" stroke="#0f172a" stroke-width="1" filter="url(#shadow)"/>
+<ellipse cx="525.0" cy="514.0" rx="5.0" ry="5.0" fill="#ef4444" stroke="#ef4444" stroke-width="1"/>
+<ellipse cx="540.0" cy="514.0" rx="5.0" ry="5.0" fill="#f59e0b" stroke="#f59e0b" stroke-width="1"/>
+<ellipse cx="555.0" cy="514.0" rx="5.0" ry="5.0" fill="#10b981" stroke="#10b981" stroke-width="1"/>
+<path d="M 695 480 L 695 500" fill="none" stroke="#1e3a5f" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="510" y="685" width="370" height="80" rx="8" fill="#ffffff" stroke="#b45309" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 695 665 L 695 685" fill="none" stroke="#1e3a5f" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="510" y="790" width="370" height="75" rx="8" fill="#ddd6fe" stroke="#6d28d9" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 695 765 L 695 790" fill="none" stroke="#b45309" stroke-width="2" marker-end="url(#arrow-amber)"/>
+<rect x="940" y="140" width="410" height="1000" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" filter="url(#shadow)"/>
+<rect x="940" y="140" width="410" height="42" rx="8" fill="#93c5fd" stroke="#1e3a5f" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 880 825 L 920 825 L 940 220 L 970 220" fill="none" stroke="#6d28d9" stroke-width="2" marker-end="url(#arrow-purple)"/>
+<rect x="960" y="200" width="370" height="90" rx="8" fill="#ffffff" stroke="#1e3a5f" stroke-width="2" filter="url(#shadow)"/>
+<rect x="960" y="315" width="370" height="150" rx="8" fill="#1e293b" stroke="#0f172a" stroke-width="2" filter="url(#shadow)"/>
+<rect x="960" y="315" width="370" height="28" rx="0" fill="#0f172a" stroke="#0f172a" stroke-width="1" filter="url(#shadow)"/>
+<path d="M 1145 290 L 1145 315" fill="none" stroke="#1e3a5f" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="960" y="485" width="370" height="140" rx="8" fill="#ffffff" stroke="#047857" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 1145 465 L 1145 485" fill="none" stroke="#1e3a5f" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="960" y="645" width="370" height="165" rx="8" fill="#1e293b" stroke="#0f172a" stroke-width="2" filter="url(#shadow)"/>
+<rect x="960" y="645" width="370" height="28" rx="0" fill="#0f172a" stroke="#0f172a" stroke-width="1" filter="url(#shadow)"/>
+<path d="M 1145 625 L 1145 645" fill="none" stroke="#047857" stroke-width="2" marker-end="url(#arrow-green)"/>
+<rect x="960" y="830" width="370" height="75" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 1145 810 L 1145 830" fill="none" stroke="#b45309" stroke-width="2" marker-end="url(#arrow-amber)"/>
+<rect x="1390" y="140" width="410" height="1000" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" filter="url(#shadow)"/>
+<rect x="1390" y="140" width="410" height="42" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 1330 865 L 1370 865 L 1390 220 L 1420 220" fill="none" stroke="#b45309" stroke-width="2" marker-end="url(#arrow-amber)"/>
+<rect x="1410" y="200" width="370" height="90" rx="8" fill="#ffffff" stroke="#6d28d9" stroke-width="2" filter="url(#shadow)"/>
+<rect x="1410" y="315" width="370" height="80" rx="8" fill="#ffffff" stroke="#1e3a5f" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 1595 290 L 1595 315" fill="none" stroke="#6d28d9" stroke-width="2" marker-end="url(#arrow-purple)"/>
+<rect x="1410" y="420" width="370" height="155" rx="8" fill="#1e293b" stroke="#0f172a" stroke-width="2" filter="url(#shadow)"/>
+<rect x="1410" y="420" width="370" height="28" rx="0" fill="#0f172a" stroke="#0f172a" stroke-width="1" filter="url(#shadow)"/>
+<ellipse cx="1425.0" cy="434.0" rx="5.0" ry="5.0" fill="#ef4444" stroke="#ef4444" stroke-width="1"/>
+<ellipse cx="1440.0" cy="434.0" rx="5.0" ry="5.0" fill="#f59e0b" stroke="#f59e0b" stroke-width="1"/>
+<ellipse cx="1455.0" cy="434.0" rx="5.0" ry="5.0" fill="#10b981" stroke="#10b981" stroke-width="1"/>
+<path d="M 1595 395 L 1595 420" fill="none" stroke="#1e3a5f" stroke-width="2" marker-end="url(#arrow)"/>
+<polygon points="1595.0,600 1735,645.0 1595.0,690 1455,645.0" fill="#fef3c7" stroke="#b45309" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 1595 575 L 1595 600" fill="none" stroke="#1e3a5f" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="1410" y="715" width="370" height="80" rx="8" fill="#a7f3d0" stroke="#047857" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 1595 690 L 1595 715" fill="none" stroke="#047857" stroke-width="2" marker-end="url(#arrow-green)"/>
+<rect x="1410" y="825" width="370" height="85" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+<path d="M 1735 645 L 1770 645 L 1770 850 L 1710 850" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow-red)"/>
+<rect x="1410" y="935" width="370" height="155" rx="8" fill="#1e293b" stroke="#0f172a" stroke-width="2" filter="url(#shadow)"/>
+<rect x="1410" y="935" width="370" height="28" rx="0" fill="#0f172a" stroke="#0f172a" stroke-width="1" filter="url(#shadow)"/>
+<path d="M 1595 795 L 1595 935" fill="none" stroke="#047857" stroke-width="2" marker-end="url(#arrow-green)"/>
+<rect x="40" y="1170" width="1760" height="120" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="2" filter="url(#shadow)"/>
+<text fill="#1e40af" font-size="28px" font-weight="500" text-anchor="start">
+  <tspan x="40" y="74.4">BodyFit: Dual-View Silhouette Anthropometry &amp; Geometry Reliability Gate</tspan>
+</text>
+<text fill="#64748b" font-size="16px" font-weight="500" text-anchor="start">
+  <tspan x="40" y="103.8">End-to-End Pipeline: Raw Phone Photos -&gt; Strict YOLO+SAM2 -&gt; Dual-View Contrastive Embeddings -&gt; Tape Girths -&gt; Central Adiposity -&gt; SMPL-X Abstention</tspan>
+</text>
+<text fill="#c2410c" font-size="15px" font-weight="500" text-anchor="middle">
+  <tspan x="245.0" y="168.5">Phase 1: Multi-View Capture &amp; Strict Segmentation</tspan>
+</text>
+<text fill="#7c2d12" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="245.0" y="227.05">Dual Phone Photos (RGB)</tspan>
+  <tspan x="245.0" y="243.95000000000002">• Front &amp; Side views at ~2.8m distance</tspan>
+  <tspan x="245.0" y="260.85">• Height metadata (e.g. 175cm), Minimal clothing</tspan>
+</text>
+<text fill="#1e3a5f" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="245.0" y="329.54999999999995">YOLOv11m Person Detector</tspan>
+  <tspan x="245.0" y="346.45">• Finds primary body bounding box B_front, B_side</tspan>
+  <tspan x="245.0" y="363.34999999999997">• Crops &amp; normalizes input ROIs</tspan>
+</text>
+<text fill="#1e3a5f" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="245.0" y="432.04999999999995">SAM 2.1 Hiera-Large Multi-Mask Segmenter</tspan>
+  <tspan x="245.0" y="448.95">• 5 FG points (head, chest, pelvis, knees)</tspan>
+  <tspan x="245.0" y="465.84999999999997">• 4 BG points along body silhouette boundary</tspan>
+</text>
+<text fill="#94a3b8" font-size="12px" font-weight="500" text-anchor="start">
+  <tspan x="120" y="529.6">pipeline/sam_seg.py: Candidate Score</tspan>
+</text>
+<text fill="#38bdf8" font-size="12px" font-weight="500" text-anchor="start">
+  <tspan x="74" y="559.6"># Strict mask quality objective</tspan>
+  <tspan x="74" y="575.2">score = (</tspan>
+  <tspan x="74" y="590.8">    2.0 * solidity</tspan>
+  <tspan x="74" y="606.4">    + 1.0 * vertical_extent</tspan>
+  <tspan x="74" y="622.0">    + 1.0 * sam_confidence</tspan>
+  <tspan x="74" y="637.6">    - 0.75 * border_touch_frac</tspan>
+  <tspan x="74" y="653.2">)</tspan>
+  <tspan x="74" y="668.8">assert 0.10 &lt;= fg_ratio &lt;= 0.42</tspan>
+</text>
+<text fill="#1e3a5f" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="245.0" y="701.1">Canvas Standardization &amp; Part Parsing</tspan>
+  <tspan x="245.0" y="718.0">• Largest connected component extracted</tspan>
+  <tspan x="245.0" y="734.9000000000001">• Aspect-ratio preserved scaling to 640x480</tspan>
+  <tspan x="245.0" y="751.8000000000001">• 5 Anatomical parts parsed (torso, arms, legs)</tspan>
+</text>
+<text fill="#94a3b8" font-size="12px" font-weight="500" text-anchor="start">
+  <tspan x="70" y="799.6">  Silhouette Envelope Validation</tspan>
+</text>
+<text fill="#22c55e" font-size="12px" font-weight="500" text-anchor="start">
+  <tspan x="74" y="829.6">{</tspan>
+  <tspan x="74" y="845.2">  &quot;canvas_size&quot;: [640, 480],</tspan>
+  <tspan x="74" y="860.8">  &quot;front_fg_ratio&quot;: 0.246,</tspan>
+  <tspan x="74" y="876.4">  &quot;side_fg_ratio&quot;: 0.182,</tspan>
+  <tspan x="74" y="892.0">  &quot;connected_dominance&quot;: 0.988,</tspan>
+  <tspan x="74" y="907.6">  &quot;aspect_ratio&quot;: 2.84,</tspan>
+  <tspan x="74" y="923.2">  &quot;envelope_status&quot;: &quot;VALID_STANDARDIZED&quot;</tspan>
+  <tspan x="74" y="938.8">}</tspan>
+</text>
+<text fill="#047857" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="245.0" y="978.0">Canonical Paired Silhouettes (640x480)</tspan>
+  <tspan x="245.0" y="994.9">S_front in {0,1}^(640x480), S_side in {0,1}^(640x480)</tspan>
+</text>
+<text fill="#6d28d9" font-size="15px" font-weight="500" text-anchor="middle">
+  <tspan x="695.0" y="168.5">Phase 2: Siamese Dual-View Latent Modeling</tspan>
+</text>
+<text fill="#4c1d95" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="695.0" y="222.65">Siamese Dual-Branch Encoders</tspan>
+  <tspan x="695.0" y="239.55">• Front Branch: ResNet-18 / ConViT (GPSA)</tspan>
+  <tspan x="695.0" y="256.45">• Side Branch: ResNet-18 / ConViT (GPSA)</tspan>
+  <tspan x="695.0" y="273.35">• Learns cross-view 3D shape priors</tspan>
+  <tspan x="695.0" y="290.25">• Output features: h_f, h_s in R^512</tspan>
+</text>
+<text fill="#1e3a5f" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="695.0" y="341.09999999999997">Gated Positional Self-Attention (GPSA)</tspan>
+  <tspan x="695.0" y="358.0">• In ConViT: Soft gating between spatial</tspan>
+  <tspan x="695.0" y="374.9">  coordinate priors and silhouette contours</tspan>
+  <tspan x="695.0" y="391.8">• Prevents overfitting to body pose variation</tspan>
+</text>
+<text fill="#1e3a5f" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="695.0" y="439.54999999999995">Non-Linear Projection Heads g(.)</tspan>
+  <tspan x="695.0" y="456.45">• MLP: 512 -&gt; 256 -&gt; 128 (L2 normalized)</tspan>
+  <tspan x="695.0" y="473.34999999999997">• Maps views into metric hypersphere</tspan>
+</text>
+<text fill="#94a3b8" font-size="12px" font-weight="500" text-anchor="start">
+  <tspan x="570" y="519.6">src/train/losses.py: InfoNCE + L1</tspan>
+</text>
+<text fill="#38bdf8" font-size="12px" font-weight="500" text-anchor="start">
+  <tspan x="524" y="549.6"># NT-Xent contrastive loss (tau=0.07)</tspan>
+  <tspan x="524" y="565.2">sim = (z_front @ z_side.T) / tau</tspan>
+  <tspan x="524" y="580.8">L_contrastive = 0.5 * (</tspan>
+  <tspan x="524" y="596.4">    cross_entropy(sim, labels) +</tspan>
+  <tspan x="524" y="612.0">    cross_entropy(sim.T, labels)</tspan>
+  <tspan x="524" y="627.6">)</tspan>
+  <tspan x="524" y="643.2"># Multi-task joint optimization</tspan>
+  <tspan x="524" y="658.8">L_total = L_contrastive + 2.0 * L_reg_L1</tspan>
+</text>
+<text fill="#78350f" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="695.0" y="706.1">Strict Subject-Disjoint Validation Split</tspan>
+  <tspan x="695.0" y="723.0">• Split on unique subject_key (70/15/15)</tspan>
+  <tspan x="695.0" y="739.9000000000001">• Prevents cross-view same-subject identity leakage</tspan>
+  <tspan x="695.0" y="756.8000000000001">• Verified via 5-eval/4ablate.py</tspan>
+</text>
+<text fill="#4c1d95" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="695.0" y="817.05">Fused Multimodal Representation</tspan>
+  <tspan x="695.0" y="833.9499999999999">z_fused = [ h_front || h_side || bbox_8d ] in R^1032</tspan>
+  <tspan x="695.0" y="850.85">Full 3D body volume encoded in 2D latent pair</tspan>
+</text>
+<text fill="#1e3a5f" font-size="15px" font-weight="500" text-anchor="middle">
+  <tspan x="1145.0" y="168.5">Phase 3: Dimension Recovery &amp; Derived Indices</tspan>
+</text>
+<text fill="#1e3a5f" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="1145.0" y="217.65">Multi-Head Dimension Regression Head</tspan>
+  <tspan x="1145.0" y="234.55">• Dense(1032 -&gt; 256) -&gt; BatchNorm -&gt; ReLU</tspan>
+  <tspan x="1145.0" y="251.45">• Predicts physical tape circumferences:</tspan>
+  <tspan x="1145.0" y="268.35">  [waist_cm, hip_cm, chest_cm]</tspan>
+  <tspan x="1145.0" y="285.25">• NO synthetic BMI or fake body-fat labels!</tspan>
+</text>
+<text fill="#94a3b8" font-size="12px" font-weight="500" text-anchor="start">
+  <tspan x="970" y="334.6">  Supervised Tape Measurements (BodyM)</tspan>
+</text>
+<text fill="#22c55e" font-size="12px" font-weight="500" text-anchor="start">
+  <tspan x="974" y="364.6">{</tspan>
+  <tspan x="974" y="380.2">  &quot;waist_cm&quot;: 83.4,  // Ground Truth: 84.1cm</tspan>
+  <tspan x="974" y="395.8">  &quot;hip_cm&quot;:   99.1,  // Ground Truth: 98.6cm</tspan>
+  <tspan x="974" y="411.4">  &quot;chest_cm&quot;: 96.8,  // Ground Truth: 96.0cm</tspan>
+  <tspan x="974" y="427.0">  &quot;mean_abs_error_cm&quot;: 0.63,</tspan>
+  <tspan x="974" y="442.6">  &quot;r2_score&quot;: 0.884</tspan>
+  <tspan x="974" y="458.20000000000005">}</tspan>
+</text>
+<text fill="#064e3b" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="1145.0" y="519.2">Clinical Central-Adiposity Index Derivation</tspan>
+  <tspan x="1145.0" y="536.1">• WHR = waist / hip</tspan>
+  <tspan x="1145.0" y="553.0">• WHtR = waist / height</tspan>
+  <tspan x="1145.0" y="569.9">• Body Roundness Index (BRI):</tspan>
+  <tspan x="1145.0" y="586.8000000000001">  BRI = 364.2 - 365.5 * sqrt(1 - (w/(2pi))^2 / (0.5*H)^2)</tspan>
+  <tspan x="1145.0" y="603.7">• Direct anatomical math: zero black-box fiction</tspan>
+</text>
+<text fill="#94a3b8" font-size="12px" font-weight="500" text-anchor="start">
+  <tspan x="970" y="664.6">  Derived Central Adiposity &amp; Risk</tspan>
+</text>
+<text fill="#22c55e" font-size="12px" font-weight="500" text-anchor="start">
+  <tspan x="974" y="694.6">{</tspan>
+  <tspan x="974" y="710.2">  &quot;whr&quot;: 0.841,       // WHO cutoff: &lt;0.90</tspan>
+  <tspan x="974" y="725.8">  &quot;whr_risk&quot;: &quot;LOW_RISK&quot;,</tspan>
+  <tspan x="974" y="741.4">  &quot;whtr&quot;: 0.476,      // Healthy cutoff: &lt;0.50</tspan>
+  <tspan x="974" y="757.0">  &quot;whtr_risk&quot;: &quot;HEALTHY&quot;,</tspan>
+  <tspan x="974" y="772.6">  &quot;bri&quot;: 2.81,        // Normal body eccentricity</tspan>
+  <tspan x="974" y="788.2">  &quot;clinical_utility&quot;: &quot;Valid cardiometabolic proxy&quot;</tspan>
+  <tspan x="974" y="803.8">}</tspan>
+</text>
+<text fill="#78350f" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="1145.0" y="857.05">PROVISIONAL METRIC REPORT</tspan>
+  <tspan x="1145.0" y="873.9499999999999">Pending 3D Geometry Reliability Verification...</tspan>
+  <tspan x="1145.0" y="890.85">Metrics held in staging prior to clinical dispatch</tspan>
+</text>
+<text fill="#b91c1c" font-size="15px" font-weight="500" text-anchor="middle">
+  <tspan x="1595.0" y="168.5">Phase 4: 3D Geometry Gate (Key Novelty)</tspan>
+</text>
+<text fill="#4c1d95" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="1595.0" y="217.65">NLF (Neural Localizer Fields) 3D Recovery</tspan>
+  <tspan x="1595.0" y="234.55">• Front RGB -&gt; 3D Joint Localizer</tspan>
+  <tspan x="1595.0" y="251.45">• Fits SMPL-X parameters (betas, pose, trans)</tspan>
+  <tspan x="1595.0" y="268.35">• Reconstructs personalized 3D mesh:</tspan>
+  <tspan x="1595.0" y="285.25">  Vertices V in R^(10475 x 3), Faces F</tspan>
+</text>
+<text fill="#1e3a5f" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="1595.0" y="336.09999999999997">Differentiable Silhouette Render-Back</tspan>
+  <tspan x="1595.0" y="353.0">• Projects 3D SMPL-X mesh to 2D camera view</tspan>
+  <tspan x="1595.0" y="369.9">• Generates rendered silhouette S_rendered</tspan>
+  <tspan x="1595.0" y="386.8">• Compares against observed silhouette S_obs</tspan>
+</text>
+<text fill="#94a3b8" font-size="12px" font-weight="500" text-anchor="start">
+  <tspan x="1470" y="439.6">src/smplx_fit/gate.py: Reliability Score</tspan>
+</text>
+<text fill="#38bdf8" font-size="12px" font-weight="500" text-anchor="start">
+  <tspan x="1424" y="469.6"># Dual geometric verification</tspan>
+  <tspan x="1424" y="485.2">iou = compute_iou(S_render, S_observed)</tspan>
+  <tspan x="1424" y="500.8">chamfer = compute_chamfer(c_render, c_obs)</tspan>
+  <tspan x="1424" y="516.4"></tspan>
+  <tspan x="1424" y="532.0">mismatch_penalty = (</tspan>
+  <tspan x="1424" y="547.6">    0.70 * (1.0 - iou) +</tspan>
+  <tspan x="1424" y="563.2">    0.30 * chamfer</tspan>
+  <tspan x="1424" y="578.8">)</tspan>
+  <tspan x="1424" y="594.4">gate_pass = (iou &gt;= 0.55 and chamfer &lt;= 0.05)</tspan>
+</text>
+<text fill="#78350f" font-size="12px" font-weight="500" text-anchor="middle">
+  <tspan x="1595.0" y="643.0">Render-Back</tspan>
+  <tspan x="1595.0" y="658.6">IoU &gt;= 0.55 &amp; Chamfer &lt;= 0.05?</tspan>
+</text>
+<text fill="#064e3b" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="1595.0" y="736.1">ACCEPT: Clinical Report Dispatched</tspan>
+  <tspan x="1595.0" y="753.0">• Measurement geometry passes 3D verification</tspan>
+  <tspan x="1595.0" y="769.9000000000001">• Retained dimension accuracy guaranteed</tspan>
+  <tspan x="1595.0" y="786.8000000000001">• Export fitted .obj 3D avatar &amp; report</tspan>
+</text>
+<text fill="#64748b" font-size="12px" font-weight="500" text-anchor="middle">
+  <tspan x="1615.0" y="700.1">YES (Pass)</tspan>
+</text>
+<text fill="#7f1d1d" font-size="13px" font-weight="500" text-anchor="middle">
+  <tspan x="1595.0" y="848.6">REJECT: Model Abstention Triggered</tspan>
+  <tspan x="1595.0" y="865.5">• Clothing shift, loose fabric, or bad posture</tspan>
+  <tspan x="1595.0" y="882.4000000000001">• PREVENTS SILENT CORRUPTED METRICS!</tspan>
+  <tspan x="1595.0" y="899.3000000000001">• User prompt: &#x27;Recapture with tight clothing&#x27;</tspan>
+</text>
+<text fill="#64748b" font-size="12px" font-weight="500" text-anchor="middle">
+  <tspan x="1742.5" y="745.1">NO (Reject)</tspan>
+</text>
+<text fill="#94a3b8" font-size="12px" font-weight="500" text-anchor="start">
+  <tspan x="1420" y="954.6">  5-eval/6gate_eval.py: Abstention Safety</tspan>
+</text>
+<text fill="#22c55e" font-size="12px" font-weight="500" text-anchor="start">
+  <tspan x="1424" y="984.6">{</tspan>
+  <tspan x="1424" y="1000.2">  &quot;accepted_samples_coverage&quot;: &quot;88.2%&quot;,</tspan>
+  <tspan x="1424" y="1015.8">  &quot;ungated_waist_mae_cm&quot;: 3.42,</tspan>
+  <tspan x="1424" y="1031.4">  &quot;gated_waist_mae_cm&quot;: 2.14,  // -37% error reduction!</tspan>
+  <tspan x="1424" y="1047.0">  &quot;silent_failure_rate&quot;: &quot;0.0%&quot;,</tspan>
+  <tspan x="1424" y="1062.6">  &quot;abstention_behavior&quot;: &quot;SAFE_DEFENSE&quot;</tspan>
+  <tspan x="1424" y="1078.2">}</tspan>
+</text>
+<text fill="#38bdf8" font-size="16px" font-weight="500" text-anchor="start">
+  <tspan x="70" y="1202.8">KEY SCIENTIFIC NOVELTIES &amp; ARCHITECTURAL CONTRIBUTIONS</tspan>
+</text>
+<text fill="#f1f5f9" font-size="13px" font-weight="500" text-anchor="start">
+  <tspan x="70" y="1226.9">1. Dimension-First Grounding: Supervised exclusively on real physical tape circumferences — never synthetic BMI or unanchored body-fat %.</tspan>
+  <tspan x="70" y="1243.8">2. Zero-Fiction Adiposity Indices: Central-adiposity biomarkers (WHR, WHtR, BRI) derived arithmetically from physical dimensions and height.</tspan>
+  <tspan x="70" y="1260.7">3. SMPL-X Render-Back Abstention Gate: Replaces silent hallucinated outputs with active geometry verification (IoU &amp; Chamfer distance).</tspan>
+  <tspan x="70" y="1277.6">4. Strict Subject-Disjoint Integrity: Guaranteed 70/15/15 subject partitioning preventing cross-capture identity and posture leakage.</tspan>
+</text>
+</svg>

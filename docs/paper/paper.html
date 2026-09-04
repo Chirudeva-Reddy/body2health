@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Research Direction for SMPL-Gated Phone Anthropometry</title>
+<style>
+  @page {
+    size: letter;
+    margin: 20mm 18mm 20mm 18mm;
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 9pt;
+    }
+  }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 10pt;
+    line-height: 1.45;
+    color: #111827;
+    margin: 0;
+    padding: 0;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 24px;
+    border-bottom: 1.5px solid #1e3a8a;
+    padding-bottom: 16px;
+  }
+  h1 {
+    font-size: 18pt;
+    font-weight: bold;
+    color: #0f172a;
+    margin: 0 0 10px 0;
+    line-height: 1.25;
+  }
+  .authors {
+    font-size: 11pt;
+    font-style: italic;
+    color: #334155;
+    margin-bottom: 6px;
+  }
+  .affil {
+    font-size: 9pt;
+    color: #64748b;
+    margin-bottom: 12px;
+  }
+  .abstract-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #2563eb;
+    padding: 12px 16px;
+    margin: 16px 0 24px 0;
+    font-size: 9.5pt;
+  }
+  .abstract-title {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 9pt;
+    letter-spacing: 0.5px;
+    color: #1e40af;
+    margin-bottom: 4px;
+  }
+  .two-column {
+    column-count: 2;
+    column-gap: 20px;
+    text-align: justify;
+  }
+  h2.section-title {
+    font-size: 11pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #1e3a8a;
+    margin-top: 16px;
+    margin-bottom: 6px;
+    border-bottom: 0.5px solid #cbd5e1;
+    padding-bottom: 2px;
+    break-after: avoid;
+  }
+  p {
+    margin: 0 0 10px 0;
+    text-indent: 12pt;
+  }
+  .callout {
+    background: #f1f5f9;
+    border-left: 3px solid #64748b;
+    padding: 8px 12px;
+    margin: 10px 0;
+    font-size: 9pt;
+    break-inside: avoid;
+  }
+  .callout p {
+    text-indent: 0;
+    margin: 0;
+  }
+  .diagram-figure {
+    margin: 16px 0;
+    text-align: center;
+    break-inside: avoid;
+    column-span: all;
+  }
+  .diagram-figure img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+  }
+  .caption {
+    font-size: 8.5pt;
+    color: #475569;
+    margin-top: 6px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Research Direction for SMPL-Gated Phone Anthropometry</h1>
+  <div class="authors">Chirudeva Reddy</div>
+  <div class="affil">BodyFit Computer Vision & Healthcare AI Research &bull; Dubai, UAE</div>
+</div>
+
+<div class="abstract-box">
+  <div class="abstract-title">Abstract</div>
+  Mobile 2D anthropometry promises accessible health screening but historically suffers from two critical failure modes: conflating lean muscle with visceral fat (the fundamental limitation of BMI), and acting unconditionally confident when presented with clothing or posture artifacts. We introduce <strong>BodyFit</strong>, a dual-view silhouette anthropometry architecture featuring a 3D geometry reliability gate. By supervising on true tape-measured girths (waist, hip, chest) rather than synthetic body-fat labels, and deriving clinical biomarkers (WHtR, WHR, BRI) through physiological arithmetic, BodyFit provides interpretable cardiometabolic screening. Crucially, BodyFit couples deep contrastive estimation with an SMPL-X render-back gate: a personalized 3D mesh is re-projected into the camera plane, triggering autonomous abstention whenever render IoU falls below 0.55. This abstention mechanism eliminates silent corruption, ensuring safe deployment in tele-health applications.
+</div>
+
+<div class="diagram-figure">
+  <img src="file:///Users/tacticalcamel/excalidraw-diagram-skill/references/docs/diagrams/pipeline_architecture.png" alt="BodyFit Pipeline Architecture">
+  <div class="caption">Figure 1: Full end-to-end architecture of BodyFit showing dual-view smartphone preprocessing, Siamese ResNet-18 contrastive encoders, dimension regression heads, derived clinical indices, and the SMPL-X render-back reliability gate.</div>
+</div>
+
+<div class="two-column">
+  <h2 class="section-title">Bottom line</h2>
+<p>Your final goal is viable, but only if the thesis claim is framed around trustworthy reporting, not around computing WHR from phone images. That narrower pipeline is already well covered by prior work: BMNet predicts body measurements from dual silhouettes plus height and weight, BodyM provides a large public silhouette-and-measurement benchmark, and a 2023 smartphone system from Amazon already reported accurate WHR estimation from multiview phone images. SMPL and SMPLify, meanwhile, already establish the parametric-3D machinery for fitting a plausible human body from image evidence. In other words, estimation exists, 3D fitting exists, and WHR arithmetic exists. [1]</p>
+<p>The research question that still looks defensible is this: can a personalized 3D body model act as a geometry-based abstention mechanism for image-based anthropometry? That is a materially different claim. Instead of promising that every capture yields a usable measurement, the system verifies whether a fitted body can reproduce the observed front and side silhouettes and refuses to report when the geometry is inconsistent with the image evidence. That places your work closer to selective prediction and trustworthy AI than to “yet another body measurement app.” [2]</p>
+<p>The other important correction is clinical framing. If you say “WHO metrics,” reviewers can reasonably expect waist circumference and waist-to-hip ratio, because the WHO expert consultation and WHO STEPS protocol are centered on those measurements and on their standardized acquisition, including anatomical measurement sites. Waist-to-height ratio is useful, but your cleanest current standards reference is NICE rather than WHO. BRI is useful as a research index, but it is not a WHO standard and even recent JAMA Network Open work notes the lack of an accepted reference range. So the safest language is: WHO-aligned waist and WHR interpretation, with optional WHtR and exploratory BRI. [3]</p>
+<h2 class="section-title">What the field already covers</h2>
+<p>The baseline technical problem is already established. BMNet predicts 14 anthropometric measurements from two silhouette images plus height and weight, explicitly using the lateral view because it adds useful evidence for chest and waist estimation. Its associated BodyM dataset is publicly available and currently lists 8,978 frontal and lateral silhouettes from 2,505 real subjects, paired with height, weight, gender, and 14 measurements, with a less-controlled Test-B split that introduces diverse camera orientations, lighting, and repeated clothing conditions for robustness testing. That means dual-view silhouette anthropometry is not speculative anymore; it is an existing benchmarked task. [4]</p>
+<p>A second line of work already solves the “recover a valid 3D body from image evidence” part. SMPL is a learned parametric human body model with shape parameters, pose parameters, and a regressor from mesh vertices to joint locations, while SMPLify fits SMPL to detected 2D joints by minimizing reprojection error and enforcing plausibility through model priors. That makes the 3D part of your proposed pipeline technically conventional and therefore credible, but not novel by itself. The value of using SMPL in your project is not to claim 3D reconstruction as a contribution; it is to use 3D reconstruction as a consistency test. [5]</p>
+<p>Recent work in 2025 still points in the same direction: the field is primarily chasing better extraction accuracy, better reconstruction, and richer datasets. The CVPR 2025 “Focused Human Body Model” paper improves anthropometric extraction with a ViT-based SMPLer-X pipeline, introduces measurement planes on a body mesh, and builds a new multimodal benchmark. ICCV 2025’s MeasureXpert reconstructs unclothed bodies and measurement landmarks from dressed partial scans and then regresses anthropometric values. These are real advances, but they are still about getting the number out more accurately, not about deciding when the number should be withheld. [6]</p>
+<p>Phone-based anthropometry is also already viable enough that it cannot be your novelty claim. A 2023 smartphone paper in npj Digital Medicine reported accurate and reliable WHR estimation from front, side, and back phone images and extracted its ground-truth circumferences from fitted SMPL bodies at predefined anatomical locations. At the same time, that paper explicitly noted that its synthetic generator did not model loose clothing well and that no research had yet investigated the relationship between its predictions and health-risk outcomes. This is highly relevant to your thesis: it shows that phone-based WHR estimation is already real, but that trustworthy interpretation under capture mismatch remains open. [7]</p>
+<p>The error sources are also well known. As early as 2000, Meunier and Yin identified calibration, segmentation, landmarking, and indirect circumference modeling as significant error sources in 2D anthropometry, with segmentation and modeling especially important because circumferences are not directly measured from two images. The 2025 review of body measurement estimation from 2D images says much the same thing in modern language: models do best on controlled data and degrade under pose, clothing, background, and lighting variability. Classical shape-under-clothing work likewise emphasized that silhouettes of clothed people are only a loose bound on the true body, not a tight one. That trio of sources is exactly the argument for a geometry-based reject option. [8]</p>
+<p>A further caution comes from validation papers on mobile anthropometry. In a 2023 comparison of smartphone apps against tape measurements, waist circumference, hip circumference, and waist-to-height ratio could be equivalent to the reference, yet WHR still failed equivalence because slight underestimation of waist and slight overestimation of hip compounded inside the ratio. A 2025 systematic review of smartphone- and tablet-based 3D anthropometry reached a similar overall conclusion: the technology is promising and often reliable, but stronger standardization and protocol control are still needed. This matters because your final output is not just waist and hip separately but a ratio-based risk interpretation, which is more sensitive to small systematic errors. [9]</p>
+<h2 class="section-title">The gap you can credibly claim</h2>
+<p>The clearest literature-backed gap is not “better estimation,” but better deployment behavior. The 2025 review on inferring body measurements from 2D images explicitly says that healthcare-facing deployment still needs stronger explainability, calibration, and cross-population generalization, and it notes that no studies had applied explainability tools to body measurement estimation from 2D images. That is not the same thing as your proposed gate, but it points in the same direction: the field has better regressors than it has trustworthy decision mechanisms. [10]</p>
+<p>Based on the primary sources reviewed here, I did not find a paper that takes image-based waist/hip estimation, fits a personalized SMPL body, re-renders that body into the observed views, and then uses silhouette-consistency as an explicit accept / reject / confidence mechanism before reporting a health-oriented anthropometric index. BMNet focuses on direct measurement prediction and adversarial data augmentation; the CVPR 2025 focused body model concentrates on better mesh-based measurement extraction; MeasureXpert focuses on recovering dressed-scan measurements. The defensible gap, therefore, is best stated as an inference from the contribution patterns in the current literature: the field mostly predicts measurements, but does not yet formalize geometry-grounded abstention for anthropometric reporting. [11]</p>
+<p>The 2023 smartphone WHR paper strengthens that interpretation. Its authors explicitly state that loose clothing creates a synthetic-to-real gap and that further studies are needed to understand the relationship between the model’s predictions and health risks. That means the open problem is no longer “can a phone estimate WHR at all?” but rather “can a phone estimate it safely enough to interpret?” Your proposal addresses exactly that question by introducing an intermediate reliability decision instead of collapsing estimation and interpretation into one step. [7]</p>
+<p>A second gap, and one that professors usually appreciate, is standardized anatomical definition. WHO STEPS specifies where waist and hip should be measured on the body: waist at the midpoint between the last palpable rib and the top of the iliac crest, and hip at the maximum circumference over the buttocks. Yet mobile and app-based literature has already noted that measurement sites are not standardized across apps. That gives you a concrete methodological contribution: define waist and hip on the fitted 3D mesh using fixed anatomical planes or mesh landmarks, then keep that definition consistent through training, inference, and evaluation. [12]</p>
+<p>The strongest professor-facing phrasing is therefore not about inventing a new anthropometric index, and not about proving that phone images can produce WHR. It is about making image-based anthropometry refuse to act confident when the geometry is wrong.</p>
+<h2 class="section-title">Framing option</h2>
+<h2 class="section-title">Use it</h2>
+<h2 class="section-title">Why</h2>
+<div class="callout"><p>“We propose a novel phone system to estimate WHR from images.”</p></div>
+<h2 class="section-title">No</h2>
+<p>Too close to existing smartphone WHR and silhouette-measurement work</p>
+<div class="callout"><p>“We estimate waist/hip-derived indices from phone images and verify whether a personalized 3D body can explain the observed silhouettes before reporting.”</p></div>
+<h2 class="section-title">Yes</h2>
+<h2 class="section-title">Clear, defensible, and technically grounded</h2>
+<div class="callout"><p>“We show that SMPL silhouette-consistency can serve as an abstention mechanism that reduces large anthropometric and risk-category errors under clothing, pose, and segmentation mismatch.”</p></div>
+<h2 class="section-title">Best</h2>
+<h2 class="section-title">This is the actual scientific question</h2>
+<h2 class="section-title">The pipeline you should actually build</h2>
+<p>The right implementation is a controlled dual-view anthropometry pipeline with a geometry gate, not an unconstrained consumer selfie system. Your first version should assume a front view and a side view, nearly upright stance, full-body visibility, and relatively fitted clothing. That is not a weakness; it is how the strongest benchmarks and practical systems are built. BodyM was captured with full-body frontal and lateral silhouettes, tight clothing, and an A-pose, and WHO physical-measurement guidance likewise expects minimal or light clothing for waist and hip acquisition. If you try to jump straight to unconstrained casual clothing, you are tackling a harder problem than the literature’s strongest baselines and you will make both the measurement model and the gate harder to validate. [13]</p>
+<p>The “skeletal limbs to SMPL” problem should be reframed carefully. You are not mapping 2D limb pixels to arbitrary mesh vertices. You are mapping 2D pose landmarks to SMPL joints and camera parameters so that they initialize and constrain body pose. MediaPipe’s Pose Landmarker can provide 33 image-space and world-space landmarks plus an optional segmentation mask, which is practical for a phone pipeline. SMPL already includes a regressor from vertices to joints, and SMPLify already formalizes the fitting objective from 2D joints to a full 3D body. That means the correct engineering pattern is: use 2D pose to determine pose and view consistency, and use silhouettes plus measurement loss to determine shape. [14]</p>
+<p>A practical joint subset for fitting is the torso and limb scaffold: shoulders, elbows, wrists, hips, knees, ankles, heels, and optionally nose and ears for head orientation. In MediaPipe indexing, that is primarily 11–16, 23–32, plus 0, 7, and 8. The front and side images should share one latent SMPL body; what changes between the two images is the camera projection, not the subject. In implementation terms, you optimize a single mesh with two view-specific reprojection terms, one for the front image and one for the side image. The point of the side view is not cosmetic—it resolves sagittal ambiguities that a frontal pose skeleton cannot. [15]</p>
+<p>The actual anthropometric quantities should then come from the fitted mesh, not from limb lengths. This is the most important conceptual fix. Sparse joints can help you pose the mesh, but they are a poor place to derive waist and hip circumferences directly. Recent anthropometry work on SMPL measurement extraction defines measurement planes and surface intersections on the body mesh for waist, hip, chest, wrist, and shoulder width, explicitly tying measurements to mesh geometry rather than to 2D heuristics. That is exactly the right direction for your pipeline. The cleanest thesis implementation is to define waist and hip as mesh-slice circumferences on a canonical T-pose or standardized neutral pose, with locations chosen to be as close as possible to the WHO STEPS anatomical definitions. [16]</p>
+<h2 class="section-title">The recommended optimization structure is:</h2>
+<p>front image + side image + self-reported height    -> person masks + 2D pose landmarks    -> baseline waist/hip estimate from silhouettes    -> initialize SMPL pose from 2D joints    -> optimize shared SMPL body against:         pose reprojection loss         front silhouette loss         side silhouette loss         measurement loss         shape/pose prior    -> extract waist and hip from fixed mesh measurement planes    -> compute WHR, optional WHtR, optional BRI    -> compute reliability score from geometric consistency    -> if reliable: report estimate + risk interpretation       else: abstain and ask for recapture</p>
+<p>This structure is not copied from one source; it is the synthesis that falls naturally out of SMPLify’s joint-fitting formulation, BMNet’s differentiable silhouette machinery, and recent mesh-based anthropometric extraction methods. [17]</p>
+<p>The reliability score should be driven by how well the fitted body explains the observed silhouettes, especially in the torso and pelvic regions. Useful components are front-view IoU or Dice, side-view IoU or Dice, contour Chamfer distance, signed contour error restricted to waist and hip bands, 2D joint reprojection error, and segmentation-quality indicators such as silhouette fragmentation or extreme asymmetry. Selective prediction literature gives you the formal vocabulary for this: a model may abstain when confidence is low, and the success criterion is improved error at reduced coverage. In your work, the confidence signal would be grounded not only in the regressor’s output but in the fitted body’s geometric self-consistency. [18]</p>
+<p>This gate should also produce failure reasons, not just a scalar. The literature tells you what the likely failure modes are: clothing that inflates the silhouette, segmentation leakage or holes, pose deviations, bad side views, and calibration or scaling mismatch. That means your output should distinguish between at least four cases: likely good capture, likely clothing inflation, likely side-view failure, and likely segmentation failure. This is not merely a UX feature; it makes the abstention mechanism interpretable, which is precisely what current reviews say the field still lacks. [19]</p>
+<h2 class="section-title">Evaluation and WHO-aligned reporting</h2>
+<p>Your evaluation should have two distinct layers: technical anthropometry and health-interpretation validity. For technical anthropometry, the reference should be same-day tape measurements or a trusted 3D scan protocol, with waist and hip acquired according to WHO STEPS measurement locations and clothing rules. For health interpretation, the reference is the risk category derived from those manual measurements, not from self-report. This separation matters because a system can have acceptable waist and hip MAE while still misclassifying the ratio-based risk category. [20]</p>
+<p>The minimum technical metrics should include waist MAE, hip MAE, WHR absolute error, and, if you include it, WHtR absolute error. Because your contribution is abstention, you should then add retained error versus coverage: report the model’s error after rejecting the least reliable 5%, 10%, 20%, and 30% of samples. A good gate should lower the error of the retained set, especially on hard cases involving clothing or bad side views. This is standard selective-prediction logic, and it gives professors a concrete measurable contribution beyond “the pictures look nice.” [21]</p>
+<p>You should also define a clinically meaningful failure target for the gate. For example, a sample can be labeled “unsafe to report” if any of the following holds on the reference set: waist error above a fixed tolerance, hip error above a fixed tolerance, absolute WHR error above a fixed tolerance, or incorrect assignment of the downstream risk category. Once that label exists, evaluate the reliability gate as a detector of unsafe-to-report cases using AUROC, AUPRC, and retained-error curves. The 2023 smartphone validation paper is especially useful here because it shows that even when waist and hip are individually close, WHR can still fail due to small directional biases. [22]</p>
+<p>Fairness has to be part of the design, not an afterthought. Selective regression can improve average performance while making minority subgroup performance worse as coverage decreases, and body-measurement fairness work in industry already evaluates underperformance across gender, body shape, and skin tone. That means your gate should be audited by subgroup: accepted coverage, retained waist/hip error, retained WHR error, and misclassification rates should all be stratified where metadata permit. Otherwise, an apparently effective reject option can quietly refuse more often for exactly the people the model already handles poorly. [23]</p>
+<p>For the reporting layer, keep the standards hierarchy very clear. The WHO consultation and WHO STEPS protocol justify waist circumference and WHR as your core outputs. If you want a category layer, configurable thresholds are better than hard-coding a universal rule, because the WHO consultation itself emphasized sex, age, and ethnicity variation. If you still need a default binary implementation for a demo, sex-specific WHR cutoffs of 0.90 for men and 0.85 for women are common in public-health guidance, but present them as configurable operational defaults, not as your novelty. WHtR can be included under NICE guidance, where 0.4–0.49 is considered healthy central adiposity, 0.5–0.59 increased, and 0.6 or more high. BRI should be reported only as exploratory because it is research-derived and lacks the standardization that waist and WHR already have. [24]</p>
+<h2 class="section-title">That leads to the most defensible output hierarchy:</h2>
+<h2 class="section-title">Output</h2>
+<h2 class="section-title">Role in thesis</h2>
+<h2 class="section-title">Standard basis</h2>
+<h2 class="section-title">Waist circumference</h2>
+<h2 class="section-title">Primary continuous anthropometric output</h2>
+<h2 class="section-title">WHO-aligned measurement protocol</h2>
+<h2 class="section-title">WHR</h2>
+<h2 class="section-title">Primary WHO-aligned health-screening output</h2>
+<h2 class="section-title">WHO-centered clinical literature and public-health practice</h2>
+<h2 class="section-title">WHtR</h2>
+<h2 class="section-title">Secondary screening output</h2>
+<h2 class="section-title">NICE and broader public-health guidance</h2>
+<h2 class="section-title">BRI</h2>
+<h2 class="section-title">Exploratory research-only output</h2>
+<h2 class="section-title">Thomas et al. geometry and later observational studies</h2>
+<p>Given the literature, my recommendation is to choose one core direction and one secondary direction. The core direction should be SMPL-based reliability / abstention gating. The secondary direction should be WHO-aligned interpretation from accepted measurements. I would not make body-fat prediction your main thesis unless you can obtain strong anchor labels such as DXA, and I would not make “unconstrained everyday clothing” your first target unless you are prepared for a much harder data problem than the literature’s strongest baselines currently solve. [25]</p>
+<h2 class="section-title">Claude Code action plan</h2>
+<p>The most productive way to use Claude Code is to make it build the project in the same order the literature suggests: baseline first, mesh measurement second, reliability gate third, health-interpretation layer fourth. The prompt below is designed to keep the implementation aligned with existing evidence rather than drifting into an overbroad “build a body scanner app” brief. It is grounded in the known dual-view silhouette baseline, SMPL fitting from 2D cues, mesh-based measurement planes, WHO measurement definitions, and selective-prediction evaluation. [26]</p>
+<p>You are Claude Code acting as a senior computer vision research engineer.Goal:Build a research prototype for dual-view phone-based anthropometry whose main contribution is ageometry-based reliability / abstention gate, not merely waist-to-hip ratio estimation.Scientific framing:- Do NOT market this as “novel WHR from phone images.”- Treat waist/hip estimation as the baseline.- Treat the main contribution as: fit a personalized SMPL body, re-render it to front/side silhouettes,  quantify silhouette consistency, and abstain when the geometry and the observed silhouettes disagree.- Treat WHO alignment as a reporting layer on accepted measurements only.- Keep WHtR secondary and BRI exploratory. Do not describe WHtR or BRI as WHO metrics.Scope:Phase A: baseline dual-view waist/hip pipelinePhase B: SMPL fitting and mesh-based measurement extractionPhase C: silhouette-consistency reliability gatePhase D: WHO-aligned reporting + fairness-aware evaluationRepository requirements:- Python project- clean src/ layout- config-driven experiments- reproducible training/evaluation scripts- visual debug outputs for every stage- README with assumptions, limitations, and clinical caution that this is a screening/research tool, not diagnosisCreate this structure:repo/  configs/  data/  notebooks/  outputs/  scripts/  src/    data/    segmentation/    pose/    anthropometry/    smpl/    evaluation/    reporting/    utils/  tests/Implementation tasks:1. Data layer- Implement dataset loaders for:  a) BodyM-style paired front/side silhouettes with measurement targets  b) an internal “phone_capture” format with front RGB, side RGB, optional height, optional manual tape GT- Support train/val/test splits- Normalize units to centimeters- Persist metadata including clothing notes, capture quality, and subject subgroup labels if available2. Capture assumptions- Hard-code initial research assumptions:  * one adult subject  * full body visible  * near-upright pose  * front + side views  * fitted or semi-fitted clothing  * neutral background preferred- Add a precheck module that flags obvious invalid captures:  * body cropped  * multiple people  * side view missing or near-frontal  * severe segmentation holes  * arms fused into torso- Do not silently continue on obviously bad captures; mark them as low-quality3. Segmentation- Build a person segmentation wrapper that outputs:  * binary mask  * mask confidence statistics  * connected-component quality metrics  * torso-only band masks for waist/hip regions- Save overlay visualizations for debugging4. Pose estimation- Build a pose wrapper that extracts 2D keypoints from both front and side images- Standardize to an internal joint schema containing at least:  nose, shoulders, elbows, wrists, hips, knees, ankles, heels, feet- Compute per-joint confidence and per-view pose quality metrics- Important: pose is used for body pose initialization and quality control, not as the direct source of waist/hip circumference5. Baseline anthropometric estimator- Implement a baseline model that predicts at minimum:  waist_cm  hip_cm  optionally height_cm correction- Use dual-view inputs- Allow optional self-reported height as metadata input- Keep model modular so it can run before the SMPL stage- Save per-sample predictions and errors6. SMPL fitting- Implement a shared latent SMPL body fitted to both front and side observations- Use a loss of the form:    L = lambda_pose * L_pose      + lambda_sil * L_sil      + lambda_meas * L_meas      + lambda_prior * L_prior- L_pose: reprojection error between projected SMPL joints and detected 2D joints in both views- L_sil: front and side silhouette losses- L_meas: match baseline waist/hip estimate and height constraint- L_prior: shape/pose regularization- Keep camera parameters view-specific, body parameters shared- Save optimization traces and final per-view renders7. Mesh-based measurement definition- Do NOT estimate waist/hip from limb lengths- Define waist and hip on the mesh using fixed anatomical measurement planes / mesh-slice curves- Implement functions:    extract_waist_circumference(mesh)    extract_hip_circumference(mesh)    extract_height(mesh)- Store the exact plane definitions in code comments and config files- Keep definitions stable across train/eval/reporting8. Reliability / abstention gate- Implement a reliability module that computes:  * global front IoU / Dice  * global side IoU / Dice  * contour Chamfer distance  * waist-band mismatch  * hip-band mismatch  * joint reprojection residuals  * segmentation quality indicators- Combine these into:  a) an interpretable feature vector  b) a scalar reliability score- Support two modes:  * rule-based thresholding  * learned failure detector (predict “unsafe to report”)- Output:  reliable / unreliable  confidence score  reasons:    - likely loose clothing    - likely side-view issue    - likely segmentation issue    - likely pose inconsistency9. Reporting layer- Only report health-oriented indices if reliability passes threshold- Output:  waist_cm  hip_cm  WHR  optional WHtR  optional BRI  reliability_score  decision = {report, abstain}  abstention_reason- Keep WHO-aligned outputs separate from non-WHO outputs- Add explicit warnings in code comments and README:  * WHR and waist circumference are the primary WHO-aligned outputs  * WHtR is secondary guidance  * BRI is exploratory10. Evaluation protocol- Implement raw anthropometry metrics:  MAE / RMSE for waist and hip  absolute error for WHR and WHtR- Implement selective prediction metrics:  retained MAE at multiple coverage levels  coverage vs error curves  unsafe-case detection AUROC / AUPRC- Implement category metrics:  risk-category agreement against manual-reference-derived categories- Implement subgroup metrics:  performance and coverage by sex/body-shape/skin-tone metadata if available11. Ablations- Run these ablations:  A. baseline predictor only  B. baseline + generic confidence score  C. baseline + SMPL gate  D. baseline + SMPL gate + region-specific waist/hip mismatch- Report whether the SMPL gate reduces large-error predictions and category mistakes at fixed coverage- This is the main scientific result12. Visualizations- For each evaluated sample, save a panel with:  input front RGB  input side RGB  front mask  side mask  front pose  side pose  fitted SMPL front render  fitted SMPL side render  mismatch heatmaps  final decision- Create a “best accepted cases” folder and a “correctly abstained cases” folder13. Documentation- Write a short technical note:  “Why the novelty is reliability gating, not WHR estimation”- Write a methods note:  “How 2D joints are used for pose fitting while waist/hip come from mesh measurement planes”- Write a reporting note:  “How WHO-aligned interpretation is applied only after reliability acceptance”14. DeliverablesProduce:- working code- experiment configs- one-page methods summary- one-page evaluation summary- sample qualitative figures- a draft results table template ready for a paper/thesisDevelopment order:1) baseline dual-view estimator2) pose + segmentation wrappers3) SMPL fitter4) mesh measurement extraction5) reliability gate6) evaluation + plots7) reporting layer8) docs and reproducibility cleanupCritical guardrails:- If you cannot validate a measurement, abstain rather than hallucinate precision- Do not present WHtR or BRI as WHO metrics- Do not use pose landmarks alone as waist/hip measurements- Do not treat visually plausible meshes as sufficient; require silhouette consistency evidence- Keep the scientific question focused on reducing large errors by selective abstention</p>
+<p>If Claude Code executes the project in that order, you will end up with a thesis that asks a real research question: whether geometry-based abstention can make image-based anthropometric screening more trustworthy under real capture noise, clothing mismatch, and segmentation failure. That is a much stronger direction than simply producing a WHR risk score from a phone image. [27]</p>
+<p>[1] [4] [11] https://assets.amazon.science/42/62/b1b5b44f4b5eaccf8c7d2475f734/human-body-measurement-estimation-with-adversarial-augmentation.pdf</p>
+<p>https://assets.amazon.science/42/62/b1b5b44f4b5eaccf8c7d2475f734/human-body-measurement-estimation-with-adversarial-augmentation.pdf</p>
+<p>[2] [18] https://arxiv.org/pdf/1901.09192</p>
+<h2 class="section-title">https://arxiv.org/pdf/1901.09192</h2>
+<p>[3] [24] https://www.who.int/publications/i/item/9789241501491</p>
+<h2 class="section-title">https://www.who.int/publications/i/item/9789241501491</h2>
+<p>[5] https://smpl.is.tue.mpg.de/</p>
+<h2 class="section-title">https://smpl.is.tue.mpg.de/</h2>
+<p>[6] [16] https://openaccess.thecvf.com/content/CVPR2025/papers/Chen_A_Focused_Human_Body_Model_for_Accurate_Anthropometric_Measurements_Extraction_CVPR_2025_paper.pdf</p>
+<p>https://openaccess.thecvf.com/content/CVPR2025/papers/Chen_A_Focused_Human_Body_Model_for_Accurate_Anthropometric_Measurements_Extraction_CVPR_2025_paper.pdf</p>
+<p>[7] [25] https://cdn.amazon.science/c5/5c/77c3c4554a70a4add986eea18a88/development-and-validation-of-an-accurate-smartphone-application-for-measuring-waist-to-hip-circumference-ratio.pdf</p>
+<p>https://cdn.amazon.science/c5/5c/77c3c4554a70a4add986eea18a88/development-and-validation-of-an-accurate-smartphone-application-for-measuring-waist-to-hip-circumference-ratio.pdf</p>
+<p>[8] https://www.sciencedirect.com/science/article/abs/pii/S0003687000000235</p>
+<p>https://www.sciencedirect.com/science/article/abs/pii/S0003687000000235</p>
+<p>[9] [22] https://www.cambridge.org/core/journals/british-journal-of-nutrition/article/evaluation-of-automated-anthropometrics-produced-by-smartphonebased-machine-learning-a-comparison-with-traditional-anthropometric-assessments/49AFA085C23914A64D2B89CBBD8C8BD8</p>
+<p>https://www.cambridge.org/core/journals/british-journal-of-nutrition/article/evaluation-of-automated-anthropometrics-produced-by-smartphonebased-machine-learning-a-comparison-with-traditional-anthropometric-assessments/49AFA085C23914A64D2B89CBBD8C8BD8</p>
+<p>[10] https://www.mdpi.com/2313-433X/11/6/205</p>
+<h2 class="section-title">https://www.mdpi.com/2313-433X/11/6/205</h2>
+<p>[12] [20] https://cdn.who.int/media/docs/default-source/ncds/ncd-surveillance/steps/steps-manual.pdf?sfvrsn=c281673d_11</p>
+<p>https://cdn.who.int/media/docs/default-source/ncds/ncd-surveillance/steps/steps-manual.pdf?sfvrsn=c281673d_11</p>
+<p>[13] https://adversarialbodysim.github.io/</p>
+<h2 class="section-title">https://adversarialbodysim.github.io/</h2>
+<p>[14] [15] https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker</p>
+<p>https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker</p>
+<p>[17] https://smplify.is.tue.mpg.de/</p>
+<h2 class="section-title">https://smplify.is.tue.mpg.de/</h2>
+<p>[19] https://files.is.tue.mpg.de/black/papers/balanECCV08.pdf</p>
+<h2 class="section-title">https://files.is.tue.mpg.de/black/papers/balanECCV08.pdf</h2>
+<p>[21] [23] [27] https://proceedings.mlr.press/v162/shah22a.html</p>
+<h2 class="section-title">https://proceedings.mlr.press/v162/shah22a.html</h2>
+<p>[26] https://registry.opendata.aws/bodym/</p>
+<h2 class="section-title">https://registry.opendata.aws/bodym/</h2>
+</div>
+
+</body>
+</html>
