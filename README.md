@@ -12,7 +12,7 @@
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Localhost:8080-success.svg?style=for-the-badge&logo=fastapi)](DEMO.md)
 
 <p align="center">
-  <a href="#-interactive-pipeline-walkthrough">🎬 Live Video Walkthrough</a> &bull;
+  <a href="#-interactive-pipeline-walkthrough">🎬 Live Walkthrough</a> &bull;
   <a href="#-research-paper">📄 Research Paper (PDF)</a> &bull;
   <a href="#-system-architecture">📐 Architecture Diagram</a> &bull;
   <a href="#-quickstart--recruiter-demo">🚀 Recruiter Demo</a> &bull;
@@ -27,13 +27,16 @@
 
 ## 🎬 Interactive Pipeline Walkthrough
 
-Below is a live visual walkthrough showing the 6-stage execution of the BodyFit pipeline on primary validation subject Deva (175cm Male), progressing from raw smartphone captures to SAM2 segmentation, Siamese contrastive latent extraction, tape dimension recovery, WHO risk gauges, and 3D SMPL-X geometry gating:
+Below is a live screen recording showing the BodyFit web application in action: executing the **1-Click Test** on primary validation subject Deva (175cm Male), recovering tape circumferences in under 50ms, updating WHO cardiometabolic risk gauges, and smoothly interacting with the reconstructed 10,475-vertex **SMPL-X 3D mesh manifold** in WebGL:
 
 <div align="center">
 
 ![BodyFit Pipeline Live Walkthrough](docs/assets/bodyfit_pipeline_walkthrough.gif)
 
-*Figure: Automated 6-stage pipeline execution: Dual-View RGB Capture $\rightarrow$ SAM2 Hiera-L Standardization $\rightarrow$ Contrastive Latents $\rightarrow$ Tape Girths $\rightarrow$ WHO Cardiometabolic Gauges $\rightarrow$ SMPL-X 3D Geometry Verification.*
+<p align="center">
+  <em>⚡ Real-time interactive screen capture recorded directly from the local WebGL application.</em><br>
+  <strong><a href="docs/assets/bodyfit_demo_walkthrough.mp4">▶️ Watch High-Definition Video Walkthrough (MP4)</a></strong> &bull; <strong><a href="DEMO.md">Explore Recruiter Showcase Guide</a></strong>
+</p>
 
 </div>
 
@@ -41,11 +44,13 @@ Below is a live visual walkthrough showing the 6-stage execution of the BodyFit 
 
 ## 📄 Research Paper
 
-The complete, peer-review format research paper detailing the mathematical foundations, clinical motivations, literature gap analysis, and empirical ablations of BodyFit is available directly in the repository:
+The complete academic research paper detailing the clinical motivations, literature gap analysis, mathematical framework, and ablation studies is published in the repository:
 
-- 📥 **Download Full Paper (PDF):** [`docs/paper/BodyFit_Research_Paper.pdf`](docs/paper/BodyFit_Research_Paper.pdf)
-- 🌐 **HTML Paper Mirror:** [`docs/paper/paper.html`](docs/paper/paper.html)
-- 📝 **Explainer & Novelty Report:** [`docs/video_explainer_script.md`](docs/video_explainer_script.md)
+| Asset | Format | Direct Link | Description |
+| :--- | :---: | :---: | :--- |
+| **Research Paper** | **PDF** | [**`docs/paper/BodyFit_Research_Paper.pdf`**](docs/paper/BodyFit_Research_Paper.pdf) | Full IEEE/Nature-formatted publication document with figures & citations |
+| **Web Paper Mirror** | **HTML** | [**`docs/paper/paper.html`**](docs/paper/paper.html) | High-fidelity browser-viewable paper layout |
+| **Video Script & Novelty Report** | **Markdown** | [**`docs/video_explainer_script.md`**](docs/video_explainer_script.md) | Scene-by-scene script with timestamps & competitive novelty matrix |
 
 > [!NOTE]
 > **Citation & Research Scope**:
@@ -55,13 +60,16 @@ The complete, peer-review format research paper detailing the mathematical found
 
 ## 📐 System Architecture
 
-Below is the complete architectural diagram of the BodyFit pipeline, created using the Excalidraw design system, showing the dataflow from raw smartphone captures to clinical report dispatch and 3D geometry verification.
+Below is the complete architectural diagram of the BodyFit pipeline, created using the Excalidraw design system, showing the end-to-end dataflow from dual-view smartphone captures to clinical report dispatch and 3D geometry verification.
 
 <div align="center">
 
 [![BodyFit Pipeline Architecture](docs/diagrams/pipeline_architecture.png)](docs/diagrams/pipeline_architecture.svg)
 
-*Click the image above to view the high-resolution vector SVG ([`docs/diagrams/pipeline_architecture.svg`](docs/diagrams/pipeline_architecture.svg)) or download the native Excalidraw file ([`docs/diagrams/pipeline_architecture.excalidraw`](docs/diagrams/pipeline_architecture.excalidraw)).*
+<p align="center">
+  <em>Figure: Full end-to-end architecture diagram of BodyFit. Click image for full resolution.</em><br>
+  <strong><a href="docs/diagrams/pipeline_architecture.svg">View Full Vector SVG</a></strong> &bull; <strong><a href="docs/diagrams/pipeline_architecture.excalidraw">Download Editable Excalidraw JSON</a></strong>
+</p>
 
 </div>
 
@@ -197,7 +205,7 @@ Open **[http://localhost:8080](http://localhost:8080)** in your browser.
 git clone https://github.com/Chirudeva-Reddy/bodyfit.git
 cd bodyfit
 
-# Activate Python environment and verify PyTorch
+# Verify environment
 python3 -c "import torch; print('PyTorch Version:', torch.__version__)"
 ```
 
@@ -278,7 +286,8 @@ bodyfit/
 │   ├── pairs_dimensions.csv          # Canonical training CSV with standardized tape labels
 │   └── subject_key_map.csv           # sub_XXXX anonymization mapping
 ├── docs/
-│   ├── assets/                       # Video walkthrough GIF & animations
+│   ├── assets/                       # Video walkthrough GIF & MP4 animations
+│   │   ├── bodyfit_demo_walkthrough.mp4
 │   │   └── bodyfit_pipeline_walkthrough.gif
 │   ├── diagrams/                     # Architectural diagram artifacts
 │   │   ├── pipeline_architecture.excalidraw  # Editable Excalidraw JSON
