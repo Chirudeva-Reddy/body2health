@@ -13,17 +13,16 @@
 </p>
 
 <p align="center">
-  <a href="docs/assets/bodyfit_launch_video.mp4" title="Click to Watch 20s Launch Video (1080p HD MP4)">
-    <img alt="Body2Fit Launch Video: Dual-view silhouette anthropometry with an SMPL-X 3D reliability gate" src="docs/assets/bodyfit_launch_preview.gif" width="760">
-  </a>
+  <img alt="body2fit web demo: one click runs dual-view inference, then the page shows recovered waist, hip and chest girths, the WHO central-adiposity indices, the SMPL-X render-back gate scorecard with its accept verdict, and the recovered 3D mesh in the geometry studio" src="docs/assets/bodyfit_pipeline_walkthrough.gif" width="760">
 </p>
 
 <p align="center">
-  <a href="docs/assets/bodyfit_launch_video.mp4"><b>▶ Watch 20s Launch Video (1080p HD MP4)</b></a>
-  &nbsp;·&nbsp; <a href="docs/video_showcase.html">Interactive Player</a>
-  &nbsp;·&nbsp; <a href="#launch-video-walkthrough">Video Storyboard</a>
+  <a href="https://github.com/Chirudeva-Reddy/body2health/blob/main/docs/assets/bodyfit_demo_walkthrough.mp4">Watch in HD</a>
   &nbsp;·&nbsp; <a href="#how-it-works">How it works</a>
   &nbsp;·&nbsp; <a href="#live-demo">Run the demo</a>
+  &nbsp;·&nbsp; <a href="#benchmark-results">Benchmarks</a>
+  &nbsp;·&nbsp; <a href="#command-line-use">CLI</a>
+  &nbsp;·&nbsp; <a href="#research-paper">Paper</a>
 </p>
 
 <p align="center">
@@ -72,7 +71,6 @@ There are two gate implementations, and they use different thresholds. `--smplx_
 Full payload: [`docs/samples/deva_gate_accepted.json`](docs/samples/deva_gate_accepted.json). For a capture the gate *rejects*, compare [`docs/samples/deva_gate_rejected.json`](docs/samples/deva_gate_rejected.json), where `reportable` is `false` and no risk labels are emitted.
 
 </details>
-
 
 ## How it works
 
