@@ -31,3 +31,5 @@ models/**/*.torchscript
 models/**/*.npz
 data /sam/
 graphify-out/
+runs/
+brag-output/**/work-*/

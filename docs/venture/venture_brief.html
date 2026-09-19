@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BodyFit Venture Brief and Commercialization Roadmap</title>
+  <style>
+    :root {
+      --ink: #142126;
+      --muted: #526168;
+      --line: #d5ddda;
+      --paper: #ffffff;
+      --wash: #f3f7f5;
+      --navy: #173c4a;
+      --green: #2b705d;
+      --lime: #dce9a8;
+      --amber: #c87924;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+
+    @page {
+      size: letter;
+      margin: 16mm;
+    }
+
+    @media print {
+      html, body { background: var(--paper); }
+      .page { break-after: page; }
+      .page:last-child { break-after: auto; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #edf2f0;
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 8.35pt;
+      line-height: 1.36;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      position: relative;
+      width: 100%;
+      min-height: 247mm;
+      background: var(--paper);
+      break-inside: avoid;
+    }
+
+    .page-number {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      color: #7b898e;
+      font-size: 7.6pt;
+      letter-spacing: 0.08em;
+    }
+
+    .eyebrow {
+      margin: 0 0 5px;
+      color: var(--green);
+      font-size: 8pt;
+      font-weight: 750;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3 { color: #000; }
+
+    h1 {
+      max-width: 660px;
+      margin: 0;
+      font-size: 25pt;
+      font-weight: 760;
+      letter-spacing: -0.035em;
+      line-height: 1.02;
+    }
+
+    .subtitle {
+      max-width: 650px;
+      margin: 7px 0 11px;
+      color: var(--muted);
+      font-size: 10.2pt;
+      line-height: 1.42;
+    }
+
+    h2 {
+      margin: 12px 0 6px;
+      font-size: 13pt;
+      font-weight: 730;
+      letter-spacing: -0.018em;
+      line-height: 1.16;
+      break-after: avoid;
+    }
+
+    h3 {
+      margin: 10px 0 4px;
+      font-size: 9.6pt;
+      font-weight: 740;
+      line-height: 1.2;
+      break-after: avoid;
+    }
+
+    p { margin: 0 0 5px; }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 6px 22px;
+      padding: 8px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .meta-item { color: var(--muted); }
+    .meta-item span {
+      display: block;
+      margin-bottom: 1px;
+      color: var(--ink);
+      font-size: 7.2pt;
+      font-weight: 760;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .thesis {
+      display: grid;
+      grid-template-columns: 1.36fr 0.64fr;
+      gap: 22px;
+      margin-top: 10px;
+      padding-bottom: 9px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .lead {
+      margin: 0;
+      font-size: 10.8pt;
+      font-weight: 560;
+      line-height: 1.42;
+    }
+
+    .metric {
+      padding-left: 16px;
+      border-left: 3px solid var(--lime);
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--navy);
+      font-size: 23pt;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 8.2pt;
+      line-height: 1.32;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 13px;
+    }
+
+    .problem {
+      padding-top: 5px;
+      border-top: 2px solid var(--navy);
+    }
+
+    .problem b { color: var(--navy); }
+
+    .architecture {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+      margin: 6px 0 8px;
+    }
+
+    .stage {
+      min-height: 77px;
+      padding: 7px;
+      background: var(--wash);
+      border-top: 3px solid var(--green);
+    }
+
+    .stage small {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--green);
+      font-size: 6.8pt;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .stage b { display: block; margin-bottom: 4px; }
+    .stage p { margin: 0; color: var(--muted); font-size: 7.05pt; line-height: 1.28; }
+
+    .boundary {
+      margin: 6px 0 7px;
+      padding: 5px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 7.45pt;
+    }
+
+    .paper-figure {
+      margin: 6px 0 0;
+      break-inside: avoid;
+    }
+
+    .paper-figure img {
+      display: block;
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+    }
+
+    .paper-figure.detail img { max-height: 315px; }
+
+    .paper-figure figcaption {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 6.8pt;
+      line-height: 1.28;
+    }
+
+    .translation {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 16px;
+      margin: 6px 0 10px;
+      padding: 6px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 7.2pt;
+    }
+
+    .translation p { margin: 0; }
+    .translation b { color: var(--ink); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      break-inside: avoid;
+    }
+
+    th, td {
+      padding: 5px 6px;
+      border: 1px solid #d9d9d9;
+      vertical-align: middle;
+      overflow-wrap: anywhere;
+    }
+
+    th {
+      color: #fff;
+      background: var(--navy);
+      font-size: 6.95pt;
+      font-weight: 760;
+      line-height: 1.22;
+      text-align: left;
+    }
+
+    td { font-size: 6.95pt; line-height: 1.24; }
+    .page:first-child th, .page:first-child td { padding-top: 4px; padding-bottom: 4px; }
+    tbody tr:nth-child(even) td { background: #f4f8f7; }
+    .center { text-align: center; }
+    .yes { color: #1e6b55; font-weight: 760; }
+    .partial { color: #9a5a13; font-weight: 760; }
+    .no { color: #9b3f35; font-weight: 760; }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-head h2 { margin-bottom: 0; }
+    .section-head p { margin: 0; color: var(--muted); font-size: 8pt; }
+
+    .roadmap {
+      margin: 9px 0 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .phase {
+      display: grid;
+      grid-template-columns: 54px 105px 1fr 145px;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--line);
+      break-inside: avoid;
+    }
+
+    .phase-no {
+      color: var(--green);
+      font-size: 16pt;
+      font-weight: 790;
+      letter-spacing: -0.03em;
+    }
+
+    .phase-time {
+      color: var(--muted);
+      font-size: 7.6pt;
+      font-weight: 760;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .phase h3 { margin: 0 0 4px; }
+    .phase p { margin: 0; color: var(--muted); font-size: 7.5pt; }
+    .deliverable {
+      align-self: start;
+      padding-left: 10px;
+      border-left: 2px solid var(--lime);
+      color: var(--ink) !important;
+      font-size: 7.05pt !important;
+    }
+
+    .commercial-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      font-size: 7.5pt;
+      line-height: 1.3;
+    }
+
+    .buyer-row {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 12px;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .buyer-row p { margin: 0; font-size: 7.4pt; color: var(--muted); }
+    .buyer-row b { font-size: 7.55pt; }
+
+    .model-lines {
+      margin-top: 7px;
+      padding-top: 1px;
+      border-top: 2px solid var(--navy);
+    }
+
+    .model-lines p { padding: 4px 0; margin: 0; border-bottom: 1px solid var(--line); font-size: 7.5pt; }
+
+    .budget-layout {
+      display: grid;
+      grid-template-columns: 0.72fr 1.28fr;
+      gap: 24px;
+      margin-top: 12px;
+    }
+
+    .budget-intro {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      margin: 7px 0;
+      color: var(--muted);
+      font-size: 7.5pt;
+    }
+
+    .budget-intro b { color: var(--ink); }
+
+    .budget-total {
+      padding-right: 22px;
+      border-right: 1px solid var(--line);
+    }
+
+    .budget-total strong {
+      display: block;
+      margin: 2px 0 8px;
+      color: var(--navy);
+      font-size: 34pt;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .bar { margin: 11px 0; }
+    .bar-label { display: flex; justify-content: space-between; gap: 12px; font-size: 7.7pt; }
+    .bar-track { height: 6px; margin-top: 4px; background: #e9eeec; }
+    .bar-fill { height: 100%; background: var(--green); }
+
+    .gate-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 12px;
+    }
+
+    .gate {
+      padding-top: 8px;
+      border-top: 2px solid var(--amber);
+    }
+
+    .gate span {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--amber);
+      font-size: 6.8pt;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .gate p { color: var(--muted); font-size: 7.75pt; }
+
+    .sources {
+      margin-top: 14px;
+      padding-top: 9px;
+      border-top: 1px solid var(--line);
+      color: #647279;
+      font-size: 6.55pt;
+      line-height: 1.32;
+    }
+
+    .sources p { margin: 0 0 3px; }
+    .sources a { color: #465c65; }
+
+    .footer-line {
+      position: absolute;
+      left: 0;
+      right: 34px;
+      bottom: 2px;
+      color: #7b898e;
+      font-size: 7.2pt;
+    }
+  </style>
+</head>
+<body>
+  <section class="page">
+    <p class="eyebrow">SOLVE Venture Incubation Program 2026</p>
+    <h1>BodyFit Venture Brief and Commercialization Roadmap</h1>
+    <p class="subtitle">A privacy-first route from research-grade silhouette anthropometry to a licensed wellness product, followed by evidence-led clinical expansion.</p>
+
+    <div class="meta">
+      <div class="meta-item"><span>Project</span>BodyFit (body2health)</div>
+      <div class="meta-item"><span>Lead founder and researcher</span>Chirudeva Reddy, Department of Computer Science, BITS Pilani Dubai Campus</div>
+      <div class="meta-item"><span>Academic collaborator</span>Dr. Shivang Agarwal, Department of Computer Science, BITS Pilani Dubai Campus</div>
+      <div class="meta-item"><span>Planning horizon</span>18 months, from data independence to clinical study preparation</div>
+    </div>
+
+    <div class="thesis">
+      <p class="lead">BodyFit estimates waist, hip, and chest circumference from paired front and side silhouettes. The phone removes face, skin, and texture before server processing, so raw unclad RGB images do not need to leave the device. The first commercial product sells measurements for wellness and fit, not diagnoses.</p>
+      <div class="metric">
+        <strong>74.4%</strong>
+        <span>lower waist MAE in the repository benchmark: 9.38 cm from a single front silhouette versus 2.40 cm from paired orthogonal views.</span>
+      </div>
+    </div>
+
+    <h2>1 Executive summary and core problem</h2>
+    <div class="three-col">
+      <div class="problem">
+        <h3>BMI measures the wrong thing</h3>
+        <p>For roughly 180 years, BMI has reduced body size to weight divided by height squared. It cannot distinguish muscular mass from abdominal fat distribution, which limits its usefulness for individual screening.</p>
+      </div>
+      <div class="problem">
+        <h3>Photo scanning creates a privacy tradeoff</h3>
+        <p>Mobile scanners often ask users to upload sensitive RGB photos. BodyFit converts each capture into a binary silhouette on the device, then discards identifying visual detail before any server request.</p>
+      </div>
+      <div class="problem">
+        <h3>One view cannot see abdominal depth</h3>
+        <p>A front image captures width but not sagittal depth. A side view adds the missing geometry, which materially improves circumference estimates in the current benchmark.</p>
+      </div>
+    </div>
+
+    <h2>2 Solution architecture and technical basis</h2>
+    <figure class="paper-figure">
+      <img src="assets/ijcai_figure_1_overview.png" alt="Paper overview showing consumer image capture, silhouette abstraction, and health metric output">
+      <figcaption><b>Research context from the IJCAI paper.</b> The original overview established the privacy route from consumer capture to front and side silhouettes. The venture keeps that abstraction boundary but narrows the first product to physical measurements and general wellness.</figcaption>
+    </figure>
+    <div class="footer-line">BodyFit venture brief  |  SOLVE 2026</div><div class="page-number">01</div>
+  </section>
+
+  <section class="page">
+    <div class="section-head">
+      <h2>Architecture from research to product</h2>
+      <p>What carries forward and what changes</p>
+    </div>
+    <figure class="paper-figure detail">
+      <img src="assets/ijcai_figure_2_architecture.png" alt="Detailed paper architecture with segmentation, front and side silhouettes, dual-view encoding, contrastive alignment, and regression">
+      <figcaption><b>Detailed architecture from the IJCAI paper.</b> It shows the segmentation, paired silhouettes, dual-view encoder, contrastive alignment, and supervised regression path that underpin BodyFit.</figcaption>
+    </figure>
+    <div class="translation">
+      <p><b>Commercial implementation.</b> YOLOv11-nano or MediaPipe produces the mask on device. Twin ResNet-18 encoders align both views in a 512-dimensional InfoNCE space, and linear heads predict waist, hip, and chest.</p>
+      <p><b>Deliberate correction.</b> The paper's BMI and body-fat heads are not venture outputs. WHtR and WHR are derived from measured girths; BRI is exploratory. Capture guidance and field validation replace any claim that a loose 3D IoU gate certifies clothing quality.</p>
+    </div>
+    <div class="section-head">
+      <h2>3 Commercialization roadmap</h2>
+      <p>Four phases across 18 months</p>
+    </div>
+
+    <div class="roadmap">
+      <div class="phase">
+        <div class="phase-no">01</div><div class="phase-time">Months 1 to 3</div>
+        <div><h3>Data independence and edge pipeline</h3><p>Secure IRB approval and collect at least 500 consented front and side capture pairs with calibrated tape measurements. Build a quantized segmentation pipeline for supported phones and define capture acceptance criteria.</p></div>
+        <p class="deliverable"><b>Exit evidence</b><br>Commercially unencumbered dataset, consent and governance pack, baseline error report, and on-device silhouette prototype.</p>
+      </div>
+      <div class="phase">
+        <div class="phase-no">02</div><div class="phase-time">Months 4 to 6</div>
+        <div><h3>Developer SDK and pilot beta</h3><p>Package the measurement service as a REST API and mobile SDK. Run a closed beta with two corporate wellness programs and one bespoke tailoring brand.</p></div>
+        <p class="deliverable"><b>Exit evidence</b><br>Three signed pilot agreements, SDK integration time, capture completion rate, measurement error by subgroup, and remake or engagement baseline.</p>
+      </div>
+      <div class="phase">
+        <div class="phase-no">03</div><div class="phase-time">Months 7 to 12</div>
+        <div><h3>Commercial wellness launch</h3><p>License the API and white-label SDK to fitness platforms, gym chains, wellness programs, and apparel operators. Add a self-serve developer tier after pilot support costs and unit economics are known.</p></div>
+        <p class="deliverable"><b>Exit evidence</b><br>Paid contracts, production service levels, cohort retention, gross margin per capture, and documented privacy controls.</p>
+      </div>
+      <div class="phase">
+        <div class="phase-no">04</div><div class="phase-time">Months 13 to 18</div>
+        <div><h3>Clinical telehealth expansion</h3><p>Run a prospective observational study with a healthcare partner to test cardiometabolic triage use. Prepare the clinical evidence, quality system, risk file, and intended-use documentation for UAE EDE and EU MDR review.</p></div>
+        <p class="deliverable"><b>Exit evidence</b><br>Locked study protocol, prospective results, regulatory classification memo, clinical evaluation plan, and filing readiness decision.</p>
+      </div>
+    </div>
+
+    <div class="footer-line">BodyFit venture brief  |  SOLVE 2026</div><div class="page-number">02</div>
+  </section>
+
+  <section class="page">
+    <div class="section-head">
+      <h2>4 Commercialization strategy and market opportunity</h2>
+      <p>Prove a costly workflow before widening the market</p>
+    </div>
+
+    <div class="commercial-grid">
+      <div>
+        <h3>Initial buyers and proof</h3>
+        <div class="buyer-row"><b>Corporate wellness and health insurers</b><p>Use repeatable waist and WHtR trends for general wellness. Prove participation, repeat capture rate, and measurement stability without disease-specific claims.</p></div>
+        <div class="buyer-row"><b>Digital fitness platforms</b><p>Add circumference progress to existing coaching products. Prove SDK conversion, retention lift, and low support cost.</p></div>
+        <div class="buyer-row"><b>Uniform and apparel programs</b><p>Reduce manual measurement time, size exchanges, and remakes. Prove agreement with professional tape measurements and lower scrap cost.</p></div>
+      </div>
+      <div>
+        <h3>Revenue model</h3>
+        <div class="model-lines">
+          <p><b>B2B API usage.</b> Tiered per-capture pricing, with volume commitments once production demand is measured.</p>
+          <p><b>Enterprise SDK.</b> Annual white-label license plus implementation and support for branded mobile experiences.</p>
+          <p><b>Clinical SaaS later.</b> Contract pricing only after prospective evidence and the required regulatory route are clear.</p>
+        </div>
+        <h3>Defensibility and regulatory sequence</h3>
+        <p>A proprietary, consented dataset is the durable asset. Phase 1 limits intended use to measurement, sizing, and low-risk general wellness. Clinical claims follow prospective evidence and formal classification. Diagnostic-decision software may be Class IIa under MDR Rule 11; UAE marketing authorization would proceed through EDE.</p>
+      </div>
+    </div>
+
+    <table aria-label="BodyFit product comparison">
+      <colgroup><col style="width:20%"><col style="width:20%"><col style="width:20%"><col style="width:20%"><col style="width:20%"></colgroup>
+      <thead><tr><th>Criterion</th><th>BodyFit</th><th>BMI</th><th>Smart scales</th><th>Cloud RGB scanners such as 3DLOOK</th></tr></thead>
+      <tbody>
+        <tr><td>Direct circumference output</td><td class="yes center">Waist hip chest</td><td class="no center">No</td><td class="partial center">Usually no</td><td class="yes center">Yes</td></tr>
+        <tr><td>Resolves side depth</td><td class="yes center">Dual view</td><td class="no center">No image input</td><td class="no center">No</td><td class="yes center">Multi-view</td></tr>
+        <tr><td>Raw unclad RGB sent to cloud</td><td class="yes center">No by design</td><td class="yes center">No</td><td class="yes center">No</td><td class="partial center">Service dependent</td></tr>
+        <tr><td>Primary commercial use</td><td>Wellness tracking and fit</td><td>Population weight screening</td><td>Weight and composition trends</td><td>Apparel fit and body measurement</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-head">
+      <h2>5 Budget allocation and milestone deliverables</h2>
+      <p>Allocate against the next proof, not a speculative feature list</p>
+    </div>
+
+    <div class="budget-intro">
+      <p><b>Priority:</b> replace the non-commercial research dataset before funding product scale.</p>
+      <p><b>Allocation:</b> data 35% | edge and compute 25% | engineering 25% | regulatory and IP 15%</p>
+    </div>
+    <table aria-label="Budget and milestone deliverables">
+      <colgroup><col style="width:24%"><col style="width:9%"><col style="width:38%"><col style="width:29%"></colgroup>
+      <thead><tr><th>Workstream</th><th class="center">Share</th><th>Funded work</th><th>Milestone deliverable</th></tr></thead>
+      <tbody>
+        <tr><td><b>Proprietary data and clinical benchmarks</b></td><td class="center"><b>35%</b></td><td>IRB process, recruitment, calibrated tape protocol, consent, secure storage, annotation, and subgroup evaluation.</td><td>500 or more consented pairs; data rights register; locked cohorts; benchmark report.</td></tr>
+        <tr><td><b>Edge and GPU compute</b></td><td class="center"><b>25%</b></td><td>On-device segmentation, quantization, supported-device profiling, secure inference, and training compute.</td><td>Binary masks on supported devices; no raw RGB in server payloads; measured latency and failure rate.</td></tr>
+        <tr><td><b>Engineering and SDK</b></td><td class="center"><b>25%</b></td><td>REST API, mobile integration, capture guidance, tenant controls, monitoring, documentation, and pilot support.</td><td>Versioned SDK and API; three pilot integrations; service levels; developer onboarding.</td></tr>
+        <tr><td><b>Regulatory advisory and IP</b></td><td class="center"><b>15%</b></td><td>Intended-use review, privacy terms, university ownership, freedom to operate, clinical protocol advice, and EDE and MDR planning.</td><td>Claims matrix; licensing position; classification memo; clinical and filing plan.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sources">
+      <p><b>Evidence and policy notes.</b> Architecture figures are reproduced from <i>Non-Contact Physical Health Profiling from Human Body Silhouettes Using Body Shape Embeddings</i>. Benchmark figures come from the repository's subject-disjoint BodyM ablation and are research results, not claims of performance on the planned proprietary dataset. WHtR interpretation follows NICE guidance; WHO sources support standardized waist and waist-to-hip measurement. BRI is calculated for context and is not presented as a WHO category.</p>
+      <p><b>Sources.</b> BodyM license: <a href="https://registry.opendata.aws/bodym/">Registry of Open Data on AWS</a>. Central adiposity: <a href="https://www.nice.org.uk/guidance/ng246/chapter/Rationale-and-impact">NICE NG246</a> and <a href="https://www.who.int/publications/i/item/9789241501491">WHO waist circumference and waist-to-hip ratio report</a>. Wellness boundary: <a href="https://www.fda.gov/regulatory-information/search-fda-guidance-documents/general-wellness-policy-low-risk-devices">FDA general wellness guidance, January 2026</a>. EU software classification: <a href="https://health.ec.europa.eu/medical-devices-sector/new-regulations/guidance-mdcg-endorsed-documents-and-other-guidance_en">European Commission MDCG guidance</a>. UAE pathway: <a href="https://www.ede.gov.ae/en/w/issuance-of-marketing-authorization-for-a-medical-device">Emirates Drug Establishment medical device marketing authorization</a>.</p>
+    </div>
+    <div class="footer-line">BodyFit venture brief  |  SOLVE 2026</div><div class="page-number">03</div>
+  </section>
+</body>
+</html>

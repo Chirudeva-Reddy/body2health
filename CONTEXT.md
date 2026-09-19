@@ -25,3 +25,23 @@ Generative AI may translate or organise an evidence report only from structured,
 ## Automotive priority
 
 Automotive opportunities are preferred, but a non-automotive direction may remain a serious project candidate when it has a stronger user problem, data foundation, deployment path and responsible-AI boundary.
+
+## Generic dashcam exclusion
+
+Real-time alerts, driver scoring, generic unsafe-driving detection and fleet coaching are not candidate product cores. An automotive direction must solve a narrower, evidence-backed problem that existing dashcam/video-telematics products do not already commoditise.
+
+## Owner-first automotive product
+
+The initial automotive user is an individual vehicle owner. The first release must work without fleet hardware, fleet telemetry, dealer access, or an insurer partnership. It may later support rental, resale or workshop workflows.
+
+## Non-substitutable problem test
+
+No direction remains active merely because computer vision can be applied. It must support a concrete decision that a simpler substitute cannot reasonably deliver: a mechanic visit, physical gauge, barcode lookup, basic map viewer, generic AI chat, or an existing commodity app.
+
+## Preventive-maintenance evidence
+
+The automotive product uses owner-provided images to identify visible, reviewable exterior-condition evidence and suggest a professional inspection. It does not diagnose faults, estimate repair cost, certify roadworthiness, assign fault, or tell a user that a vehicle is safe to drive.
+
+## Tyre-only MVP
+
+**Rejected.** A mechanic inspection or inexpensive physical tread gauge is a simpler, more reliable substitute. Do not pursue a consumer tyre-condition evidence product unless a later partner validates a non-substitutable workflow.

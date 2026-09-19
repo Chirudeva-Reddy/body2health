@@ -13,7 +13,7 @@ The only potentially useful version would be a private supplier-to-retailer pack
 | **AccessLedger UAE** | [Google SANPO](https://github.com/google-research-datasets/sanpo_dataset) accessibility-navigation data (CC BY 4.0); venue owner uploads guided entrance/route photos. | `visible`, `owner-confirmed`, `not observed` features such as steps, ramps, obstructions or tactile cues; bilingual venue disclosure. | Strong social value and policy fit, but no UAE visual benchmark and it must never certify “wheelchair accessible” or code compliance. [DCT Shumool](https://dct.gov.ae/en/what.we.do/tourism/industry.initiatives.emiratisation/Shumool%20-%20People%20of%20Determination%20Training%20Programme%20.aspx) |
 | **SolarProof UAE** | Public solar-condition benchmark data can support a proof of concept; Shams Dubai owner/contractor supplies runtime panel photos. | Visible dust, obstruction or possible crack evidence with an overlay and contractor-handoff draft. | Good Dubai relevance, but image data is not UAE-specific and visual output must not become a fault, electrical-safety or energy-yield diagnosis. [DEWA Shams Dubai](https://www.dewa.gov.ae/en/consumer/solar-community/shams-dubai/shams-dubai-faq) |
 | **ChangeLens UAE** | Continuous, commercially reusable [Copernicus Sentinel](https://cds.climate.copernicus.eu/licences/ec-sentinel) data and [Dynamic World](https://www.dynamicworld.app/about/index.html); no runtime upload needed. | Dated map-scale evidence for land-cover changes: vegetation, water, unpaved land or built surface. | Best data continuity, but lower product differentiation and only 10 m resolution—never individual-property, permit or investment claims. |
-| **ManeuverCoach UAE** | Public driving data for development; a normal dashcam clip is runtime input. | Evidence clip plus a versioned RTA practice card for a merge or roundabout event. | Strong product experience, but live coaching/driver scoring is already crowded. It remains a credible alternative, not the best new evidence-led direction. |
+| **ManeuverCoach UAE** | Public driving data for development; a normal dashcam clip is runtime input. | Evidence clip plus a versioned RTA practice card for a merge or roundabout event. | **Comparison only.** Generic AI coaching, scoring and alerts are already crowded; it may return only if a genuinely unserved, scenario-specific problem is validated. |
 
 ## Rejected directions
 
@@ -22,6 +22,7 @@ The only potentially useful version would be a private supplier-to-retailer pack
 - **Municipal litter/surveillance:** local collection/privacy burden is high and related municipal camera products already exist.
 - **Health, halal, expiry or allergy scanner:** misleading certainty creates avoidable consumer-safety and regulatory risk.
 - **LabelProof UAE:** current UAE catalogue data is not enough to overcome barcode lookup as the simpler consumer alternative; a differentiated B2B packaging-revision product would need a private partner catalogue.
+- **Consumer tyre-condition scanner:** a mechanic inspection or inexpensive physical tread gauge is the simpler and more reliable substitute; do not build it without a validated non-substitutable owner workflow.
 
 ## Deployment path
 
@@ -48,4 +49,4 @@ Do not promise a patent for a “food label scanner.” If pursuing IP, investig
 
 ## Recommendation
 
-Keep **ManeuverCoach UAE**, **AccessLedger UAE**, **SolarProof UAE**, and **ChangeLens UAE** as the active directions. None has yet earned selection: each must next be tested against an existing simpler substitute, a concrete user decision, and a defensible IP seam before being presented as the primary track.
+Keep **AccessLedger UAE**, **SolarProof UAE**, and **ChangeLens UAE** as active directions. Keep **ManeuverCoach UAE** only as a comparison case, not a primary track. No active direction has yet earned selection: each must next be tested against an existing simpler substitute, a concrete user decision, and a defensible IP seam before being presented as the primary track.
