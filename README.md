@@ -13,16 +13,17 @@
 </p>
 
 <p align="center">
-  <img alt="body2fit web demo: one click runs dual-view inference, then the page shows recovered waist, hip and chest girths, the WHO central-adiposity indices, the SMPL-X render-back gate scorecard with its accept verdict, and the recovered 3D mesh in the geometry studio" src="docs/assets/bodyfit_pipeline_walkthrough.gif" width="760">
+  <a href="docs/assets/bodyfit_launch_video.mp4" title="Click to Watch 20s Launch Video (1080p HD MP4)">
+    <img alt="Body2Fit Launch Video: Dual-view silhouette anthropometry with an SMPL-X 3D reliability gate" src="docs/assets/bodyfit_launch_preview.gif" width="760">
+  </a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/Chirudeva-Reddy/body2health/blob/main/docs/assets/bodyfit_demo_walkthrough.mp4">Watch in HD</a>
+  <a href="docs/assets/bodyfit_launch_video.mp4"><b>▶ Watch 20s Launch Video (1080p HD MP4)</b></a>
+  &nbsp;·&nbsp; <a href="docs/video_showcase.html">Interactive Player</a>
+  &nbsp;·&nbsp; <a href="#launch-video-walkthrough">Video Storyboard</a>
   &nbsp;·&nbsp; <a href="#how-it-works">How it works</a>
   &nbsp;·&nbsp; <a href="#live-demo">Run the demo</a>
-  &nbsp;·&nbsp; <a href="#benchmark-results">Benchmarks</a>
-  &nbsp;·&nbsp; <a href="#command-line-use">CLI</a>
-  &nbsp;·&nbsp; <a href="#research-paper">Paper</a>
 </p>
 
 <p align="center">
@@ -71,6 +72,29 @@ There are two gate implementations, and they use different thresholds. `--smplx_
 Full payload: [`docs/samples/deva_gate_accepted.json`](docs/samples/deva_gate_accepted.json). For a capture the gate *rejects*, compare [`docs/samples/deva_gate_rejected.json`](docs/samples/deva_gate_rejected.json), where `reportable` is `false` and no risk labels are emitted.
 
 </details>
+
+## Launch Video Walkthrough
+
+A 20-second launch video curated via [`/brag`](https://github.com/latent-spaces/brag) with boosted clinical and technical pacing, showcasing the end-to-end pipeline and SMPL-X geometry gate:
+
+<p align="center">
+  <img src="docs/assets/bodyfit_pipeline_walkthrough.gif" alt="Body2Fit End-to-End Pipeline Walkthrough" width="760">
+</p>
+
+| Timestamp | Scene | Key Computer Vision & Clinical Concepts |
+| :--- | :--- | :--- |
+| **0:00 – 0:03.5** | **The 1832 Problem** | BMI fails athletes (false positives) & misses visceral fat (false negatives). |
+| **0:03.5 – 0:08.5** | **Dual-View Pipeline** | YOLOv11 + SAM 2.1 mask segmentation on 640×480 canvas; Siamese ResNet-18 encoders with symmetric InfoNCE ($\tau = 0.07$) into a 1032-D latent. |
+| **0:08.5 – 0:13.5** | **Millimeter Telemetry** | Tape girth recovery: **Waist 91.65 cm** (MAE 0.85 cm), **Hip 106.68 cm**, **Chest 99.79 cm**; UK NICE WHtR (0.5237) & WHO WHR (0.8591) risk classification. |
+| **0:13.5 – 0:20.0** | **SMPL-X Geometry Gate** | Neural Localizer Fields 3D mesh fit + 2D render-back verification: **IoU 76.57%** ($\ge 55\%$), **Chamfer 0.0096** ($\le 0.05$). **Gate Verdict: ACCEPTED**. |
+
+> **Video & Composition Artifacts:**
+> - 🎬 **Direct HD Video**: [`docs/assets/bodyfit_launch_video.mp4`](docs/assets/bodyfit_launch_video.mp4) (or [`brag-output/brag.mp4`](brag-output/brag.mp4))
+> - 🎞️ **Inline Animated Showcase**: [`docs/assets/bodyfit_launch_preview.gif`](docs/assets/bodyfit_launch_preview.gif)
+> - 🌐 **Interactive Web Player**: [`docs/video_showcase.html`](docs/video_showcase.html) or [`brag-output/preview.html`](brag-output/preview.html)
+> - 📋 **Brag Plan & Creative Brief**: [`brag-output/brag-plan.md`](brag-output/brag-plan.md) · [`brag-output/composition-brief.md`](brag-output/composition-brief.md)
+> - 🎨 **Hyperframes Web Composition**: [`brag-output/composition/`](brag-output/composition/)
+> - 📣 **Social Launch Copy**: [`brag-output/share-copy.md`](brag-output/share-copy.md)
 
 ## How it works
 

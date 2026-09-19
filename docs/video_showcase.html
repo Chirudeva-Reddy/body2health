@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Body2Fit — Launch Video & Pipeline Showcase</title>
+  <style>
+    :root {
+      --bg: #030712;
+      --card-bg: rgba(17, 24, 39, 0.85);
+      --border: rgba(255, 255, 255, 0.1);
+      --emerald: #10B981;
+      --cyan: #06B6D4;
+      --text: #F8FAFC;
+      --muted: #94A3B8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+    }
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .header-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .badge {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .mode-switch {
+      display: flex;
+      background: rgba(31, 41, 55, 0.7);
+      padding: 4px;
+      border-radius: 8px;
+      gap: 4px;
+      border: 1px solid var(--border);
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: var(--emerald);
+      color: #030712;
+      font-weight: 700;
+    }
+    .player-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), 0 0 0 1px var(--border);
+      position: relative;
+    }
+    video, iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+    .meta-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+    }
+    .nav-links a {
+      color: #38BDF8;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.15s;
+    }
+    .nav-links a:hover {
+      color: #7DD3FC;
+      text-decoration: underline;
+    }
+    .stats-card {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    .stat-val {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .text-emerald { color: #34D399; }
+    .text-cyan { color: #38BDF8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-bar">
+      <div class="brand-group">
+        <span class="badge">IJCAI '26</span>
+        <h1>Body2Fit: Dual-View Silhouette Anthropometry</h1>
+      </div>
+      <div class="mode-switch">
+        <button id="tab-mp4" class="tab-btn active" onclick="setMode('mp4')">🎬 1080p Video</button>
+        <button id="tab-interactive" class="tab-btn" onclick="setMode('interactive')">⚡ Hyperframes Canvas</button>
+      </div>
+    </div>
+
+    <div class="player-wrap">
+      <video id="player-video" controls autoplay loop muted playsinline poster="assets/bodyfit_video_poster.svg">
+        <source src="assets/bodyfit_launch_video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <iframe id="player-iframe" src="../brag-output/composition/index.html" allow="autoplay" style="display: none;"></iframe>
+    </div>
+
+    <div class="meta-bar">
+      <span>Duration: <b>20.0s</b> · Orthogonal 640×480 Silhouettes · 1032-D Latent · SMPL-X Gate</span>
+      <div class="nav-links">
+        <a href="../README.md">← Back to README</a>
+        <a href="assets/bodyfit_launch_video.mp4" download>Download MP4 (HD)</a>
+        <a href="../web/index.html">Launch WebGL Demo</a>
+      </div>
+    </div>
+
+    <div class="stats-card">
+      <div class="stat-item">
+        <span class="stat-label">Waist Circumference</span>
+        <span class="stat-val text-emerald">91.65 cm <small style="font-size:12px;font-weight:600;">(MAE 0.85 cm)</small></span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">SMPL-X Render-Back IoU</span>
+        <span class="stat-val text-emerald">76.57% <small style="font-size:12px;font-weight:600;">(Cutoff ≥ 55%)</small></span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Contour Chamfer</span>
+        <span class="stat-val text-cyan">0.0096 <small style="font-size:12px;font-weight:600;">(Cutoff ≤ 0.05)</small></span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Clinical Reliability Gate</span>
+        <span class="stat-val text-emerald">✓ ACCEPTED</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function setMode(mode) {
+      const video = document.getElementById('player-video');
+      const iframe = document.getElementById('player-iframe');
+      const btnMp4 = document.getElementById('tab-mp4');
+      const btnInteractive = document.getElementById('tab-interactive');
+
+      if (mode === 'mp4') {
+        video.style.display = 'block';
+        iframe.style.display = 'none';
+        btnMp4.classList.add('active');
+        btnInteractive.classList.remove('active');
+      } else {
+        video.style.display = 'none';
+        video.pause();
+        iframe.style.display = 'block';
+        btnMp4.classList.remove('active');
+        btnInteractive.classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>

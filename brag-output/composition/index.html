@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, height=1080, initial-scale=1.0">
+  <title>Body2Fit — Launch Video Composition</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Master Video Canvas Container (1920x1080 fixed aspect ratio) -->
+  <div id="stage" class="stage clip" data-composition-id="bodyfit-launch" data-width="1920" data-height="1080" data-duration="20" data-no-timeline>
+    
+    <!-- Global Ambient Background Elements -->
+    <div class="cyber-grid"></div>
+    <div class="glow-orb glow-cyan" data-layout-allow-overflow></div>
+    <div class="glow-orb glow-emerald" data-layout-allow-overflow></div>
+    <div class="scanline"></div>
+
+    <!-- Header Overlay (Persistent Watermark / Brand Header) -->
+    <header class="video-header">
+      <div class="brand-badge">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+        </div>
+        <span class="brand-title">Body2Fit</span>
+        <span class="brand-pill">IJCAI '26</span>
+      </div>
+      <div class="telemetry-clock" id="telemetry-clock">00:00.00 / 00:20.00</div>
+    </header>
+
+    <!-- SCENE 1: The 1832 Problem (0.0s - 3.5s) -->
+    <section id="scene-1" class="scene clip active" data-start="0" data-duration="3.5">
+      <div class="scene-content flex-center text-center">
+        <div class="pill-tag text-rose" data-anim="fade-in" data-delay="0.1">CRITICAL CLINICAL LIMITATION</div>
+        <h1 class="hero-headline" data-anim="slam" data-delay="0.3">
+          BMI was invented in <span class="strikethrough-word">1832.</span>
+        </h1>
+        <p class="hero-subline text-slate" data-anim="fade-up" data-delay="1.2">
+          Designed for Belgian astronomers. Conflates muscle with visceral fat. Fails athletes and misses normal-weight obesity.
+        </p>
+        <div class="hero-callout text-cyan" data-anim="fade-scale" data-delay="1.8">
+          <span class="accent-bullet">⚡</span> In 2026, we have orthogonal computer vision.
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 2: The Dual-View Contrastive Pipeline (3.5s - 8.5s) -->
+    <section id="scene-2" class="scene clip" data-start="3.5" data-duration="5.0">
+      <div class="scene-content">
+        <div class="scene-header">
+          <div class="pill-tag text-cyan">STAGE 01 & 02: ORTHOGONAL CAPTURE & CONTRASTIVE LATENT ALIGNMENT</div>
+          <h2 class="scene-title">Two Clothed Phone Photos. Zero Radiative Exposure.</h2>
+        </div>
+
+        <div class="pipeline-grid">
+          <!-- Front Capture Card -->
+          <div class="card silhouette-card" data-anim="slide-left" data-delay="3.7">
+            <div class="card-tag">ORTHOGONAL VIEW 1</div>
+            <div class="silhouette-preview front-silhouette">
+              <div class="silhouette-wireframe front-human"></div>
+              <div class="laser-scanner"></div>
+            </div>
+            <div class="card-footer">
+              <span class="label">Frontal 640×480 Canvas</span>
+              <span class="badge bg-cyan">YOLOv11 + SAM 2.1</span>
+            </div>
+          </div>
+
+          <!-- Siamese Contrastive Core -->
+          <div class="latent-junction" data-anim="zoom-in" data-delay="4.4">
+            <div class="junction-icon">⇄</div>
+            <div class="junction-label">Siamese ResNet-18</div>
+            <div class="junction-formula">L_InfoNCE (τ = 0.07)</div>
+            <div class="data-stream">
+              <span class="stream-dot"></span>
+              <span class="stream-dot"></span>
+              <span class="stream-dot"></span>
+            </div>
+            <div class="latent-dim-badge">1032-D Fused Latent</div>
+          </div>
+
+          <!-- Lateral Capture Card -->
+          <div class="card silhouette-card" data-anim="slide-right" data-delay="3.9">
+            <div class="card-tag">ORTHOGONAL VIEW 2</div>
+            <div class="silhouette-preview side-silhouette">
+              <div class="silhouette-wireframe side-human"></div>
+              <div class="laser-scanner reverse"></div>
+            </div>
+            <div class="card-footer">
+              <span class="label">Lateral 640×480 Canvas</span>
+              <span class="badge bg-emerald">Solidity Scored 2.84</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Anatomical Part Decomposition Banner -->
+        <div class="decomposition-banner" data-anim="fade-up" data-delay="5.5">
+          <div class="part-chip"><span class="chip-color chip-amber"></span> Head/Neck 8.2%</div>
+          <div class="part-chip"><span class="chip-color chip-cyan"></span> Torso Core 24.8%</div>
+          <div class="part-chip highlight"><span class="chip-color chip-emerald"></span> Waist Band 14.1%</div>
+          <div class="part-chip"><span class="chip-color chip-purple"></span> Pelvis/Hip 18.6%</div>
+          <div class="part-chip"><span class="chip-color chip-blue"></span> Limbs 34.3%</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 3: Millimeter Tape Recovery & Risk Gauges (8.5s - 13.5s) -->
+    <section id="scene-3" class="scene clip" data-start="8.5" data-duration="5.0">
+      <div class="scene-content">
+        <div class="scene-header">
+          <div class="pill-tag text-emerald">STAGE 03 & 04: TAPE-MEASURED RECONSTRUCTION & CLINICAL RISK</div>
+          <h2 class="scene-title">Millimeter-Accurate Circumferences & Central-Adiposity Stratification</h2>
+        </div>
+
+        <!-- Metric Telemetry Cards Grid -->
+        <div class="metrics-grid">
+          <!-- Waist Card -->
+          <div class="card metric-card featured-metric" data-anim="card-drop" data-delay="8.7">
+            <div class="metric-top">
+              <span class="metric-name">Waist Circumference</span>
+              <span class="ci-pill">95% CI ± 1.9 cm</span>
+            </div>
+            <div class="metric-value-row">
+              <span class="metric-val" id="val-waist">91.65</span>
+              <span class="metric-unit">cm</span>
+            </div>
+            <div class="ground-truth-row">
+              <span class="gt-label">Tape Ground Truth:</span>
+              <span class="gt-val">90.80 cm</span>
+              <span class="gt-err text-emerald">|MAE| 0.85 cm</span>
+            </div>
+          </div>
+
+          <!-- Hip Card -->
+          <div class="card metric-card" data-anim="card-drop" data-delay="9.0">
+            <div class="metric-top">
+              <span class="metric-name">Hip Circumference</span>
+              <span class="ci-pill">95% CI ± 2.1 cm</span>
+            </div>
+            <div class="metric-value-row">
+              <span class="metric-val" id="val-hip">106.68</span>
+              <span class="metric-unit">cm</span>
+            </div>
+            <div class="ground-truth-row">
+              <span class="gt-label">Tape Ground Truth:</span>
+              <span class="gt-val">107.20 cm</span>
+              <span class="gt-err text-emerald">|MAE| 0.52 cm</span>
+            </div>
+          </div>
+
+          <!-- Chest Card -->
+          <div class="card metric-card" data-anim="card-drop" data-delay="9.3">
+            <div class="metric-top">
+              <span class="metric-name">Chest Circumference</span>
+              <span class="ci-pill">95% CI ± 1.8 cm</span>
+            </div>
+            <div class="metric-value-row">
+              <span class="metric-val" id="val-chest">99.79</span>
+              <span class="metric-unit">cm</span>
+            </div>
+            <div class="ground-truth-row">
+              <span class="gt-label">Tape Ground Truth:</span>
+              <span class="gt-val">100.50 cm</span>
+              <span class="gt-err text-emerald">|MAE| 0.71 cm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clinical Cardiometabolic Risk Gauges -->
+        <div class="gauges-panel" data-anim="fade-up" data-delay="10.2">
+          <!-- WHtR Gauge -->
+          <div class="gauge-item">
+            <div class="gauge-header">
+              <span class="gauge-title">Waist-to-Height Ratio (WHtR)</span>
+              <span class="gauge-badge bg-amber">UK NICE: 0.5237 (Increased Risk)</span>
+            </div>
+            <div class="gauge-track">
+              <div class="gauge-fill bg-amber" style="width: 52.4%;"></div>
+              <div class="threshold-marker" style="left: 50%;"></div>
+            </div>
+            <div class="gauge-meta">Universal NICE cutoff 0.50 | Replaces BMI globally</div>
+          </div>
+
+          <!-- WHR Gauge -->
+          <div class="gauge-item">
+            <div class="gauge-header">
+              <span class="gauge-title">Waist-to-Hip Ratio (WHR)</span>
+              <span class="gauge-badge bg-emerald">WHO Male: 0.8591 (Normal)</span>
+            </div>
+            <div class="gauge-track">
+              <div class="gauge-fill bg-emerald" style="width: 85.9%;"></div>
+              <div class="threshold-marker" style="left: 90%;"></div>
+            </div>
+            <div class="gauge-meta">WHO cardiovascular risk cutoff: 0.90 (Male)</div>
+          </div>
+
+          <!-- BRI Gauge -->
+          <div class="gauge-item">
+            <div class="gauge-header">
+              <span class="gauge-title">Body Roundness Index (BRI)</span>
+              <span class="gauge-badge bg-cyan">Thomas et al: 3.8142</span>
+            </div>
+            <div class="gauge-track">
+              <div class="gauge-fill bg-cyan" style="width: 38.1%;"></div>
+            </div>
+            <div class="gauge-meta">Eccentric ellipse volumetric shape formulation</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 4: The SMPL-X Geometry Gate & Outro (13.5s - 20.0s) -->
+    <section id="scene-4" class="scene clip" data-start="13.5" data-duration="6.5">
+      <div class="scene-content">
+        <div class="scene-header text-center">
+          <div class="pill-tag text-emerald pulse-tag">STAGE 05: THE ANATOMICAL RELIABILITY SAFEGUARD</div>
+          <h2 class="scene-title">The SMPL-X 3D Render-Back Gate</h2>
+          <p class="scene-subtitle text-slate">If the fitted 3D body cannot explain the observed silhouettes, it refuses to report.</p>
+        </div>
+
+        <div class="gate-grid">
+          <!-- 3D Mesh & Contour Overlay Display -->
+          <div class="card mesh-card" data-anim="zoom-in" data-delay="13.8">
+            <div class="mesh-viewport">
+              <div class="mesh-render-3d">
+                <div class="smplx-wireframe"></div>
+                <div class="reprojection-contour"></div>
+              </div>
+              <div class="hud-overlay">
+                <span class="hud-tag">3D SMPL-X MESH: 10,475 VERTICES / 20,908 FACES</span>
+                <span class="hud-tag text-emerald">CAMERA RE-PROJECTION: SYNCHRONIZED</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scorecard Panel -->
+          <div class="card scorecard-card" data-anim="slide-left" data-delay="14.2">
+            <div class="scorecard-header">
+              <span class="title">Reliability Gate Scorecard</span>
+              <span class="badge bg-emerald pulse-glow">ACTIVE GATE</span>
+            </div>
+
+            <div class="score-row">
+              <div class="score-label">Render-Back IoU</div>
+              <div class="score-value text-emerald">76.57% <span class="cutoff">(Req: ≥ 55.0%)</span></div>
+            </div>
+            <div class="score-bar"><div class="score-bar-fill bg-emerald" style="width: 76.6%;"></div></div>
+
+            <div class="score-row">
+              <div class="score-label">Contour Chamfer Distance</div>
+              <div class="score-value text-emerald">0.0096 <span class="cutoff">(Req: ≤ 0.050)</span></div>
+            </div>
+            <div class="score-bar"><div class="score-bar-fill bg-emerald" style="width: 80.8%;"></div></div>
+
+            <div class="score-row">
+              <div class="score-label">Composite Error Score</div>
+              <div class="score-value text-cyan">0.1669 <span class="cutoff">(Nominal)</span></div>
+            </div>
+
+            <div class="verdict-banner bg-emerald-dim" data-anim="slam" data-delay="15.8">
+              <div class="verdict-icon">✓</div>
+              <div class="verdict-text">
+                <div class="verdict-title">GATE VERDICT: ACCEPTED</div>
+                <div class="verdict-subtitle">Geometry verified. Clinical report approved.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Final Punchline Outro Overlay (17.5s - 20.0s) -->
+        <div class="outro-overlay" data-anim="fade-in" data-delay="17.2" data-layout-allow-overlap>
+          <div class="outro-content text-center">
+            <h3 class="outro-headline" data-layout-allow-overlap>Tape-grade anthropometry. 3D geometry verification. Zero hallucinations.</h3>
+            <div class="outro-cta-row">
+              <div class="github-pill">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+                <span>github.com/Chirudeva-Reddy/body2health</span>
+              </div>
+              <span class="outro-tagline">Paper: IJCAI '26 · Python 3.10+ · PyTorch 2.9 · Streamlit & WebGL Demo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Master Progress Timeline Bar -->
+    <div class="progress-container">
+      <div class="progress-bar" id="master-progress"></div>
+    </div>
+
+  </div>
+
+  <!-- Interactive Controls Toolbar (For in-browser preview and manual navigation) -->
+  <div class="player-toolbar">
+    <button id="btn-play" class="tool-btn">▶ Play</button>
+    <button id="btn-restart" class="tool-btn">↺ Restart</button>
+    <div class="scrubber-wrap">
+      <input type="range" id="time-scrubber" min="0" max="20" step="0.05" value="0" class="time-slider" aria-label="Seek timeline">
+    </div>
+    <div class="scene-nav">
+      <button class="scene-btn" data-seek="0">1. Problem</button>
+      <button class="scene-btn" data-seek="3.5">2. Pipeline</button>
+      <button class="scene-btn" data-seek="8.5">3. Telemetry</button>
+      <button class="scene-btn" data-seek="13.5">4. Gate</button>
+    </div>
+    <div class="audio-toggle-wrap">
+      <label class="audio-label">
+        <input type="checkbox" id="audio-toggle" checked>
+        <span>120 BPM Sound FX</span>
+      </label>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
