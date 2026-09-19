@@ -73,28 +73,6 @@ Full payload: [`docs/samples/deva_gate_accepted.json`](docs/samples/deva_gate_ac
 
 </details>
 
-## Launch Video Walkthrough
-
-A 20-second launch video curated via [`/brag`](https://github.com/latent-spaces/brag) with boosted clinical and technical pacing, showcasing the end-to-end pipeline and SMPL-X geometry gate:
-
-<p align="center">
-  <img src="docs/assets/bodyfit_pipeline_walkthrough.gif" alt="Body2Fit End-to-End Pipeline Walkthrough" width="760">
-</p>
-
-| Timestamp | Scene | Key Computer Vision & Clinical Concepts |
-| :--- | :--- | :--- |
-| **0:00 – 0:03.5** | **The 1832 Problem** | BMI fails athletes (false positives) & misses visceral fat (false negatives). |
-| **0:03.5 – 0:08.5** | **Dual-View Pipeline** | YOLOv11 + SAM 2.1 mask segmentation on 640×480 canvas; Siamese ResNet-18 encoders with symmetric InfoNCE ($\tau = 0.07$) into a 1032-D latent. |
-| **0:08.5 – 0:13.5** | **Millimeter Telemetry** | Tape girth recovery: **Waist 91.65 cm** (MAE 0.85 cm), **Hip 106.68 cm**, **Chest 99.79 cm**; UK NICE WHtR (0.5237) & WHO WHR (0.8591) risk classification. |
-| **0:13.5 – 0:20.0** | **SMPL-X Geometry Gate** | Neural Localizer Fields 3D mesh fit + 2D render-back verification: **IoU 76.57%** ($\ge 55\%$), **Chamfer 0.0096** ($\le 0.05$). **Gate Verdict: ACCEPTED**. |
-
-> **Video & Composition Artifacts:**
-> - 🎬 **Direct HD Video**: [`docs/assets/bodyfit_launch_video.mp4`](docs/assets/bodyfit_launch_video.mp4) (or [`brag-output/brag.mp4`](brag-output/brag.mp4))
-> - 🎞️ **Inline Animated Showcase**: [`docs/assets/bodyfit_launch_preview.gif`](docs/assets/bodyfit_launch_preview.gif)
-> - 🌐 **Interactive Web Player**: [`docs/video_showcase.html`](docs/video_showcase.html) or [`brag-output/preview.html`](brag-output/preview.html)
-> - 📋 **Brag Plan & Creative Brief**: [`brag-output/brag-plan.md`](brag-output/brag-plan.md) · [`brag-output/composition-brief.md`](brag-output/composition-brief.md)
-> - 🎨 **Hyperframes Web Composition**: [`brag-output/composition/`](brag-output/composition/)
-> - 📣 **Social Launch Copy**: [`brag-output/share-copy.md`](brag-output/share-copy.md)
 
 ## How it works
 
