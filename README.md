@@ -18,6 +18,7 @@
 
 <p align="center">
   <a href="https://github.com/Chirudeva-Reddy/body2health/blob/main/docs/assets/bodyfit_demo_walkthrough.mp4">Watch in HD</a>
+  &nbsp;·&nbsp; <a href="#launch-video">Launch video</a>
   &nbsp;·&nbsp; <a href="#how-it-works">How it works</a>
   &nbsp;·&nbsp; <a href="#live-demo">Run the demo</a>
   &nbsp;·&nbsp; <a href="#benchmark-results">Benchmarks</a>
@@ -69,6 +70,48 @@ Decision: **accepted**, with no failure reasons raised. The fitted body reprojec
 There are two gate implementations, and they use different thresholds. `--smplx_fit` runs the NLF fit above ([`src/smplx_fit/fitter.py`](src/smplx_fit/fitter.py)). The lighter proxy gate used by `--smpl_gate` and by the web demo scores geometry differently and accepts at score ≤ 1.05, IoU ≥ 0.15, chamfer ≤ 0.15 ([`src/smpl/gate.py`](src/smpl/gate.py)), so its numbers for the same subject are not comparable to the table above.
 
 Full payload: [`docs/samples/deva_gate_accepted.json`](docs/samples/deva_gate_accepted.json). For a capture the gate *rejects*, compare [`docs/samples/deva_gate_rejected.json`](docs/samples/deva_gate_rejected.json), where `reportable` is `false` and no risk labels are emitted.
+
+</details>
+
+## Launch video
+
+A 20-second curated cut of the pipeline, built with [brag](https://github.com/latent-spaces/brag).
+1920x1080, four scenes, ending on the gate verdict.
+
+<p align="center">
+  <a href="docs/assets/bodyfit_launch_video.mp4" title="Watch the 20s launch video (1080p MP4)">
+    <img alt="Launch video preview: the BMI critique, the dual-view pipeline, recovered girths with WHO risk gauges, and the SMPL-X render-back gate returning an accept verdict" src="docs/assets/bodyfit_launch_preview.gif" width="760">
+  </a>
+</p>
+
+<p align="center">
+  <a href="docs/assets/bodyfit_launch_video.mp4"><b>Watch the 20s launch video</b></a>
+  &nbsp;·&nbsp; <a href="docs/video_showcase.html">Interactive player</a>
+</p>
+
+| Time | Scene | What it shows |
+| :--- | :--- | :--- |
+| 0.0s - 3.5s | The 1832 problem | BMI flags lean athletes and misses normal-weight visceral fat. |
+| 3.5s - 8.5s | Dual-view contrastive pipeline | YOLOv11m and SAM 2.1 masks on a 640x480 canvas, then twin ResNet-18 encoders aligned by symmetric InfoNCE at tau 0.07 into a 1032-D latent. |
+| 8.5s - 13.5s | Girth recovery and risk gauges | Waist 91.65 cm (0.85 cm absolute error), hip 106.68 cm, chest 99.79 cm; WHtR 0.5237 against the NICE boundary and WHR 0.8591 against the WHO threshold. |
+| 13.5s - 20.0s | SMPL-X geometry gate | NLF fits a 3D body and reprojects it: render-back IoU 0.7657 against a 0.55 floor, chamfer 0.0096 against a 0.05 ceiling. Verdict: accepted. |
+
+Every figure above comes from [`docs/samples/deva_gate_accepted.json`](docs/samples/deva_gate_accepted.json), the same run the telemetry section reports.
+
+<details>
+<summary><b>&nbsp;Composition sources and share copy&nbsp;</b></summary>
+
+<br>
+
+| Artifact | Path |
+| :--- | :--- |
+| HD video | [`docs/assets/bodyfit_launch_video.mp4`](docs/assets/bodyfit_launch_video.mp4) |
+| Preview loop | [`docs/assets/bodyfit_launch_preview.gif`](docs/assets/bodyfit_launch_preview.gif) |
+| Interactive player | [`docs/video_showcase.html`](docs/video_showcase.html) |
+| Shot plan | [`brag-output/brag-plan.md`](brag-output/brag-plan.md) |
+| Creative brief | [`brag-output/composition-brief.md`](brag-output/composition-brief.md) |
+| Web composition | [`brag-output/composition/`](brag-output/composition/) |
+| Share copy | [`brag-output/share-copy.md`](brag-output/share-copy.md) |
 
 </details>
 
