@@ -1,4 +1,4 @@
-<h1 align="center">body2fit</h1>
+<h1 align="center">body2health</h1>
 
 <p align="center">
   <em>Dual-view silhouette anthropometry with an SMPL-X geometry reliability gate.</em>
